@@ -129,7 +129,7 @@
             // 
             // tabPage2
             // 
-            tabPage2.Controls.Add(fileLockOrUnLock1);
+            tabPage2.Controls.Add(_fileLockAndUnLock);
             tabPage2.Location = new Point(4, 33);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
@@ -140,10 +140,10 @@
             // 
             // fileLockOrUnLock1
             // 
-            fileLockOrUnLock1.Location = new Point(0, 0);
-            fileLockOrUnLock1.Name = "fileLockOrUnLock1";
-            fileLockOrUnLock1.Size = new Size(1216, 496);
-            fileLockOrUnLock1.TabIndex = 0;
+            _fileLockAndUnLock.Location = new Point(0, 0);
+            _fileLockAndUnLock.Name = "_fileLockAndUnLock";
+            _fileLockAndUnLock.Size = new Size(1316, 496);
+            _fileLockAndUnLock.TabIndex = 0;
             // 
             // tabPage1
             // 

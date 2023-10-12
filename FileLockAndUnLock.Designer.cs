@@ -114,7 +114,7 @@
             // 
             rtbLog.Location = new Point(397, 26);
             rtbLog.Name = "rtbLog";
-            rtbLog.Size = new Size(334, 241);
+            rtbLog.Size = new Size(405, 241);
             rtbLog.TabIndex = 30;
             rtbLog.Text = "";
             // 
@@ -132,7 +132,7 @@
             Controls.Add(btnFileUnLock);
             Controls.Add(btnFileLock);
             Name = "FileLockAndUnLock";
-            Size = new Size(785, 311);
+            Size = new Size(828, 311);
             ResumeLayout(false);
             PerformLayout();
         }

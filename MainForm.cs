@@ -1,15 +1,19 @@
 ﻿using Microsoft.Extensions.Options;
+using System.Windows.Forms;
 using WinFormsWebDav.Modes.Options;
 
 namespace WinFormsWebDav
 {
     public partial class MainForm : Form
     {
+        private readonly FileLockAndUnLock _fileLockAndUnLock;
+
         private readonly test _test;
-        public MainForm(IOptions<test> test)
+        public MainForm(FileLockAndUnLock fileLockAndUnLock, IOptions<test> test)
         {
-            InitializeComponent();
             _test = test.Value;
+            _fileLockAndUnLock = fileLockAndUnLock;
+            InitializeComponent();
         }
 
         private void webDavToolStripMenuItem_Click(object sender, EventArgs e)
