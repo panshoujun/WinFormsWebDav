@@ -1,5 +1,8 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System.Configuration;
 using System.Text.Json;
+using WinFormsWebDav.Modes.Options;
 
 namespace WinFormsWebDav
 {
@@ -79,6 +82,18 @@ namespace WinFormsWebDav
 
             //
             services.AddScoped<WebDavInfo>();
+
+
+            //
+            //IConfigurationBuilder builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("GearToolConfig.json", optional: false, reloadOnChange: true);
+            //IConfiguration configuration = builder.Build();
+            //services.AddSingleton<IConfiguration>(configuration);
+            //services.Configure<test>(configuration.GetSection("TaskDataValidation"));
+
+            var builder = new ConfigurationBuilder();//创建config的builder
+            builder.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");//设置配置文件所在的路径加载配置文件信息
+            var config = builder.Build();
+            services.Configure<test>(config.GetSection("Test"));
         }
     }
 }
