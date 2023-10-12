@@ -14,6 +14,11 @@ namespace WinFormsWebDav
         [STAThread]
         static void Main(string[] args)
         {
+
+            //Application.SetHighDpiMode(HighDpiMode.SystemAware);
+            //Application.EnableVisualStyles();
+            //Application.SetCompatibleTextRenderingDefault(false);
+
             WebDavInfo webDavInfo = null;
 
             //多个参数采用空格隔开的方式传递
