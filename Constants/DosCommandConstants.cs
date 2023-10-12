@@ -23,7 +23,7 @@
         public const string UN_MOUNT_WEBDAV = "net use {0}: /del";
 
         /// <summary>
-        /// 解卦所有
+        /// 解挂所有
         /// </summary>
         public const string UN_MOUNT_ALL_WEBDAV = "net use * /del /y";
     }
