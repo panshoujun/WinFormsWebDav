@@ -60,7 +60,7 @@
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Padding = new Padding(10, 2, 0, 2);
-            menuStrip1.Size = new Size(1526, 32);
+            menuStrip1.Size = new Size(1479, 32);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -100,7 +100,7 @@
             tcWebDav.Controls.Add(tabPage3);
             tcWebDav.Controls.Add(tabPage4);
             tcWebDav.Controls.Add(tabPage5);
-            tcWebDav.Location = new Point(21, 142);
+            tcWebDav.Location = new Point(26, 83);
             tcWebDav.Name = "tcWebDav";
             tcWebDav.SelectedIndex = 0;
             tcWebDav.Size = new Size(1390, 690);
@@ -126,6 +126,7 @@
             // 
             // tabPage2
             // 
+            tabPage2.Controls.Add(_fileLockAndUnLock);
             tabPage2.Location = new Point(4, 33);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
@@ -154,6 +155,7 @@
             // 
             // tabPage3
             // 
+            tabPage3.Controls.Add(_appWatcherUc1);
             tabPage3.Location = new Point(4, 33);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new Padding(3);
@@ -164,6 +166,7 @@
             // 
             // tabPage4
             // 
+            tabPage4.Controls.Add(_microSoftMessageQueuingUc1);
             tabPage4.Location = new Point(4, 33);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new Padding(3);
@@ -200,28 +203,30 @@
             // cbIsShowMessageBox
             // 
             cbIsShowMessageBox.AutoSize = true;
-            cbIsShowMessageBox.Location = new Point(46, 68);
+            cbIsShowMessageBox.Location = new Point(26, 49);
             cbIsShowMessageBox.Name = "cbIsShowMessageBox";
             cbIsShowMessageBox.Size = new Size(234, 28);
             cbIsShowMessageBox.TabIndex = 2;
             cbIsShowMessageBox.Text = "提示信息是否弹出对话框";
             cbIsShowMessageBox.UseVisualStyleBackColor = true;
+            cbIsShowMessageBox.CheckedChanged += cbIsShowMessageBox_CheckedChanged;
             // 
             // cbIsWriteLog
             // 
             cbIsWriteLog.AutoSize = true;
-            cbIsWriteLog.Location = new Point(381, 68);
+            cbIsWriteLog.Location = new Point(361, 49);
             cbIsWriteLog.Name = "cbIsWriteLog";
             cbIsWriteLog.Size = new Size(216, 28);
             cbIsWriteLog.TabIndex = 3;
             cbIsWriteLog.Text = "提示信息是否写入日志";
             cbIsWriteLog.UseVisualStyleBackColor = true;
+            cbIsWriteLog.CheckedChanged += cbIsWriteLog_CheckedChanged;
             // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1526, 864);
+            ClientSize = new Size(1479, 795);
             Controls.Add(cbIsWriteLog);
             Controls.Add(cbIsShowMessageBox);
             Controls.Add(tcWebDav);

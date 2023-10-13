@@ -6,6 +6,8 @@ namespace WinFormsWebDav
 {
     public partial class MainForm : Form
     {
+        public static SystemOptions staticSystemOptions = new SystemOptions();
+
         //组件
         private readonly FileLockAndUnLock _fileLockAndUnLock;
         private readonly AppWatcherUc _appWatcherUc1;
@@ -50,6 +52,16 @@ namespace WinFormsWebDav
         private void msMSMQ_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void cbIsShowMessageBox_CheckedChanged(object sender, EventArgs e)
+        {
+            staticSystemOptions.IsShowMessageBox = cbIsShowMessageBox.Checked;
+        }
+
+        private void cbIsWriteLog_CheckedChanged(object sender, EventArgs e)
+        {
+            staticSystemOptions.IsWriteLog = cbIsWriteLog.Checked;
         }
     }
 }

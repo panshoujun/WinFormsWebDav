@@ -42,8 +42,11 @@ namespace WinFormsWebDav
         /// <param name="msg"></param>
         protected override void ShowMessage(string msg)
         {
-            //MessageBox.Show(msg);
-            rtbLog.Text += $"{msg}\n";
+            if (MainForm.staticSystemOptions.IsShowMessageBox)
+                MessageBox.Show(msg);
+
+            if (MainForm.staticSystemOptions.IsWriteLog)
+                rtbLog.Text += $"{msg}\n";
         }
 
         /// <summary>
@@ -101,7 +104,7 @@ namespace WinFormsWebDav
                     ShowMessage(string.Format($"{MessageConstants.QUEUE_NOT_EXIST}", rtbMessage.Text));
                     return;
                 }
-                
+
                 using var mqSend = new MessageQueue(queue);
                 using var msg = new MSMQ.Messaging.Message(rtbMessage.Text, new XmlMessageFormatter(new Type[] { typeof(string) }));
                 if (int.TryParse(tbExpirationTime.Text, out int time) && time > 0)
