@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using MSMQ.Messaging;
 using WinFormsWebDav.Base;
+using WinFormsWebDav.Constants;
 using WinFormsWebDav.Modes.Options;
 
 namespace WinFormsWebDav
@@ -23,6 +24,9 @@ namespace WinFormsWebDav
             InitData();
         }
 
+        /// <summary>
+        /// 初始化数据
+        /// </summary>
         protected override void InitData()
         {
             base.InitData();
@@ -94,7 +98,7 @@ namespace WinFormsWebDav
             {
                 if (!MessageQueue.Exists(queue))
                 {
-                    ShowMessage($"队列:{rtbMessage.Text}不存在,请先创建");
+                    ShowMessage(string.Format($"{MessageConstants.QUEUE_NOT_EXIST}", rtbMessage.Text));
                     return;
                 }
 
@@ -115,7 +119,7 @@ namespace WinFormsWebDav
                 {
                     mqSend.Send(msg);
                 }
-                ShowMessage($"发送成功:{rtbMessage.Text}");
+                ShowMessage(string.Format($"{MessageConstants.SUCCESSFULLY_SENT}", rtbMessage.Text));
             }
             catch (Exception ex)
             {

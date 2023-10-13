@@ -14,5 +14,12 @@
 
         public const string FILE_CLOSED = "文件已关闭";
 
+
+        #region Queue
+        public const string QUEUE_NOT_EXIST = "队列:{0}不存在,请先创建";
+        public const string SUCCESSFULLY_SENT = "发送成功:{0}";
+
+        #endregion
+
     }
 }
