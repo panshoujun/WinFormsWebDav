@@ -99,7 +99,6 @@
             tbPassword.Name = "tbPassword";
             tbPassword.Size = new Size(235, 30);
             tbPassword.TabIndex = 29;
-            tbPassword.Text = "cst_Ju490XH68A5dOXRFY71JiJHzQmZyHzAWwk7aaEmzESbdu5vNDYGE8KnuUrkB";
             // 
             // label2
             // 

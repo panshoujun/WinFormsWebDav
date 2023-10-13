@@ -7,6 +7,9 @@
     <Compile Update="AppWatcherUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Base\BaseUserControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="FileLockAndUnLock.cs">
       <SubType>UserControl</SubType>
     </Compile>

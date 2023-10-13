@@ -1,12 +1,13 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Text;
 using System.Text.Json;
+using WinFormsWebDav.Base;
 using WinFormsWebDav.Constants;
 using WinFormsWebDav.Modes.Options;
 
 namespace WinFormsWebDav
 {
-    public partial class FileLockAndUnLock : UserControl
+    public partial class FileLockAndUnLock : BaseUserControl
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly CloudPlatformOptions _cloudPlatformOptions;
@@ -15,6 +16,8 @@ namespace WinFormsWebDav
             InitializeComponent();
             _httpClientFactory = httpClientFactory;
             _cloudPlatformOptions = cloudPlatformOptions.Value;
+
+            InitData();
         }
 
         /// <summary>
@@ -23,6 +26,16 @@ namespace WinFormsWebDav
         private void InitData()
         {
             tbPassword.Text = _cloudPlatformOptions.Token;
+        }
+
+        /// <summary>
+        /// 显示消息
+        /// </summary>
+        /// <param name="msg"></param>
+        protected override void ShowMessage(string msg)
+        {
+            //base.ShowMessage(msg);
+            rtbLog.Text += msg;
         }
 
         /// <summary>
@@ -41,8 +54,8 @@ namespace WinFormsWebDav
 
             var response = await client.SendAsync(requestMessage);
             var content = await response.Content.ReadAsStringAsync();
-            rtbLog.Text += content;
-            //MessageBox.Show(content);
+
+            ShowMessage(content);
         }
 
         /// <summary>
@@ -60,8 +73,8 @@ namespace WinFormsWebDav
 
             var response = await client.SendAsync(requestMessage);
             var content = await response.Content.ReadAsStringAsync();
-            rtbLog.Text += content;
-            //MessageBox.Show(content);
+
+            ShowMessage(content);
         }
     }
 }
