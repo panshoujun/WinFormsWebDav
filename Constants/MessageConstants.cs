@@ -11,5 +11,8 @@
 
         public const string PROCESS_SHUT_DOWN = "进程已被关闭.";
 
+
+        public const string FILE_CLOSED = "文件已关闭";
+
     }
 }

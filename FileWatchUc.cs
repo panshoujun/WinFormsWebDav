@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.IO;
 using WinFormsWebDav.Utils;
+using WinFormsWebDav.Constants;
 
 namespace WinFormsWebDav
 {
@@ -247,8 +248,7 @@ namespace WinFormsWebDav
             bool isOpen = IsFileOpen(vFileName);
             if (!isOpen)
             {
-                MessageBox.Show("文件已关闭！");
-                Console.WriteLine("文件已关闭");
+                MessageBox.Show($"{MessageConstants.FILE_CLOSED}");
             }
         }
     }
