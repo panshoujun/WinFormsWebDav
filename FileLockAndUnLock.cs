@@ -1,15 +1,19 @@
-﻿using System.Text;
+﻿using Microsoft.Extensions.Options;
+using System.Text;
 using System.Text.Json;
+using WinFormsWebDav.Modes.Options;
 
 namespace WinFormsWebDav
 {
     public partial class FileLockAndUnLock : UserControl
     {
         private readonly IHttpClientFactory _httpClientFactory;
-        public FileLockAndUnLock(IHttpClientFactory httpClientFactory)
+        private readonly test _test;
+        public FileLockAndUnLock(IHttpClientFactory httpClientFactory, IOptions<test> test)
         {
             InitializeComponent();
             _httpClientFactory = httpClientFactory;
+            _test = test.Value;
         }
 
         /// <summary>
