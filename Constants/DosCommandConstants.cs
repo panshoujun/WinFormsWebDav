@@ -1,5 +1,8 @@
 ﻿namespace WinFormsWebDav.Constants
 {
+    /// <summary>
+    /// cmd命令
+    /// </summary>
     public class DosCommandConstants
     {
         /// <summary>

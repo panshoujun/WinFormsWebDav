@@ -146,11 +146,11 @@ namespace WinFormsWebDav
             {
                 var msg = mqReceive.Receive();
                 var bodyReceive = msg.Body as string;
-                ShowMessage($"接收消息:{bodyReceive}");
+                ShowMessage(string.Format($"{MessageConstants.RECEIVED_MESSAGE}", bodyReceive));
             }
             else
             {
-                ShowMessage($"列队:{GetQueueName()}无消息");
+                ShowMessage(string.Format($"{MessageConstants.NO_MESSAGE}", GetQueueName()));
             }
         }
 
@@ -181,18 +181,18 @@ namespace WinFormsWebDav
                 list = list?.Where(p => p.MachineName.Equals(machineName, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
-            ShowMessage($"获取以下队列:");
+            ShowMessage($"{MessageConstants.GET_QUEUE_LIST}");
             if (IsLocalhost())
             {
                 var listPrivate = MessageQueue.GetPrivateQueuesByMachine(machineName)?.ToList();
                 listPrivate?.ForEach(x =>
                 {
-                    ShowMessage($"队列:{x.QueueName},路劲{x.Path}");
+                    ShowMessage(string.Format($"{MessageConstants.QUEUE_INFO}", x.QueueName, x.Path));
                 });
             }
             list?.ForEach(x =>
             {
-                ShowMessage($"队列:{x.QueueName},路劲{x.Path}");
+                ShowMessage(string.Format($"{MessageConstants.QUEUE_INFO}", x.QueueName, x.Path));
             });
         }
 
@@ -207,11 +207,11 @@ namespace WinFormsWebDav
             if (!MessageQueue.Exists(queue))
             {
                 using var msmq = MessageQueue.Create(queue, true);
-                ShowMessage($"队列:{GetQueueName()}创建成功");
+                ShowMessage(string.Format($"{MessageConstants.QUEUE_CREATED_SUCCESSFULLY}", GetQueueName()));
             }
             else
             {
-                ShowMessage($"队列:{GetQueueName()}已存在");
+                ShowMessage(string.Format($"{MessageConstants.QUEUE_ALREADY_EXISTS}", GetQueueName()));
             }
         }
 
@@ -226,11 +226,11 @@ namespace WinFormsWebDav
             if (MessageQueue.Exists(queue))
             {
                 MessageQueue.Delete(queue);
-                ShowMessage($"队列:{GetQueueName()}删除成功");
+                ShowMessage(string.Format($"{MessageConstants.QUEUE_DELETED_SUCCESSFULLY}", GetQueueName()));
             }
             else
             {
-                ShowMessage($"队列:{GetQueueName()}不存在");
+                ShowMessage(string.Format($"{MessageConstants.QUEUE_NOT_EXIST}", GetQueueName()));
             }
         }
 
@@ -243,7 +243,7 @@ namespace WinFormsWebDav
         {
             string serviceAddress = GetQueueServiceAddress();
 
-            ShowMessage($"删除以下队列:");
+            ShowMessage($"{MessageConstants.DELETE_FOLLOWING_QUEUE}");
 
             //删除共有队列
             var list = MessageQueue.GetPublicQueues()?.ToList();
@@ -254,7 +254,8 @@ namespace WinFormsWebDav
             list?.ForEach(x =>
             {
                 MessageQueue.Delete($"{serviceAddress}\\{x.QueueName}");
-                ShowMessage($"已删除队列:{x.QueueName}");
+                //ShowMessage($"已删除队列:{x.QueueName}");
+                ShowMessage(string.Format($"{MessageConstants.QUEUE_DELETED_SUCCESSFULLY}", x.QueueName));
             });
 
             //如果是本地 私有也删除
@@ -264,7 +265,8 @@ namespace WinFormsWebDav
                 listPrivate?.ForEach(x =>
                 {
                     MessageQueue.Delete($"{serviceAddress}\\{x.QueueName}");
-                    ShowMessage($"已删除队列:{x.QueueName}");
+                    //ShowMessage($"已删除队列:{x.QueueName}");
+                    ShowMessage(string.Format($"{MessageConstants.QUEUE_DELETED_SUCCESSFULLY}", x.QueueName));
                 });
             }
         }
