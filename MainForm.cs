@@ -9,7 +9,7 @@ namespace WinFormsWebDav
         public static SystemOptions staticSystemOptions = new SystemOptions();
 
         //组件
-        private readonly FileLockAndUnLock _fileLockAndUnLock;
+        private readonly FileLockAndUnLockUc _fileLockAndUnLock;
         private readonly AppWatcherUc _appWatcherUc1;
         private readonly MicroSoftMessageQueuingUc _microSoftMessageQueuingUc1;
         private readonly WebDavUc _webdav;
@@ -17,7 +17,7 @@ namespace WinFormsWebDav
         //参数
         private readonly test _test;
         private readonly SystemOptions _systemOptions;
-        public MainForm(FileLockAndUnLock fileLockAndUnLock, AppWatcherUc appWatcherUc1, MicroSoftMessageQueuingUc microSoftMessageQueuingUc1, WebDavUc webdav,
+        public MainForm(FileLockAndUnLockUc fileLockAndUnLock, AppWatcherUc appWatcherUc1, MicroSoftMessageQueuingUc microSoftMessageQueuingUc1, WebDavUc webdav,
             IOptions<test> test, IOptions<SystemOptions> systemOptions)
         {
             _test = test.Value;

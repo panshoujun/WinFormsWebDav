@@ -1,6 +1,6 @@
 ﻿namespace WinFormsWebDav
 {
-    partial class FileLockAndUnLock
+    partial class FileLockAndUnLockUc
     {
         /// <summary> 
         /// 必需的设计器变量。

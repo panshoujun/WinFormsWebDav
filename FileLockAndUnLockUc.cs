@@ -7,11 +7,11 @@ using WinFormsWebDav.Modes.Options;
 
 namespace WinFormsWebDav
 {
-    public partial class FileLockAndUnLock : BaseUserControl
+    public partial class FileLockAndUnLockUc : BaseUserControl
     {
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly CloudPlatformOptions _cloudPlatformOptions;
-        public FileLockAndUnLock(IHttpClientFactory httpClientFactory, IOptions<CloudPlatformOptions> cloudPlatformOptions)
+        public FileLockAndUnLockUc(IHttpClientFactory httpClientFactory, IOptions<CloudPlatformOptions> cloudPlatformOptions)
         {
             InitializeComponent();
             _httpClientFactory = httpClientFactory;

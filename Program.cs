@@ -82,7 +82,7 @@ namespace WinFormsWebDav
             services.AddScoped(typeof(MainForm));
 
             //ÓÃ»§¿Ø¼þ
-            services.AddScoped(typeof(FileLockAndUnLock));
+            services.AddScoped(typeof(FileLockAndUnLockUc));
             services.AddScoped(typeof(FileLockOrUnLock));
             services.AddScoped(typeof(AppWatcherUc));
             services.AddScoped(typeof(MicroSoftMessageQueuingUc));
