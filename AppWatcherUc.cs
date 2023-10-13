@@ -1,16 +1,32 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.Extensions.Options;
+using System.Diagnostics;
 using WinFormsWebDav.Base;
 using WinFormsWebDav.Constants;
+using WinFormsWebDav.Modes.Options;
 
 namespace WinFormsWebDav
 {
     public partial class AppWatcherUc : BaseUserControl
     {
+        private readonly DefaultInfoOptions _defaultInfoOptions;
         private delegate void SetTextEvent(string text);
-        public AppWatcherUc()
+        public AppWatcherUc(IOptions<DefaultInfoOptions> defaultInfoOptions)
         {
             InitializeComponent();
+
+            _defaultInfoOptions = defaultInfoOptions.Value;
             ProcessMonitor.ProcessClosed += (s, e) => { ShowMessage($"{MessageConstants.PROCESS_SHUT_DOWN}\n"); };
+
+            InitData();
+        }
+
+        /// <summary>
+        /// 初始化数据
+        /// </summary>
+        protected override void InitData()
+        {
+            base.InitData();
+            tbWatcher.Text = _defaultInfoOptions.WatcherProcess;
         }
 
         /// <summary>

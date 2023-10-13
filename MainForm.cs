@@ -7,12 +7,14 @@ namespace WinFormsWebDav
     public partial class MainForm : Form
     {
         private readonly FileLockAndUnLock _fileLockAndUnLock;
+        private readonly AppWatcherUc _appWatcherUc1;
 
         private readonly test _test;
-        public MainForm(FileLockAndUnLock fileLockAndUnLock, IOptions<test> test)
+        public MainForm(FileLockAndUnLock fileLockAndUnLock, AppWatcherUc appWatcherUc1, IOptions<test> test)
         {
             _test = test.Value;
             _fileLockAndUnLock = fileLockAndUnLock;
+            _appWatcherUc1 = appWatcherUc1;
             InitializeComponent();
         }
 

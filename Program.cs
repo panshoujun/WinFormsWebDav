@@ -84,6 +84,7 @@ namespace WinFormsWebDav
             //ÓÃ»§¿Ø¼þ
             services.AddScoped(typeof(FileLockAndUnLock));
             services.AddScoped(typeof(FileLockOrUnLock));
+            services.AddScoped(typeof(AppWatcherUc));
 
             //
             services.AddScoped<WebDavInfo>();
@@ -95,6 +96,7 @@ namespace WinFormsWebDav
             var config = builder.Build();
             services.Configure<test>(config.GetSection("Test"));
             services.Configure<CloudPlatformOptions>(config.GetSection("CloudPlatform"));
+            services.Configure<DefaultInfoOptions>(config.GetSection("DefaultInfo"));
         }
     }
 }

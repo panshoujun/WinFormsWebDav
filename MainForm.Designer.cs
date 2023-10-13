@@ -41,7 +41,7 @@
             tabPage1 = new TabPage();
             fileSetInfo1 = new FileSetInfo();
             tabPage3 = new TabPage();
-            appWatcherUc1 = new AppWatcherUc();
+            //appWatcherUc1 = new AppWatcherUc();
             tabPage4 = new TabPage();
             microSoftMessageQueuingUc1 = new MicroSoftMessageQueuingUc();
             tabPage5 = new TabPage();
@@ -165,7 +165,7 @@
             // 
             // tabPage3
             // 
-            tabPage3.Controls.Add(appWatcherUc1);
+            tabPage3.Controls.Add(_appWatcherUc1);
             tabPage3.Location = new Point(4, 33);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new Padding(3);
@@ -176,10 +176,10 @@
             // 
             // appWatcherUc1
             // 
-            appWatcherUc1.Location = new Point(0, 0);
-            appWatcherUc1.Name = "appWatcherUc1";
-            appWatcherUc1.Size = new Size(882, 594);
-            appWatcherUc1.TabIndex = 0;
+            _appWatcherUc1.Location = new Point(0, 0);
+            _appWatcherUc1.Name = "appWatcherUc1";
+            _appWatcherUc1.Size = new Size(882, 594);
+            _appWatcherUc1.TabIndex = 0;
             // 
             // tabPage4
             // 
@@ -256,7 +256,7 @@
         private TabPage tabPage3;
         private FileSetInfo fileSetInfo1;
         private TabPage tabPage4;
-        private AppWatcherUc appWatcherUc1;
+        //private AppWatcherUc appWatcherUc1;
         private MicroSoftMessageQueuingUc microSoftMessageQueuingUc1;
         private TabPage tabPage5;
         private FileWatchUc fileWatchUc1;

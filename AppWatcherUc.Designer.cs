@@ -51,7 +51,6 @@
             tbWatcher.Name = "tbWatcher";
             tbWatcher.Size = new Size(235, 30);
             tbWatcher.TabIndex = 29;
-            tbWatcher.Text = "notepad";
             // 
             // label8
             // 

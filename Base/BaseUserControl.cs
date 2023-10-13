@@ -10,5 +10,10 @@
         {
             MessageBox.Show(msg);
         }
+
+        /// <summary>
+        /// 初始化数据
+        /// </summary>
+        protected virtual void InitData() { }
     }
 }
