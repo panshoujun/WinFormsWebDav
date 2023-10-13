@@ -23,7 +23,7 @@ namespace WinFormsWebDav
         /// <summary>
         /// 初始化数据
         /// </summary>
-        private void InitData()
+        protected override void InitData()
         {
             tbPassword.Text = _cloudPlatformOptions.Token;
         }
