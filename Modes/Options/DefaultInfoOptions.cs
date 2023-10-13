@@ -29,6 +29,11 @@
         /// <summary>
         /// 过期时间 单位秒
         /// </summary>
-        public string ExpireTime { get; set; }
+        public string ExpirationTime { get; set; }
+
+        /// <summary>
+        /// 消息体
+        /// </summary>
+        public string MsgBody { get; set; }
     }
 }

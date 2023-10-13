@@ -51,7 +51,6 @@
             tbExpirationTime.Name = "tbExpirationTime";
             tbExpirationTime.Size = new Size(400, 30);
             tbExpirationTime.TabIndex = 45;
-            tbExpirationTime.Text = "0";
             // 
             // label11
             // 
@@ -96,7 +95,6 @@
             tbQueueName.Name = "tbQueueName";
             tbQueueName.Size = new Size(400, 30);
             tbQueueName.TabIndex = 40;
-            tbQueueName.Text = "pantestqueue";
             // 
             // label10
             // 
@@ -113,7 +111,6 @@
             tbServiceAddress.Name = "tbServiceAddress";
             tbServiceAddress.Size = new Size(400, 30);
             tbServiceAddress.TabIndex = 38;
-            tbServiceAddress.Text = "qatest007";
             // 
             // label9
             // 

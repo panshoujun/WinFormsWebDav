@@ -8,13 +8,15 @@ namespace WinFormsWebDav
     {
         private readonly FileLockAndUnLock _fileLockAndUnLock;
         private readonly AppWatcherUc _appWatcherUc1;
+        private readonly MicroSoftMessageQueuingUc _microSoftMessageQueuingUc1;
 
         private readonly test _test;
-        public MainForm(FileLockAndUnLock fileLockAndUnLock, AppWatcherUc appWatcherUc1, IOptions<test> test)
+        public MainForm(FileLockAndUnLock fileLockAndUnLock, AppWatcherUc appWatcherUc1, MicroSoftMessageQueuingUc microSoftMessageQueuingUc1, IOptions<test> test)
         {
             _test = test.Value;
             _fileLockAndUnLock = fileLockAndUnLock;
             _appWatcherUc1 = appWatcherUc1;
+            _microSoftMessageQueuingUc1 = microSoftMessageQueuingUc1;
             InitializeComponent();
         }
 

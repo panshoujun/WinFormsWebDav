@@ -85,6 +85,7 @@ namespace WinFormsWebDav
             services.AddScoped(typeof(FileLockAndUnLock));
             services.AddScoped(typeof(FileLockOrUnLock));
             services.AddScoped(typeof(AppWatcherUc));
+            services.AddScoped(typeof(MicroSoftMessageQueuingUc));
 
             //
             services.AddScoped<WebDavInfo>();

@@ -43,7 +43,7 @@
             tabPage3 = new TabPage();
             //appWatcherUc1 = new AppWatcherUc();
             tabPage4 = new TabPage();
-            microSoftMessageQueuingUc1 = new MicroSoftMessageQueuingUc();
+            //microSoftMessageQueuingUc1 = new MicroSoftMessageQueuingUc();
             tabPage5 = new TabPage();
             fileWatchUc1 = new FileWatchUc();
             menuStrip1.SuspendLayout();
@@ -183,7 +183,7 @@
             // 
             // tabPage4
             // 
-            tabPage4.Controls.Add(microSoftMessageQueuingUc1);
+            tabPage4.Controls.Add(_microSoftMessageQueuingUc1);
             tabPage4.Location = new Point(4, 33);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new Padding(3);
@@ -194,10 +194,10 @@
             // 
             // microSoftMessageQueuingUc1
             // 
-            microSoftMessageQueuingUc1.Location = new Point(0, 0);
-            microSoftMessageQueuingUc1.Name = "microSoftMessageQueuingUc1";
-            microSoftMessageQueuingUc1.Size = new Size(1326, 550);
-            microSoftMessageQueuingUc1.TabIndex = 0;
+            _microSoftMessageQueuingUc1.Location = new Point(0, 0);
+            _microSoftMessageQueuingUc1.Name = "microSoftMessageQueuingUc1";
+            _microSoftMessageQueuingUc1.Size = new Size(1326, 550);
+            _microSoftMessageQueuingUc1.TabIndex = 0;
             // 
             // tabPage5
             // 
@@ -257,7 +257,7 @@
         private FileSetInfo fileSetInfo1;
         private TabPage tabPage4;
         //private AppWatcherUc appWatcherUc1;
-        private MicroSoftMessageQueuingUc microSoftMessageQueuingUc1;
+        //private MicroSoftMessageQueuingUc microSoftMessageQueuingUc1;
         private TabPage tabPage5;
         private FileWatchUc fileWatchUc1;
     }

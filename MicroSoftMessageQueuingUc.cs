@@ -1,14 +1,45 @@
-﻿using MSMQ.Messaging;
+﻿using Microsoft.Extensions.Options;
+using MSMQ.Messaging;
+using WinFormsWebDav.Base;
+using WinFormsWebDav.Modes.Options;
 
 namespace WinFormsWebDav
 {
-    public partial class MicroSoftMessageQueuingUc : UserControl
+    /// <summary>
+    /// msmq
+    /// </summary>
+    public partial class MicroSoftMessageQueuingUc : BaseUserControl
     {
         //FormatName:DIRECT=OS:panshoujun\private$\fff
         //string publicMQPath = "FormatName:Direct=TCP:192.168.0.110\\private$\\DESKTOP-2AEJ0GU";
-        public MicroSoftMessageQueuingUc()
+
+        private readonly DefaultQueueOptions _defaultQueueOptions;
+
+        public MicroSoftMessageQueuingUc(IOptions<DefaultQueueOptions> defaultQueueOptions)
         {
             InitializeComponent();
+            _defaultQueueOptions = defaultQueueOptions.Value;
+
+            InitData();
+        }
+
+        protected override void InitData()
+        {
+            base.InitData();
+            tbServiceAddress.Text = _defaultQueueOptions.ServiceAddress;
+            tbQueueName.Text = _defaultQueueOptions.QueueName;
+            tbExpirationTime.Text = _defaultQueueOptions.ExpirationTime;
+            rtbMessage.Text = _defaultQueueOptions.MsgBody;
+        }
+
+        /// <summary>
+        /// 显示消息
+        /// </summary>
+        /// <param name="msg"></param>
+        protected override void ShowMessage(string msg)
+        {
+            //MessageBox.Show(msg);
+            rtbLog.Text += $"{msg}\n";
         }
 
         /// <summary>
@@ -49,16 +80,6 @@ namespace WinFormsWebDav
         private bool IsLocalhost()
         {
             return GetQueueServiceAddress().Equals(".") || GetQueueServiceAddress().Equals(System.Net.Dns.GetHostName(), StringComparison.OrdinalIgnoreCase);
-        }
-
-        /// <summary>
-        /// 显示消息
-        /// </summary>
-        /// <param name="msg"></param>
-        private void ShowMessage(string msg)
-        {
-            //MessageBox.Show(msg);
-            rtbLog.Text += $"{msg}\n";
         }
 
         /// <summary>
