@@ -1,11 +1,10 @@
 ﻿using WinFormsWebDav.Base;
-using WinFormsWebDav.Modes.Options;
 
 namespace WinFormsWebDav
 {
-    public partial class FileSetInfo : BaseUserControl
+    public partial class FileSetInfoUc : BaseUserControl
     {
-        public FileSetInfo()
+        public FileSetInfoUc()
         {
             InitializeComponent();
         }
@@ -15,7 +14,7 @@ namespace WinFormsWebDav
         /// </summary>
         protected override void InitData()
         {
-            
+
         }
 
         /// <summary>
@@ -24,8 +23,11 @@ namespace WinFormsWebDav
         /// <param name="msg"></param>
         protected override void ShowMessage(string msg)
         {
-            //base.ShowMessage(msg);
-            rtbLog.Text += msg;
+            if (MainForm.staticSystemOptions.IsShowMessageBox)
+                MessageBox.Show(msg);
+
+            if (MainForm.staticSystemOptions.IsWriteLog)
+                rtbLog.Text += $"{msg}\n";
         }
 
         /// <summary>
@@ -43,7 +45,7 @@ namespace WinFormsWebDav
             catch (Exception ex)
             {
 
-                throw;
+                ShowMessage(ex.Message);
             }
 
         }
@@ -55,8 +57,15 @@ namespace WinFormsWebDav
         /// <param name="e"></param>
         private void btnCancelReadOnly_Click(object sender, EventArgs e)
         {
-            var filePath = btReadOnlyFile.Text;
-            File.SetAttributes(filePath, FileAttributes.Normal);
+            try
+            {
+                var filePath = btReadOnlyFile.Text;
+                File.SetAttributes(filePath, FileAttributes.Normal);
+            }
+            catch (Exception ex)
+            {
+                ShowMessage(ex.Message);
+            }
         }
     }
 }

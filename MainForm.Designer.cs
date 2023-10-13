@@ -1,4 +1,6 @@
-﻿namespace WinFormsWebDav
+﻿using System.Windows.Forms;
+
+namespace WinFormsWebDav
 {
     partial class MainForm
     {
@@ -37,7 +39,7 @@
             Webdav = new TabPage();
             tabPage2 = new TabPage();
             tabPage1 = new TabPage();
-            fileSetInfo1 = new FileSetInfo();
+            fileSetInfo1 = new FileSetInfoUc();
             tabPage3 = new TabPage();
             tabPage4 = new TabPage();
             tabPage5 = new TabPage();
@@ -47,7 +49,6 @@
             cbIsWriteLog = new CheckBox();
             menuStrip1.SuspendLayout();
             tcWebDav.SuspendLayout();
-            Webdav.SuspendLayout();
             tabPage1.SuspendLayout();
             tabPage5.SuspendLayout();
             SuspendLayout();
@@ -115,6 +116,7 @@
             Webdav.TabIndex = 0;
             Webdav.Text = "WebDav";
             Webdav.UseVisualStyleBackColor = true;
+
             // 
             // webDav1
             // 
@@ -147,9 +149,9 @@
             // 
             // fileSetInfo1
             // 
-            fileSetInfo1.Location = new Point(19, 61);
+            fileSetInfo1.Location = new Point(54, 50);
             fileSetInfo1.Name = "fileSetInfo1";
-            fileSetInfo1.Size = new Size(664, 290);
+            fileSetInfo1.Size = new Size(1063, 345);
             fileSetInfo1.TabIndex = 0;
             // 
             // tabPage3
@@ -236,7 +238,6 @@
             menuStrip1.ResumeLayout(false);
             menuStrip1.PerformLayout();
             tcWebDav.ResumeLayout(false);
-            Webdav.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
             tabPage5.ResumeLayout(false);
             ResumeLayout(false);
@@ -257,7 +258,7 @@
         private FileLockOrUnLock fileLockOrUnLock1;
         private TabPage tabPage1;
         private TabPage tabPage3;
-        private FileSetInfo fileSetInfo1;
+        private FileSetInfoUc fileSetInfo1;
         private TabPage tabPage4;
         //private AppWatcherUc appWatcherUc1;
         //private MicroSoftMessageQueuingUc microSoftMessageQueuingUc1;

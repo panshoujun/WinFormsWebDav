@@ -34,8 +34,11 @@ namespace WinFormsWebDav
         /// <param name="msg"></param>
         protected override void ShowMessage(string msg)
         {
-            //base.ShowMessage(msg);
-            rtbLog.Text += msg;
+            if (MainForm.staticSystemOptions.IsShowMessageBox)
+                MessageBox.Show(msg);
+
+            if (MainForm.staticSystemOptions.IsWriteLog)
+                rtbLog.Text += $"{msg}\n";
         }
 
         /// <summary>

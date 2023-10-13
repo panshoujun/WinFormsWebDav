@@ -16,7 +16,7 @@
     <Compile Update="FileLockOrUnLock.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="FileSetInfo.cs">
+    <Compile Update="FileSetInfoUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="FileWatchUc.cs">

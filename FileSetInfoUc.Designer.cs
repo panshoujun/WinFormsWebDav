@@ -1,6 +1,6 @@
 ﻿namespace WinFormsWebDav
 {
-    partial class FileSetInfo
+    partial class FileSetInfoUc
     {
         /// <summary> 
         /// 必需的设计器变量。
@@ -33,11 +33,17 @@
             btnSetReadOnly = new Button();
             label1 = new Label();
             rtbLog = new RichTextBox();
+            splitContainer1 = new SplitContainer();
+            btClear = new Button();
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
+            splitContainer1.Panel1.SuspendLayout();
+            splitContainer1.Panel2.SuspendLayout();
+            splitContainer1.SuspendLayout();
             SuspendLayout();
             // 
             // btnCancelReadOnly
             // 
-            btnCancelReadOnly.Location = new Point(295, 216);
+            btnCancelReadOnly.Location = new Point(272, 251);
             btnCancelReadOnly.Name = "btnCancelReadOnly";
             btnCancelReadOnly.Size = new Size(104, 32);
             btnCancelReadOnly.TabIndex = 27;
@@ -47,15 +53,16 @@
             // 
             // btReadOnlyFile
             // 
-            btReadOnlyFile.Location = new Point(155, 63);
+            btReadOnlyFile.Location = new Point(132, 37);
+            btReadOnlyFile.Multiline = true;
             btReadOnlyFile.Name = "btReadOnlyFile";
-            btReadOnlyFile.Size = new Size(235, 30);
+            btReadOnlyFile.Size = new Size(244, 30);
             btReadOnlyFile.TabIndex = 26;
             btReadOnlyFile.Text = "Z:\\teslock\\11.dwg";
             // 
             // btnSetReadOnly
             // 
-            btnSetReadOnly.Location = new Point(155, 216);
+            btnSetReadOnly.Location = new Point(132, 251);
             btnSetReadOnly.Name = "btnSetReadOnly";
             btnSetReadOnly.Size = new Size(104, 32);
             btnSetReadOnly.TabIndex = 25;
@@ -66,7 +73,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(40, 69);
+            label1.Location = new Point(26, 43);
             label1.Name = "label1";
             label1.Size = new Size(82, 24);
             label1.TabIndex = 28;
@@ -74,25 +81,54 @@
             // 
             // rtbLog
             // 
-            rtbLog.Location = new Point(417, 63);
+            rtbLog.Location = new Point(24, 40);
             rtbLog.Name = "rtbLog";
-            rtbLog.Size = new Size(425, 185);
+            rtbLog.Size = new Size(723, 185);
             rtbLog.TabIndex = 47;
             rtbLog.Text = "";
             // 
-            // FileSetInfo
+            // splitContainer1
+            // 
+            splitContainer1.Location = new Point(18, 17);
+            splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            splitContainer1.Panel1.Controls.Add(btnCancelReadOnly);
+            splitContainer1.Panel1.Controls.Add(btnSetReadOnly);
+            splitContainer1.Panel1.Controls.Add(label1);
+            splitContainer1.Panel1.Controls.Add(btReadOnlyFile);
+            // 
+            // splitContainer1.Panel2
+            // 
+            splitContainer1.Panel2.Controls.Add(btClear);
+            splitContainer1.Panel2.Controls.Add(rtbLog);
+            splitContainer1.Size = new Size(1200, 400);
+            splitContainer1.SplitterDistance = 400;
+            splitContainer1.TabIndex = 48;
+            // 
+            // btClear
+            // 
+            btClear.Location = new Point(643, 251);
+            btClear.Name = "btClear";
+            btClear.Size = new Size(104, 32);
+            btClear.TabIndex = 48;
+            btClear.Text = "清理";
+            btClear.UseVisualStyleBackColor = true;
+            // 
+            // FileSetInfoUc
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
-            Controls.Add(rtbLog);
-            Controls.Add(label1);
-            Controls.Add(btnCancelReadOnly);
-            Controls.Add(btReadOnlyFile);
-            Controls.Add(btnSetReadOnly);
-            Name = "FileSetInfo";
-            Size = new Size(881, 342);
+            Controls.Add(splitContainer1);
+            Name = "FileSetInfoUc";
+            Size = new Size(1234, 436);
+            splitContainer1.Panel1.ResumeLayout(false);
+            splitContainer1.Panel1.PerformLayout();
+            splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)splitContainer1).EndInit();
+            splitContainer1.ResumeLayout(false);
             ResumeLayout(false);
-            PerformLayout();
         }
 
         #endregion
@@ -102,5 +138,7 @@
         private Button btnSetReadOnly;
         private Label label1;
         private RichTextBox rtbLog;
+        private SplitContainer splitContainer1;
+        private Button btClear;
     }
 }
