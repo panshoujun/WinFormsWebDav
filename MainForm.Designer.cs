@@ -151,7 +151,7 @@ namespace WinFormsWebDav
             // 
             fileSetInfo1.Location = new Point(54, 50);
             fileSetInfo1.Name = "fileSetInfo1";
-            fileSetInfo1.Size = new Size(1063, 345);
+            fileSetInfo1.Size = new Size(1200, 400);
             fileSetInfo1.TabIndex = 0;
             // 
             // tabPage3
