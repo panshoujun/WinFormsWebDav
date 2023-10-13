@@ -28,5 +28,10 @@
         public const string DELETE_FOLLOWING_QUEUE = "删除以下队列";
         #endregion
 
+        #region webdav
+        public const string MOUNT_LIST = "挂载列表:";
+        public const string SUCCESSFULLY_MOUNTED = "成功挂载盘符:";
+        #endregion
+
     }
 }

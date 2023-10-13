@@ -86,6 +86,7 @@ namespace WinFormsWebDav
             services.AddScoped(typeof(FileLockOrUnLock));
             services.AddScoped(typeof(AppWatcherUc));
             services.AddScoped(typeof(MicroSoftMessageQueuingUc));
+            services.AddScoped(typeof(WebDav));
 
             //
             services.AddScoped<WebDavInfo>();
@@ -98,8 +99,11 @@ namespace WinFormsWebDav
             services.Configure<test>(config.GetSection("Test"));
             services.Configure<CloudPlatformOptions>(config.GetSection("CloudPlatform"));
             services.Configure<DefaultInfoOptions>(config.GetSection("DefaultInfo"));
-            services.Configure<DefaultQueueOptions>(config.GetSection("DefaultInfo:DefaultQueue"));
             services.Configure<SystemOptions>(config.GetSection("System"));
+
+            services.Configure<DefaultQueueOptions>(config.GetSection("DefaultInfo:DefaultQueue"));
+            services.Configure<DefaultWebdavOptions>(config.GetSection("DefaultInfo:DefaultWebdav"));
+
 
         }
     }

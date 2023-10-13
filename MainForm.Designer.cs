@@ -35,7 +35,6 @@
             msMSMQ = new ToolStripMenuItem();
             tcWebDav = new TabControl();
             Webdav = new TabPage();
-            webDav1 = new WebDav();
             tabPage2 = new TabPage();
             tabPage1 = new TabPage();
             fileSetInfo1 = new FileSetInfo();
@@ -108,7 +107,7 @@
             // 
             // Webdav
             // 
-            Webdav.Controls.Add(webDav1);
+            Webdav.Controls.Add(_webdav);
             Webdav.Location = new Point(4, 33);
             Webdav.Name = "Webdav";
             Webdav.Padding = new Padding(3);
@@ -119,10 +118,10 @@
             // 
             // webDav1
             // 
-            webDav1.Location = new Point(42, 15);
-            webDav1.Name = "webDav1";
-            webDav1.Size = new Size(1291, 599);
-            webDav1.TabIndex = 0;
+            _webdav.Location = new Point(42, 15);
+            _webdav.Name = "webDav";
+            _webdav.Size = new Size(1291, 599);
+            _webdav.TabIndex = 0;
             // 
             // tabPage2
             // 
@@ -254,7 +253,7 @@
         private TabControl tcWebDav;
         private TabPage Webdav;
         private TabPage tabPage2;
-        private WebDav webDav1;
+        //private WebDav webDav1;
         private FileLockOrUnLock fileLockOrUnLock1;
         private TabPage tabPage1;
         private TabPage tabPage3;

@@ -1,32 +1,51 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using Microsoft.Extensions.Options;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using WinFormsWebDav.Base;
 using WinFormsWebDav.Constants;
+using WinFormsWebDav.Modes.Options;
 
 namespace WinFormsWebDav
 {
-    public partial class WebDav : UserControl
+    public partial class WebDav : BaseUserControl
     {
-        public WebDav()
+        private readonly DefaultWebdavOptions _defaultWebdavOptions;
+
+        public WebDav(IOptions<DefaultWebdavOptions> defaultWebdavOptions)
         {
+            _defaultWebdavOptions = defaultWebdavOptions.Value;
             InitializeComponent();
-            InitComponentData();
+            InitData();
         }
-        private void InitComponentData()
+
+        /// <summary>
+        /// 初始化数据
+        /// </summary>
+        protected override void InitData()
         {
             //cbDriveLetter.Items.Add("");
             for (int i = 'A'; i <= 'Z'; i++)
             {
                 cbDriveLetter.Items.Add((char)i);
             }
+
+            tbPassword.Text = _defaultWebdavOptions.Password;
+            tbUserName.Text = _defaultWebdavOptions.UserName;
+            rtbPath.Text = _defaultWebdavOptions.BaseUrl;
+        }
+
+        /// <summary>
+        /// 显示消息
+        /// </summary>
+        /// <param name="msg"></param>
+        protected override void ShowMessage(string msg)
+        {
+            if (MainForm.staticSystemOptions.IsShowMessageBox)
+                MessageBox.Show(msg);
+
+            if (MainForm.staticSystemOptions.IsWriteLog)
+                rtbLog.Text += $"{msg}\n";
         }
 
 
@@ -131,12 +150,12 @@ namespace WinFormsWebDav
             result = DoProcess(doscommand);
             if (result.Item1)
             {
-                rtbLog.Text += result.Item2;
-                rtbLog.Text += $"挂载盘符为:\n{driveLetter ?? GetDiskDriveList(result.Item2, RegexPatternConstants.GET_MOUNT_DISK_DRIVE, "DiskDrive").FirstOrDefault()}\n";
+                ShowMessage(result.Item2);
+                ShowMessage($"{MessageConstants.SUCCESSFULLY_MOUNTED}\n{driveLetter ?? GetDiskDriveList(result.Item2, RegexPatternConstants.GET_MOUNT_DISK_DRIVE, "DiskDrive").FirstOrDefault()}\n");
             }
             else
             {
-                rtbLog.Text += result.Item2;
+                ShowMessage(result.Item2);
             }
 
             return result.Item1;
@@ -173,12 +192,12 @@ namespace WinFormsWebDav
 
             if (!result.Item1)
             {
-                rtbLog.Text += result.Item2;
+                ShowMessage(result.Item2);
                 return;
             }
 
             var list = GetDiskDriveList(result.Item2, RegexPatternConstants.GET_USED_DRIVE_LETTER, "DiskDrive");
-            rtbLog.Text += $"挂载列表:\n{string.Join('\n', list)}\n";
+            ShowMessage(string.Format($"{MessageConstants.MOUNT_LIST}:\n{string.Join('\n', list)}\n"));
         }
 
         /// <summary>
@@ -206,7 +225,7 @@ namespace WinFormsWebDav
 
             var result = DoProcess(doscommand);
 
-            rtbLog.Text += result.Item2;
+            ShowMessage(result.Item2);
         }
 
         /// <summary>

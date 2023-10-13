@@ -124,7 +124,7 @@
             rtbPath.Name = "rtbPath";
             rtbPath.Size = new Size(238, 132);
             rtbPath.TabIndex = 22;
-            rtbPath.Text = "http://qatest007.cscloud.cscad.net:6003/api/document/webdav";
+            rtbPath.Text = "";
             // 
             // label3
             // 
@@ -141,7 +141,6 @@
             tbPassword.Name = "tbPassword";
             tbPassword.Size = new Size(235, 30);
             tbPassword.TabIndex = 20;
-            tbPassword.Text = "cst_Ju490XH68A5dOXRFY71JiJHzQmZyHzAWwk7aaEmzESbdu5vNDYGE8KnuUrkB";
             // 
             // label2
             // 
@@ -158,7 +157,6 @@
             tbUserName.Name = "tbUserName";
             tbUserName.Size = new Size(235, 30);
             tbUserName.TabIndex = 18;
-            tbUserName.Text = "admin";
             // 
             // label1
             // 

@@ -12,11 +12,12 @@ namespace WinFormsWebDav
         private readonly FileLockAndUnLock _fileLockAndUnLock;
         private readonly AppWatcherUc _appWatcherUc1;
         private readonly MicroSoftMessageQueuingUc _microSoftMessageQueuingUc1;
+        private readonly WebDav _webdav;
 
         //参数
         private readonly test _test;
         private readonly SystemOptions _systemOptions;
-        public MainForm(FileLockAndUnLock fileLockAndUnLock, AppWatcherUc appWatcherUc1, MicroSoftMessageQueuingUc microSoftMessageQueuingUc1,
+        public MainForm(FileLockAndUnLock fileLockAndUnLock, AppWatcherUc appWatcherUc1, MicroSoftMessageQueuingUc microSoftMessageQueuingUc1, WebDav webdav,
             IOptions<test> test, IOptions<SystemOptions> systemOptions)
         {
             _test = test.Value;
@@ -24,6 +25,7 @@ namespace WinFormsWebDav
             _fileLockAndUnLock = fileLockAndUnLock;
             _appWatcherUc1 = appWatcherUc1;
             _microSoftMessageQueuingUc1 = microSoftMessageQueuingUc1;
+            _webdav = webdav;
             InitializeComponent();
             InitData();
         }
@@ -32,6 +34,8 @@ namespace WinFormsWebDav
         {
             cbIsShowMessageBox.Checked = _systemOptions.IsShowMessageBox;
             cbIsWriteLog.Checked = _systemOptions.IsWriteLog;
+
+
         }
 
         private void webDavToolStripMenuItem_Click(object sender, EventArgs e)
