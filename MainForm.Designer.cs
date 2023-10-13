@@ -37,22 +37,19 @@
             Webdav = new TabPage();
             webDav1 = new WebDav();
             tabPage2 = new TabPage();
-            fileLockOrUnLock1 = new FileLockOrUnLock();
             tabPage1 = new TabPage();
             fileSetInfo1 = new FileSetInfo();
             tabPage3 = new TabPage();
-            //appWatcherUc1 = new AppWatcherUc();
             tabPage4 = new TabPage();
-            //microSoftMessageQueuingUc1 = new MicroSoftMessageQueuingUc();
             tabPage5 = new TabPage();
             fileWatchUc1 = new FileWatchUc();
+            fileLockOrUnLock1 = new FileLockOrUnLock();
+            cbIsShowMessageBox = new CheckBox();
+            cbIsWriteLog = new CheckBox();
             menuStrip1.SuspendLayout();
             tcWebDav.SuspendLayout();
             Webdav.SuspendLayout();
-            tabPage2.SuspendLayout();
             tabPage1.SuspendLayout();
-            tabPage3.SuspendLayout();
-            tabPage4.SuspendLayout();
             tabPage5.SuspendLayout();
             SuspendLayout();
             // 
@@ -63,7 +60,7 @@
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
             menuStrip1.Padding = new Padding(10, 2, 0, 2);
-            menuStrip1.Size = new Size(1416, 32);
+            menuStrip1.Size = new Size(1526, 32);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -103,7 +100,7 @@
             tcWebDav.Controls.Add(tabPage3);
             tcWebDav.Controls.Add(tabPage4);
             tcWebDav.Controls.Add(tabPage5);
-            tcWebDav.Location = new Point(11, 53);
+            tcWebDav.Location = new Point(21, 142);
             tcWebDav.Name = "tcWebDav";
             tcWebDav.SelectedIndex = 0;
             tcWebDav.Size = new Size(1390, 690);
@@ -129,7 +126,6 @@
             // 
             // tabPage2
             // 
-            tabPage2.Controls.Add(_fileLockAndUnLock);
             tabPage2.Location = new Point(4, 33);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
@@ -137,13 +133,6 @@
             tabPage2.TabIndex = 1;
             tabPage2.Text = "文件锁定和解锁";
             tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // fileLockOrUnLock1
-            // 
-            _fileLockAndUnLock.Location = new Point(0, 0);
-            _fileLockAndUnLock.Name = "_fileLockAndUnLock";
-            _fileLockAndUnLock.Size = new Size(1316, 496);
-            _fileLockAndUnLock.TabIndex = 0;
             // 
             // tabPage1
             // 
@@ -165,7 +154,6 @@
             // 
             // tabPage3
             // 
-            tabPage3.Controls.Add(_appWatcherUc1);
             tabPage3.Location = new Point(4, 33);
             tabPage3.Name = "tabPage3";
             tabPage3.Padding = new Padding(3);
@@ -174,16 +162,8 @@
             tabPage3.Text = "监控应用程序";
             tabPage3.UseVisualStyleBackColor = true;
             // 
-            // appWatcherUc1
-            // 
-            _appWatcherUc1.Location = new Point(0, 0);
-            _appWatcherUc1.Name = "appWatcherUc1";
-            _appWatcherUc1.Size = new Size(882, 594);
-            _appWatcherUc1.TabIndex = 0;
-            // 
             // tabPage4
             // 
-            tabPage4.Controls.Add(_microSoftMessageQueuingUc1);
             tabPage4.Location = new Point(4, 33);
             tabPage4.Name = "tabPage4";
             tabPage4.Padding = new Padding(3);
@@ -191,13 +171,6 @@
             tabPage4.TabIndex = 4;
             tabPage4.Text = "MSMQ";
             tabPage4.UseVisualStyleBackColor = true;
-            // 
-            // microSoftMessageQueuingUc1
-            // 
-            _microSoftMessageQueuingUc1.Location = new Point(0, 0);
-            _microSoftMessageQueuingUc1.Name = "microSoftMessageQueuingUc1";
-            _microSoftMessageQueuingUc1.Size = new Size(1326, 550);
-            _microSoftMessageQueuingUc1.TabIndex = 0;
             // 
             // tabPage5
             // 
@@ -217,11 +190,40 @@
             fileWatchUc1.Size = new Size(1187, 594);
             fileWatchUc1.TabIndex = 0;
             // 
+            // fileLockOrUnLock1
+            // 
+            fileLockOrUnLock1.Location = new Point(0, 0);
+            fileLockOrUnLock1.Name = "fileLockOrUnLock1";
+            fileLockOrUnLock1.Size = new Size(811, 331);
+            fileLockOrUnLock1.TabIndex = 0;
+            // 
+            // cbIsShowMessageBox
+            // 
+            cbIsShowMessageBox.AutoSize = true;
+            cbIsShowMessageBox.Location = new Point(46, 68);
+            cbIsShowMessageBox.Name = "cbIsShowMessageBox";
+            cbIsShowMessageBox.Size = new Size(234, 28);
+            cbIsShowMessageBox.TabIndex = 2;
+            cbIsShowMessageBox.Text = "提示信息是否弹出对话框";
+            cbIsShowMessageBox.UseVisualStyleBackColor = true;
+            // 
+            // cbIsWriteLog
+            // 
+            cbIsWriteLog.AutoSize = true;
+            cbIsWriteLog.Location = new Point(381, 68);
+            cbIsWriteLog.Name = "cbIsWriteLog";
+            cbIsWriteLog.Size = new Size(216, 28);
+            cbIsWriteLog.TabIndex = 3;
+            cbIsWriteLog.Text = "提示信息是否写入日志";
+            cbIsWriteLog.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1416, 758);
+            ClientSize = new Size(1526, 864);
+            Controls.Add(cbIsWriteLog);
+            Controls.Add(cbIsShowMessageBox);
             Controls.Add(tcWebDav);
             Controls.Add(menuStrip1);
             MainMenuStrip = menuStrip1;
@@ -231,10 +233,7 @@
             menuStrip1.PerformLayout();
             tcWebDav.ResumeLayout(false);
             Webdav.ResumeLayout(false);
-            tabPage2.ResumeLayout(false);
             tabPage1.ResumeLayout(false);
-            tabPage3.ResumeLayout(false);
-            tabPage4.ResumeLayout(false);
             tabPage5.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
@@ -260,5 +259,7 @@
         //private MicroSoftMessageQueuingUc microSoftMessageQueuingUc1;
         private TabPage tabPage5;
         private FileWatchUc fileWatchUc1;
+        private CheckBox cbIsShowMessageBox;
+        private CheckBox cbIsWriteLog;
     }
 }

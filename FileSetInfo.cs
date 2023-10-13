@@ -1,10 +1,31 @@
-﻿namespace WinFormsWebDav
+﻿using WinFormsWebDav.Base;
+using WinFormsWebDav.Modes.Options;
+
+namespace WinFormsWebDav
 {
-    public partial class FileSetInfo : UserControl
+    public partial class FileSetInfo : BaseUserControl
     {
         public FileSetInfo()
         {
             InitializeComponent();
+        }
+
+        /// <summary>
+        /// 初始化数据
+        /// </summary>
+        protected override void InitData()
+        {
+            
+        }
+
+        /// <summary>
+        /// 显示消息
+        /// </summary>
+        /// <param name="msg"></param>
+        protected override void ShowMessage(string msg)
+        {
+            //base.ShowMessage(msg);
+            rtbLog.Text += msg;
         }
 
         /// <summary>
@@ -14,8 +35,17 @@
         /// <param name="e"></param>
         private void btnSetReadOnly_Click(object sender, EventArgs e)
         {
-            var filePath = btReadOnlyFile.Text;
-            File.SetAttributes(filePath, FileAttributes.ReadOnly);
+            try
+            {
+                var filePath = btReadOnlyFile.Text;
+                File.SetAttributes(filePath, FileAttributes.ReadOnly);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
         }
 
         /// <summary>

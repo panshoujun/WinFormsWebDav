@@ -99,6 +99,8 @@ namespace WinFormsWebDav
             services.Configure<CloudPlatformOptions>(config.GetSection("CloudPlatform"));
             services.Configure<DefaultInfoOptions>(config.GetSection("DefaultInfo"));
             services.Configure<DefaultQueueOptions>(config.GetSection("DefaultInfo:DefaultQueue"));
+            services.Configure<SystemOptions>(config.GetSection("System"));
+
         }
     }
 }

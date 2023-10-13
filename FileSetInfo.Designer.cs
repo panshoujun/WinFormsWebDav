@@ -32,11 +32,12 @@
             btReadOnlyFile = new TextBox();
             btnSetReadOnly = new Button();
             label1 = new Label();
+            rtbLog = new RichTextBox();
             SuspendLayout();
             // 
             // btnCancelReadOnly
             // 
-            btnCancelReadOnly.Location = new Point(286, 112);
+            btnCancelReadOnly.Location = new Point(295, 216);
             btnCancelReadOnly.Name = "btnCancelReadOnly";
             btnCancelReadOnly.Size = new Size(104, 32);
             btnCancelReadOnly.TabIndex = 27;
@@ -54,7 +55,7 @@
             // 
             // btnSetReadOnly
             // 
-            btnSetReadOnly.Location = new Point(155, 112);
+            btnSetReadOnly.Location = new Point(155, 216);
             btnSetReadOnly.Name = "btnSetReadOnly";
             btnSetReadOnly.Size = new Size(104, 32);
             btnSetReadOnly.TabIndex = 25;
@@ -71,16 +72,25 @@
             label1.TabIndex = 28;
             label1.Text = "文件路劲";
             // 
+            // rtbLog
+            // 
+            rtbLog.Location = new Point(417, 63);
+            rtbLog.Name = "rtbLog";
+            rtbLog.Size = new Size(425, 185);
+            rtbLog.TabIndex = 47;
+            rtbLog.Text = "";
+            // 
             // FileSetInfo
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(rtbLog);
             Controls.Add(label1);
             Controls.Add(btnCancelReadOnly);
             Controls.Add(btReadOnlyFile);
             Controls.Add(btnSetReadOnly);
             Name = "FileSetInfo";
-            Size = new Size(443, 193);
+            Size = new Size(881, 342);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -91,5 +101,6 @@
         private TextBox btReadOnlyFile;
         private Button btnSetReadOnly;
         private Label label1;
+        private RichTextBox rtbLog;
     }
 }
