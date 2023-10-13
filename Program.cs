@@ -60,8 +60,10 @@ namespace WinFormsWebDav
                 temp = webDavInfo;
             }
 
-            var formMain = serviceProvider.GetRequiredService<MainForm>();   //主动从容器中获取FormMain实例, 这是简洁写法
+            //var formMain = serviceProvider.GetRequiredService<MainForm>();   //主动从容器中获取FormMain实例, 这是简洁写法
 
+            var formMain = serviceProvider.GetRequiredService<FormMain>();
+            
             Application.Run(formMain);
             //Application.Run(new WebDavForm(webDavInfo));
         }
@@ -80,6 +82,8 @@ namespace WinFormsWebDav
             //窗体
             services.AddScoped(typeof(WebDavForm));
             services.AddScoped(typeof(MainForm));
+            services.AddScoped(typeof(FormMain));
+            
 
             //用户控件
             services.AddScoped(typeof(FileLockAndUnLockUc));

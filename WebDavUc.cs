@@ -4,12 +4,16 @@ using System.Diagnostics;
 using System.Text.RegularExpressions;
 using WinFormsWebDav.Base;
 using WinFormsWebDav.Constants;
+using WinFormsWebDav.Modes;
 using WinFormsWebDav.Modes.Options;
 
 namespace WinFormsWebDav
 {
     public partial class WebDavUc : BaseUserControl
     {
+
+        public event EventHandler SomeEvent;
+
         private readonly DefaultWebdavOptions _defaultWebdavOptions;
 
         public WebDavUc(IOptions<DefaultWebdavOptions> defaultWebdavOptions)
@@ -35,18 +39,18 @@ namespace WinFormsWebDav
             rtbPath.Text = _defaultWebdavOptions.BaseUrl;
         }
 
-        /// <summary>
-        /// 显示消息
-        /// </summary>
-        /// <param name="msg"></param>
-        protected override void ShowMessage(string msg)
-        {
-            if (MainForm.staticSystemOptions.IsShowMessageBox)
-                MessageBox.Show(msg);
+        ///// <summary>
+        ///// 显示消息
+        ///// </summary>
+        ///// <param name="msg"></param>
+        //protected override void ShowMessage(string msg)
+        //{
+        //    if (MainForm.staticSystemOptions.IsShowMessageBox)
+        //        MessageBox.Show(msg);
 
-            if (MainForm.staticSystemOptions.IsWriteLog)
-                rtbLog.Text += $"{msg}\n";
-        }
+        //    if (MainForm.staticSystemOptions.IsWriteLog)
+        //        rtbLog.Text += $"{msg}\n";
+        //}
 
 
         /// <summary>
@@ -198,6 +202,8 @@ namespace WinFormsWebDav
 
             var list = GetDiskDriveList(result.Item2, RegexPatternConstants.GET_USED_DRIVE_LETTER, "DiskDrive");
             ShowMessage(string.Format($"{MessageConstants.MOUNT_LIST}:\n{string.Join('\n', list)}\n"));
+
+            SomeEvent?.Invoke(this, new MessageEventArgs { Msg = string.Format($"{MessageConstants.MOUNT_LIST}:\n{string.Join('\n', list)}\n") });
         }
 
         /// <summary>
@@ -228,14 +234,14 @@ namespace WinFormsWebDav
             ShowMessage(result.Item2);
         }
 
-        /// <summary>
-        /// 清除日志
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void btClear_Click(object sender, EventArgs e)
-        {
-            rtbLog.Text = string.Empty;
-        }
+        ///// <summary>
+        ///// 清除日志
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        //private void btClear_Click(object sender, EventArgs e)
+        //{
+        //    rtbLog.Text = string.Empty;
+        //}
     }
 }
