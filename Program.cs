@@ -94,6 +94,7 @@ namespace WinFormsWebDav
             builder.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");//设置配置文件所在的路径加载配置文件信息
             var config = builder.Build();
             services.Configure<test>(config.GetSection("Test"));
+            services.Configure<CloudPlatformOptions>(config.GetSection("CloudPlatform"));
         }
     }
 }
