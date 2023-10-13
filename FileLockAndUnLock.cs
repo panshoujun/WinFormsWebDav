@@ -76,5 +76,15 @@ namespace WinFormsWebDav
 
             ShowMessage(content);
         }
+
+        /// <summary>
+        /// 清除日志
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            rtbLog.Text = string.Empty;
+        }
     }
 }
