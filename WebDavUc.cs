@@ -8,11 +8,11 @@ using WinFormsWebDav.Modes.Options;
 
 namespace WinFormsWebDav
 {
-    public partial class WebDav : BaseUserControl
+    public partial class WebDavUc : BaseUserControl
     {
         private readonly DefaultWebdavOptions _defaultWebdavOptions;
 
-        public WebDav(IOptions<DefaultWebdavOptions> defaultWebdavOptions)
+        public WebDavUc(IOptions<DefaultWebdavOptions> defaultWebdavOptions)
         {
             _defaultWebdavOptions = defaultWebdavOptions.Value;
             InitializeComponent();

@@ -1,6 +1,6 @@
 ﻿namespace WinFormsWebDav
 {
-    partial class WebDav
+    partial class WebDavUc
     {
         /// <summary> 
         /// 必需的设计器变量。

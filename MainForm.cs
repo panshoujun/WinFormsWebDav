@@ -12,12 +12,12 @@ namespace WinFormsWebDav
         private readonly FileLockAndUnLock _fileLockAndUnLock;
         private readonly AppWatcherUc _appWatcherUc1;
         private readonly MicroSoftMessageQueuingUc _microSoftMessageQueuingUc1;
-        private readonly WebDav _webdav;
+        private readonly WebDavUc _webdav;
 
         //参数
         private readonly test _test;
         private readonly SystemOptions _systemOptions;
-        public MainForm(FileLockAndUnLock fileLockAndUnLock, AppWatcherUc appWatcherUc1, MicroSoftMessageQueuingUc microSoftMessageQueuingUc1, WebDav webdav,
+        public MainForm(FileLockAndUnLock fileLockAndUnLock, AppWatcherUc appWatcherUc1, MicroSoftMessageQueuingUc microSoftMessageQueuingUc1, WebDavUc webdav,
             IOptions<test> test, IOptions<SystemOptions> systemOptions)
         {
             _test = test.Value;

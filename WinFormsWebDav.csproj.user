@@ -28,7 +28,7 @@
     <Compile Update="MicroSoftMessageQueuingUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="WebDav.cs">
+    <Compile Update="WebDavUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="WebDavForm.cs">
