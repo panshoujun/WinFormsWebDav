@@ -90,6 +90,7 @@ namespace WinFormsWebDav
 
             await GetPathFiles(projectList.FirstOrDefault(), files, "tree");
 
+            MessageBox.Show(files.Count.ToString());
             files.ForEach(i =>
             {
                 ShowMessage(null, new MessageEventArgs { Msg = $"{i.fullPath}\n" });
@@ -146,10 +147,10 @@ namespace WinFormsWebDav
                     files.AddRange(result.data.files);
                 }
 
-                result?.data?.folders.ForEach(async i =>
+                for (int i = 0; i < result?.data?.folders?.Count; i++)
                 {
-                    await GetPathFiles(project, files, $"{path}/{i.name}");
-                });
+                    await GetPathFiles(project, files, $"{path}/{result?.data?.folders[i].name}");
+                }
             }
             catch (Exception ex)
             {
