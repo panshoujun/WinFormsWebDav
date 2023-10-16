@@ -1,16 +1,13 @@
-﻿using Refit;
-using WinFormsWebDav.Modes.Dto.Base;
+﻿using WinFormsWebDav.Modes.Dto.Base;
 using WinFormsWebDav.Modes.Dto.Response.Document;
 using WinFormsWebDav.Modes.Temp;
 
-namespace WinFormsWebDav.Services.Api
+namespace WinFormsWebDav.Services.Gateway.DocumentGateway
 {
-    public interface IDocumentApi
+    public interface IDocumentGateway
     {
-        [Get("/api/document/project/{projectId}/{path}")]
         Task<ApiResult<GetFolderSubItemsResponse>> GetFolderSubItemsOld(Guid projectId, string path);
 
-        [Get("/api/document/project/{projectId}/{path}")]
         Task<Rootobject> GetFolderSubItems(Guid projectId, string path);
     }
 }

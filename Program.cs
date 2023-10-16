@@ -7,6 +7,7 @@ using WinFormsWebDav.Constants;
 using WinFormsWebDav.Enums;
 using WinFormsWebDav.Modes.Options;
 using WinFormsWebDav.Services.Api;
+using WinFormsWebDav.Services.Gateway.DocumentGateway;
 using WinFormsWebDav.Services.Gateway.ProjectGW;
 
 namespace WinFormsWebDav
@@ -145,6 +146,12 @@ namespace WinFormsWebDav
                 c.BaseAddress = new Uri(cloudPlatform.BaseUrl);
                 c.DefaultRequestHeaders.Add(CommonConstants.AUTHORIZATION, $"{TokenType.Token.ToString()} {cloudPlatform.Token}");
             });
+
+            services.AddRefitClient<IDocumentApi>().ConfigureHttpClient(c =>
+            {
+                c.BaseAddress = new Uri(cloudPlatform.BaseUrl);
+                c.DefaultRequestHeaders.Add(CommonConstants.AUTHORIZATION, $"{TokenType.Token.ToString()} {cloudPlatform.Token}");
+            });
         }
 
         /// <summary>
@@ -154,6 +161,7 @@ namespace WinFormsWebDav
         private static void SetupServices(IServiceCollection services)
         {
             services.AddScoped<IProjectGW, ProjectGW>();
+            services.AddScoped<IDocumentGateway, DocumentGateway>();
         }
     }
 }

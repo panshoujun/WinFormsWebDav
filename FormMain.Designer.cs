@@ -32,9 +32,9 @@
             tabControl1 = new TabControl();
             tbWebdav = new TabPage();
             tabPage2 = new TabPage();
+            btnCheckAllFile = new Button();
             btnClear = new Button();
             rtbLog = new RichTextBox();
-            btnCheckAllFile = new Button();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -92,6 +92,16 @@
             tabPage2.Text = "tabPage2";
             tabPage2.UseVisualStyleBackColor = true;
             // 
+            // btnCheckAllFile
+            // 
+            btnCheckAllFile.Location = new Point(38, 657);
+            btnCheckAllFile.Name = "btnCheckAllFile";
+            btnCheckAllFile.Size = new Size(133, 51);
+            btnCheckAllFile.TabIndex = 2;
+            btnCheckAllFile.Text = "检查文件";
+            btnCheckAllFile.UseVisualStyleBackColor = true;
+            btnCheckAllFile.Click += btnCheckAllFile_ClickAsync;
+            // 
             // btnClear
             // 
             btnClear.Location = new Point(457, 657);
@@ -109,15 +119,6 @@
             rtbLog.Size = new Size(552, 566);
             rtbLog.TabIndex = 0;
             rtbLog.Text = "";
-            // 
-            // btnCheckAllFile
-            // 
-            btnCheckAllFile.Location = new Point(38, 657);
-            btnCheckAllFile.Name = "btnCheckAllFile";
-            btnCheckAllFile.Size = new Size(133, 51);
-            btnCheckAllFile.TabIndex = 2;
-            btnCheckAllFile.Text = "检查文件";
-            btnCheckAllFile.UseVisualStyleBackColor = true;
             // 
             // FormMain
             // 

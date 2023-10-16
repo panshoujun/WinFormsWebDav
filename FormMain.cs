@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Options;
+using System.Net;
 using WinFormsWebDav.Modes;
 using WinFormsWebDav.Modes.Options;
+using WinFormsWebDav.Services.Gateway.DocumentGateway;
 using WinFormsWebDav.Services.Gateway.ProjectGW;
 
 namespace WinFormsWebDav
@@ -23,14 +25,16 @@ namespace WinFormsWebDav
 
         //
         private readonly IProjectGW _projectGW;
-
+        private readonly IDocumentGateway _documentGateway;
 
 
         public FormMain(FileLockAndUnLockUc fileLockAndUnLock, AppWatcherUc appWatcherUc1, MicroSoftMessageQueuingUc microSoftMessageQueuingUc1, WebDavUc webdav,
-            IProjectGW projectGW,
+            IProjectGW projectGW, IDocumentGateway documentGateway,
             IOptions<test> test, IOptions<SystemOptions> systemOptions)
         {
             _projectGW = projectGW;
+            _documentGateway = documentGateway;
+
             _test = test.Value;
             _systemOptions = systemOptions.Value;
             _fileLockAndUnLock = fileLockAndUnLock;
@@ -67,18 +71,50 @@ namespace WinFormsWebDav
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private async void btnClear_Click(object sender, EventArgs e)
+        private void btnClear_Click(object sender, EventArgs e)
         {
-            var projests = await _projectGW.GetProjectAsync(new Modes.Dto.Request.GetProjectReq { });
-
             rtbLog.Text = string.Empty;
         }
 
         private void ShowMessage(object sender, EventArgs e)
         {
-
             // 修改其他控件的值
             rtbLog.Text += ((MessageEventArgs)e).Msg;
+        }
+
+        private async void btnCheckAllFile_ClickAsync(object sender, EventArgs e)
+        {
+            int page = 1;
+
+            while (true)
+            {
+                var projests = await _projectGW.GetProjectAsync(new Modes.Dto.Request.GetProjectReq { page = page });
+
+                if (projests == null || projests.Code != (int)HttpStatusCode.OK)
+                {
+                    ShowMessage(null, new MessageEventArgs { Msg = $"{projests?.Message}\n" });
+                    break;
+                }
+
+                var result = await _documentGateway.GetFolderSubItems(projests.Data.FirstOrDefault().Id, "tree");
+
+                result?.data?.files.ForEach(i =>
+                {
+                    ShowMessage(null, new MessageEventArgs { Msg = $"{i.name}\n" });
+                });
+
+                result?.data?.folders.ForEach(i =>
+                {
+                    ShowMessage(null, new MessageEventArgs { Msg = $"{i.name}\n" });
+                });
+
+                if (page == projests.CurrentPage)
+                {
+                    break;
+                }
+                page++;
+            }
+
         }
     }
 }

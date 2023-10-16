@@ -8,7 +8,7 @@ namespace WinFormsWebDav.Modes.Dto.Base
 
         public string? Message { get; set; }
 
-        public T? Data { get; set; }
+        public T Data { get; set; }
 
         public long Timestamp { get; set; } = DateTime.UtcNow.Ticks;
     }
