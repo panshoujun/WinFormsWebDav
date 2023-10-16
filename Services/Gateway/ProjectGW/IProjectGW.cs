@@ -8,6 +8,6 @@ namespace WinFormsWebDav.Services.Gateway.ProjectGW
     {
         Task<PagedApiResult<GetProjectResponse>> GetProjectAsync(string name, string status, int page = 1);
 
-        Task<PagedApiResult<GetProjectResponse>> GetProjectNewAsync(GetProjectReq req);
+        Task<PagedApiResult<GetProjectResponse>> GetProjectAsync(GetProjectReq req);
     }
 }

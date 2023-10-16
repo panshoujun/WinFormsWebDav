@@ -34,6 +34,7 @@
             tabPage2 = new TabPage();
             btnClear = new Button();
             rtbLog = new RichTextBox();
+            btnCheckAllFile = new Button();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -53,6 +54,7 @@
             // 
             // splitContainer1.Panel2
             // 
+            splitContainer1.Panel2.Controls.Add(btnCheckAllFile);
             splitContainer1.Panel2.Controls.Add(btnClear);
             splitContainer1.Panel2.Controls.Add(rtbLog);
             splitContainer1.Size = new Size(1478, 744);
@@ -108,6 +110,15 @@
             rtbLog.TabIndex = 0;
             rtbLog.Text = "";
             // 
+            // btnCheckAllFile
+            // 
+            btnCheckAllFile.Location = new Point(38, 657);
+            btnCheckAllFile.Name = "btnCheckAllFile";
+            btnCheckAllFile.Size = new Size(133, 51);
+            btnCheckAllFile.TabIndex = 2;
+            btnCheckAllFile.Text = "检查文件";
+            btnCheckAllFile.UseVisualStyleBackColor = true;
+            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
@@ -132,5 +143,6 @@
         private TabPage tabPage2;
         private Button btnClear;
         private RichTextBox rtbLog;
+        private Button btnCheckAllFile;
     }
 }

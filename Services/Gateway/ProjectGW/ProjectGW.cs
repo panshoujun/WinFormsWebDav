@@ -30,12 +30,11 @@ namespace WinFormsWebDav.Services.Gateway.ProjectGW
 
         }
 
-        public async Task<PagedApiResult<GetProjectResponse>> GetProjectNewAsync(GetProjectReq req)
+        public async Task<PagedApiResult<GetProjectResponse>> GetProjectAsync(GetProjectReq req)
         {
             try
             {
-                var result = await _projectApi.GetProjectNewAsync(req);
-                return result;
+                return await _projectApi.GetProjectNewAsync(req);
             }
             catch (Exception ex)
             {

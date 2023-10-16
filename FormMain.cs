@@ -67,10 +67,9 @@ namespace WinFormsWebDav
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btnClear_Click(object sender, EventArgs e)
+        private async void btnClear_Click(object sender, EventArgs e)
         {
-            var projestsNew = _projectGW.GetProjectNewAsync(new Modes.Dto.Request.GetProjectReq { }).Result;
-            var projests = _projectGW.GetProjectAsync("", "").Result.Message;
+            var projests = await _projectGW.GetProjectAsync(new Modes.Dto.Request.GetProjectReq { });
 
             rtbLog.Text = string.Empty;
         }
