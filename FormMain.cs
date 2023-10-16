@@ -85,16 +85,23 @@ namespace WinFormsWebDav
 
         private async void btnCheckAllFile_ClickAsync(object sender, EventArgs e)
         {
+            this.btnCheckAllFile.Enabled = false;
             var files = new List<Modes.Temp.File>();
             var projectList = await GetAllProject();
 
-            await GetPathFiles(projectList.FirstOrDefault(), files, "tree");
+            for (int i = 0; i < projectList?.Count(); i++)
+            {
+                await GetPathFiles(projectList[i], files, "tree");
+            }
 
             MessageBox.Show(files.Count.ToString());
+
+            ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
             files.ForEach(i =>
             {
                 ShowMessage(null, new MessageEventArgs { Msg = $"{i.fullPath}\n" });
             });
+            this.btnCheckAllFile.Enabled = true;
         }
 
         //List<Modes.Temp.File> allFiles = new List<Modes.Temp.File>();
@@ -156,7 +163,6 @@ namespace WinFormsWebDav
             {
                 throw;
             }
-
         }
     }
 }
