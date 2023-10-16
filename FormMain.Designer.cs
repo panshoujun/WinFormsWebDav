@@ -57,8 +57,8 @@
             splitContainer1.Panel2.Controls.Add(btnCheckAllFile);
             splitContainer1.Panel2.Controls.Add(btnClear);
             splitContainer1.Panel2.Controls.Add(rtbLog);
-            splitContainer1.Size = new Size(1478, 744);
-            splitContainer1.SplitterDistance = 858;
+            splitContainer1.Size = new Size(1978, 744);
+            splitContainer1.SplitterDistance = 700;
             splitContainer1.TabIndex = 0;
             // 
             // tabControl1
@@ -69,7 +69,7 @@
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(858, 744);
+            tabControl1.Size = new Size(700, 744);
             tabControl1.TabIndex = 0;
             // 
             // tbWebdav
@@ -77,7 +77,7 @@
             tbWebdav.Location = new Point(4, 33);
             tbWebdav.Name = "tbWebdav";
             tbWebdav.Padding = new Padding(3);
-            tbWebdav.Size = new Size(850, 707);
+            tbWebdav.Size = new Size(692, 707);
             tbWebdav.TabIndex = 0;
             tbWebdav.Text = "WebDav";
             tbWebdav.UseVisualStyleBackColor = true;
@@ -116,7 +116,7 @@
             // 
             rtbLog.Location = new Point(38, 33);
             rtbLog.Name = "rtbLog";
-            rtbLog.Size = new Size(552, 566);
+            rtbLog.Size = new Size(1212, 566);
             rtbLog.TabIndex = 0;
             rtbLog.Text = "";
             // 
@@ -124,7 +124,7 @@
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1478, 744);
+            ClientSize = new Size(1978, 744);
             Controls.Add(splitContainer1);
             Name = "FormMain";
             Text = "FormMain";

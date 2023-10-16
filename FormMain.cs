@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System.Net;
 using WinFormsWebDav.Modes;
+using WinFormsWebDav.Modes.Dto.Response;
 using WinFormsWebDav.Modes.Options;
 using WinFormsWebDav.Services.Gateway.DocumentGateway;
 using WinFormsWebDav.Services.Gateway.ProjectGW;
@@ -84,7 +85,27 @@ namespace WinFormsWebDav
 
         private async void btnCheckAllFile_ClickAsync(object sender, EventArgs e)
         {
+            var files = new List<Modes.Temp.File>();
+            var projectList = await GetAllProject();
+
+            await GetPathFiles(projectList.FirstOrDefault(), files, "tree");
+
+            files.ForEach(i =>
+            {
+                ShowMessage(null, new MessageEventArgs { Msg = $"{i.fullPath}\n" });
+            });
+        }
+
+        //List<Modes.Temp.File> allFiles = new List<Modes.Temp.File>();
+
+        /// <summary>
+        /// 获取所有项目
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<GetProjectResponse>> GetAllProject()
+        {
             int page = 1;
+            List<GetProjectResponse> allProjects = new List<GetProjectResponse>();
 
             while (true)
             {
@@ -96,23 +117,43 @@ namespace WinFormsWebDav
                     break;
                 }
 
-                var result = await _documentGateway.GetFolderSubItems(projests.Data.FirstOrDefault().Id, "tree");
+                allProjects.AddRange(projests.Data);
 
-                result?.data?.files.ForEach(i =>
-                {
-                    ShowMessage(null, new MessageEventArgs { Msg = $"{i.name}\n" });
-                });
-
-                result?.data?.folders.ForEach(i =>
-                {
-                    ShowMessage(null, new MessageEventArgs { Msg = $"{i.name}\n" });
-                });
-
-                if (page == projests.CurrentPage)
+                if (page >= projests.TotalPages)
                 {
                     break;
                 }
                 page++;
+            }
+
+            return allProjects;
+        }
+
+        /// <summary>
+        /// 获取文件
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public async Task GetPathFiles(GetProjectResponse project, List<Modes.Temp.File> files, string path = "tree")
+        {
+            try
+            {
+                var result = await _documentGateway.GetFolderSubItems(project.Id, path);
+
+                if (result?.data?.files.Count > 0)
+                {
+                    files.AddRange(result.data.files);
+                }
+
+                result?.data?.folders.ForEach(async i =>
+                {
+                    await GetPathFiles(project, files, $"{path}/{i.name}");
+                });
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
 
         }

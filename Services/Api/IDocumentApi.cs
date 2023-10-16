@@ -10,7 +10,7 @@ namespace WinFormsWebDav.Services.Api
         [Get("/api/document/project/{projectId}/{path}")]
         Task<ApiResult<GetFolderSubItemsResponse>> GetFolderSubItemsOld(Guid projectId, string path);
 
-        [Get("/api/document/project/{projectId}/{path}")]
+        [Get("/api/document/project/{projectId}/{**path}")]
         Task<Rootobject> GetFolderSubItems(Guid projectId, string path);
     }
 }
