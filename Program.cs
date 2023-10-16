@@ -1,8 +1,13 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Refit;
 using System.Configuration;
 using System.Text.Json;
+using WinFormsWebDav.Constants;
+using WinFormsWebDav.Enums;
 using WinFormsWebDav.Modes.Options;
+using WinFormsWebDav.Services.Api;
+using WinFormsWebDav.Services.Gateway.ProjectGW;
 
 namespace WinFormsWebDav
 {
@@ -63,10 +68,12 @@ namespace WinFormsWebDav
             //var formMain = serviceProvider.GetRequiredService<MainForm>();   //主动从容器中获取FormMain实例, 这是简洁写法
 
             var formMain = serviceProvider.GetRequiredService<FormMain>();
-            
+
             Application.Run(formMain);
             //Application.Run(new WebDavForm(webDavInfo));
         }
+
+
 
         /// <summary>
         /// 注入服务
@@ -83,7 +90,7 @@ namespace WinFormsWebDav
             services.AddScoped(typeof(WebDavForm));
             services.AddScoped(typeof(MainForm));
             services.AddScoped(typeof(FormMain));
-            
+
 
             //用户控件
             services.AddScoped(typeof(FileLockAndUnLockUc));
@@ -100,15 +107,53 @@ namespace WinFormsWebDav
             var builder = new ConfigurationBuilder();//创建config的builder
             builder.SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json");//设置配置文件所在的路径加载配置文件信息
             var config = builder.Build();
+
+            SetupOptions(services, config);
+            SetupRefit(services, config);
+            SetupServices(services);
+        }
+
+
+
+        /// <summary>
+        /// 注册options
+        /// </summary>
+        /// <param name="services"></param>
+        /// <param name="config"></param>
+        private static void SetupOptions(IServiceCollection services, IConfiguration config)
+        {
             services.Configure<test>(config.GetSection("Test"));
-            services.Configure<CloudPlatformOptions>(config.GetSection("CloudPlatform"));
-            services.Configure<DefaultInfoOptions>(config.GetSection("DefaultInfo"));
-            services.Configure<SystemOptions>(config.GetSection("System"));
 
-            services.Configure<DefaultQueueOptions>(config.GetSection("DefaultInfo:DefaultQueue"));
-            services.Configure<DefaultWebdavOptions>(config.GetSection("DefaultInfo:DefaultWebdav"));
+            services.Configure<CloudPlatformOptions>(config.GetSection(OptionsPathConstants.CLOUD_PLATFORM));
+            services.Configure<DefaultInfoOptions>(config.GetSection(OptionsPathConstants.DEFAULT_INFO));
+            services.Configure<SystemOptions>(config.GetSection(OptionsPathConstants.SYSTEM));
+
+            services.Configure<DefaultQueueOptions>(config.GetSection(OptionsPathConstants.DEFAULT_QUEUE));
+            services.Configure<DefaultWebdavOptions>(config.GetSection(OptionsPathConstants.DEFAULT_WEBDAV));
+        }
 
 
+        /// <summary>
+        /// 注册refit
+        /// </summary>
+        /// <param name="services"></param>
+        private static void SetupRefit(IServiceCollection services, IConfiguration config)
+        {
+            var cloudPlatform = config.GetSection(OptionsPathConstants.CLOUD_PLATFORM).Get<CloudPlatformOptions>();
+            services.AddRefitClient<IProjectApi>().ConfigureHttpClient(c =>
+            {
+                c.BaseAddress = new Uri(cloudPlatform.BaseUrl);
+                c.DefaultRequestHeaders.Add(CommonConstants.AUTHORIZATION, $"{TokenType.Token.ToString()} {cloudPlatform.Token}");
+            });
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="services"></param>
+        private static void SetupServices(IServiceCollection services)
+        {
+            services.AddScoped<IProjectGW, ProjectGW>();
         }
     }
 }

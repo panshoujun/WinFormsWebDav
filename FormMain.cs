@@ -1,16 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using WinFormsWebDav.Modes;
 using WinFormsWebDav.Modes.Options;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using WinFormsWebDav.Services.Gateway.ProjectGW;
 
 namespace WinFormsWebDav
 {
@@ -29,9 +20,17 @@ namespace WinFormsWebDav
         //参数
         private readonly test _test;
         private readonly SystemOptions _systemOptions;
+
+        //
+        private readonly IProjectGW _projectGW;
+
+
+
         public FormMain(FileLockAndUnLockUc fileLockAndUnLock, AppWatcherUc appWatcherUc1, MicroSoftMessageQueuingUc microSoftMessageQueuingUc1, WebDavUc webdav,
+            IProjectGW projectGW,
             IOptions<test> test, IOptions<SystemOptions> systemOptions)
         {
+            _projectGW = projectGW;
             _test = test.Value;
             _systemOptions = systemOptions.Value;
             _fileLockAndUnLock = fileLockAndUnLock;
@@ -70,11 +69,15 @@ namespace WinFormsWebDav
         /// <param name="e"></param>
         private void btnClear_Click(object sender, EventArgs e)
         {
+            var projestsNew = _projectGW.GetProjectNewAsync(new Modes.Dto.Request.GetProjectReq { }).Result;
+            var projests = _projectGW.GetProjectAsync("", "").Result.Message;
+
             rtbLog.Text = string.Empty;
         }
 
         private void ShowMessage(object sender, EventArgs e)
         {
+
             // 修改其他控件的值
             rtbLog.Text += ((MessageEventArgs)e).Msg;
         }
