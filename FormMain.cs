@@ -427,10 +427,21 @@ namespace WinFormsWebDav
         string canNotDownloadFilePath = $"C:\\bugtest\\canNotDownloadFilePath.txt";
         private async void btnCheckFile_Click(object sender, EventArgs e)
         {
-            CheckAllFileResponse resp = new CheckAllFileResponse();
             var projects = await GetAllProject();
             var files = await GetAllFile(projects);
+
             tbAllFileCount.Text = files.Count.ToString();
+
+            var resp = CheckFiles(projects, files);
+
+            SaveToFile(resp, filesCheckResultPath);
+
+            MessageBox.Show("所有文件检测完成");
+        }
+
+        private async Task<CheckAllFileResponse> CheckFiles(List<GetProjectResponse> projects, List<Modes.Temp.File> files)
+        {
+            CheckAllFileResponse resp = new CheckAllFileResponse();
 
             resp.Total = files.Count;
 
@@ -453,11 +464,9 @@ namespace WinFormsWebDav
                     resp.FailCount++;
                     tbCanNotDown.Text = resp.FailCount.ToString();
                 }
-
                 tbResidue.Text = (resp.Total - resp.FailCount - resp.SuccessCount).ToString();
             }
-            SaveToFile(resp, filesCheckResultPath);
-            MessageBox.Show("所有文件检测完成");
+            return resp;
         }
     }
 }
