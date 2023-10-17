@@ -2,6 +2,7 @@
 using WinFormsWebDav.Modes.Dto.Response.Document;
 using WinFormsWebDav.Modes.Temp;
 using WinFormsWebDav.Services.Api;
+using WinFormsWebDav.Services.Gateway.ProjectGW;
 
 namespace WinFormsWebDav.Services.Gateway.DocumentGateway
 {
@@ -36,6 +37,11 @@ namespace WinFormsWebDav.Services.Gateway.DocumentGateway
             {
                 throw;
             }
+        }
+
+        public async Task<HttpResponseMessage> DownloadFile(string projectName, string path)
+        {
+            return await _documentApi.DownloadFile(projectName, path);
         }
     }
 }

@@ -9,5 +9,7 @@ namespace WinFormsWebDav.Services.Gateway.DocumentGateway
         Task<ApiResult<GetFolderSubItemsResponse>> GetFolderSubItemsOld(Guid projectId, string path);
 
         Task<Rootobject> GetFolderSubItems(Guid projectId, string path);
+
+        Task<HttpResponseMessage> DownloadFile(string projectName, string path);
     }
 }

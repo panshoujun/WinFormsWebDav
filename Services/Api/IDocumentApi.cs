@@ -1,4 +1,5 @@
 ﻿using Refit;
+using System.IO;
 using WinFormsWebDav.Modes.Dto.Base;
 using WinFormsWebDav.Modes.Dto.Response.Document;
 using WinFormsWebDav.Modes.Temp;
@@ -12,5 +13,9 @@ namespace WinFormsWebDav.Services.Api
 
         [Get("/api/document/project/{projectId}/{**path}")]
         Task<Rootobject> GetFolderSubItems(Guid projectId, string path);
+
+
+        [Get("/api/document/file/download")]
+        Task<HttpResponseMessage> DownloadFile(string projectName, string path);
     }
 }

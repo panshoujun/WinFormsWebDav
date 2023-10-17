@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using System.IO;
 using System.Net;
 using WinFormsWebDav.Modes;
 using WinFormsWebDav.Modes.Dto.Response;
@@ -75,6 +76,9 @@ namespace WinFormsWebDav
         private void btnClear_Click(object sender, EventArgs e)
         {
             rtbLog.Text = string.Empty;
+
+            DownloadFileAsHttp();
+
         }
 
         private void ShowMessage(object sender, EventArgs e)
@@ -83,6 +87,11 @@ namespace WinFormsWebDav
             rtbLog.Text += ((MessageEventArgs)e).Msg;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void btnCheckAllFile_ClickAsync(object sender, EventArgs e)
         {
             this.btnCheckAllFile.Enabled = false;
@@ -103,8 +112,6 @@ namespace WinFormsWebDav
             });
             this.btnCheckAllFile.Enabled = true;
         }
-
-        //List<Modes.Temp.File> allFiles = new List<Modes.Temp.File>();
 
         /// <summary>
         /// 获取所有项目
@@ -163,6 +170,92 @@ namespace WinFormsWebDav
             {
                 throw;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private void DownloadFileAsWebClient()
+        {
+            string url = "http://qatest007.cscloud.cscad.net:6003/api/document/file/download?path=1112.txt&projectName=bugtest";
+            string savaPath = $"C:\\bugtest\\1112.txt";
+            using (var webClient = new WebClient())
+            {
+                webClient.Headers.Add("Authorization", "Token cst_Ju490XH68A5dOXRFY71JiJHzQmZyHzAWwk7aaEmzESbdu5vNDYGE8KnuUrkB");
+                Uri urlValue = new Uri(url);
+                webClient.DownloadFileAsync(urlValue, savaPath);
+            }
+        }
+
+        private void DownloadFileAsWebClientAsWebRequest()
+        {
+            string url = "http://qatest007.cscloud.cscad.net:6003/api/document/file/download?path=1112.txt&projectName=bugtest";
+            string savePath = $"C:\\bugtest\\1112.txt";
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+
+            request.Headers.Add("Authorization", "Token cst_Ju490XH68A5dOXRFY71JiJHzQmZyHzAWwk7aaEmzESbdu5vNDYGE8KnuUrkB");
+            request.Timeout = 10000;
+            request.UserAgent = "WinformDownloader";
+
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+            Stream stream = response.GetResponseStream();
+
+            //progressBar1.Minimum = 0;
+            //progressBar1.Maximum = (int)response.ContentLength;
+            //progressBar1.Value = 0;
+
+            FileStream fileStream = new FileStream(savePath, FileMode.Create);
+
+            int length = 0;
+            byte[] buffer = new byte[1024];
+            while ((length = stream.Read(buffer, 0, buffer.Length)) > 0)
+            {
+                fileStream.Write(buffer, 0, length);
+                //progressBar1.Value += length;
+            }
+
+            fileStream.Close();
+            stream.Close();
+            response.Close();
+        }
+
+        private async void DownloadFileAsHttpClient()
+        {
+            string savePath = $"C:\\bugtest\\1112.txt";
+            using (HttpClient http = new HttpClient())
+            {
+                http.DefaultRequestHeaders.Add("Authorization", "Token cst_Ju490XH68A5dOXRFY71JiJHzQmZyHzAWwk7aaEmzESbdu5vNDYGE8KnuUrkB");
+                var httpResponseMessage = await http.GetAsync("http://qatest007.cscloud.cscad.net:6003/api/document/file/download?path=111.txt.txt&projectName=tjPeoject", HttpCompletionOption.ResponseHeadersRead);//发送请求
+                var contentLength = httpResponseMessage.Content.Headers.ContentLength;//读取文件大小
+                using (var stream = await httpResponseMessage.Content.ReadAsStreamAsync())//读取文件流
+                {
+                    var readLength = 1024000;//1000K  每次读取大小
+                    byte[] bytes = new byte[readLength];
+                    int writeLength;
+                    while ((writeLength = stream.Read(bytes, 0, readLength)) > 0)//分块读取文件流
+                    {
+                        using (FileStream fs = new FileStream(savePath, FileMode.Append, FileAccess.Write))//使用追加方式打开一个文件流
+                        {
+                            fs.Write(bytes, 0, writeLength);//追加写入文件
+                            contentLength -= writeLength;
+                            if (contentLength == 0)//如果写入完成 给出提示
+                                MessageBox.Show("下载完成");
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private async void DownloadFileAsRefit()
+        {
+            //var result = await _documentGateway.DownloadFile("bugtest", "1112.txt");
+            var result = await _documentGateway.DownloadFile("tjPeoject", "111.txt");
+            string sss = await result.Content.ReadAsStringAsync();
         }
     }
 }
