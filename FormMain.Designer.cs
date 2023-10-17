@@ -33,11 +33,20 @@
             tbWebdav = new TabPage();
             tabPage2 = new TabPage();
             splitContainer2 = new SplitContainer();
+            tbCanNotDown = new TextBox();
+            label3 = new Label();
+            tbCanDown = new TextBox();
+            label2 = new Label();
+            tbAllFileCount = new TextBox();
+            label1 = new Label();
+            btnCheckFile = new Button();
             btnInitTree = new Button();
             tvFiles = new TreeView();
             btnCheckAllFile = new Button();
             btnClear = new Button();
             rtbLog = new RichTextBox();
+            tbResidue = new TextBox();
+            label4 = new Label();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -85,7 +94,7 @@
             tbWebdav.Location = new Point(4, 33);
             tbWebdav.Name = "tbWebdav";
             tbWebdav.Padding = new Padding(3);
-            tbWebdav.Size = new Size(842, 707);
+            tbWebdav.Size = new Size(842, 907);
             tbWebdav.TabIndex = 0;
             tbWebdav.Text = "WebDav";
             tbWebdav.UseVisualStyleBackColor = true;
@@ -110,6 +119,15 @@
             // 
             // splitContainer2.Panel1
             // 
+            splitContainer2.Panel1.Controls.Add(tbResidue);
+            splitContainer2.Panel1.Controls.Add(label4);
+            splitContainer2.Panel1.Controls.Add(tbCanNotDown);
+            splitContainer2.Panel1.Controls.Add(label3);
+            splitContainer2.Panel1.Controls.Add(tbCanDown);
+            splitContainer2.Panel1.Controls.Add(label2);
+            splitContainer2.Panel1.Controls.Add(tbAllFileCount);
+            splitContainer2.Panel1.Controls.Add(label1);
+            splitContainer2.Panel1.Controls.Add(btnCheckFile);
             splitContainer2.Panel1.Controls.Add(btnInitTree);
             splitContainer2.Panel1.RightToLeft = RightToLeft.Yes;
             // 
@@ -119,8 +137,69 @@
             splitContainer2.Panel2.RightToLeft = RightToLeft.Yes;
             splitContainer2.RightToLeft = RightToLeft.Yes;
             splitContainer2.Size = new Size(836, 901);
-            splitContainer2.SplitterDistance = 77;
+            splitContainer2.SplitterDistance = 120;
             splitContainer2.TabIndex = 1;
+            // 
+            // tbCanNotDown
+            // 
+            tbCanNotDown.Location = new Point(465, 79);
+            tbCanNotDown.Name = "tbCanNotDown";
+            tbCanNotDown.ReadOnly = true;
+            tbCanNotDown.Size = new Size(64, 30);
+            tbCanNotDown.TabIndex = 9;
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(377, 83);
+            label3.Name = "label3";
+            label3.Size = new Size(82, 24);
+            label3.TabIndex = 8;
+            label3.Text = "不可下载";
+            // 
+            // tbCanDown
+            // 
+            tbCanDown.Location = new Point(259, 81);
+            tbCanDown.Name = "tbCanDown";
+            tbCanDown.ReadOnly = true;
+            tbCanDown.Size = new Size(64, 30);
+            tbCanDown.TabIndex = 7;
+            // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Location = new Point(186, 82);
+            label2.Name = "label2";
+            label2.Size = new Size(64, 24);
+            label2.TabIndex = 6;
+            label2.Text = "可下载";
+            // 
+            // tbAllFileCount
+            // 
+            tbAllFileCount.Location = new Point(70, 80);
+            tbAllFileCount.Name = "tbAllFileCount";
+            tbAllFileCount.ReadOnly = true;
+            tbAllFileCount.Size = new Size(64, 30);
+            tbAllFileCount.TabIndex = 5;
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(8, 81);
+            label1.Name = "label1";
+            label1.Size = new Size(46, 24);
+            label1.TabIndex = 4;
+            label1.Text = "总数";
+            // 
+            // btnCheckFile
+            // 
+            btnCheckFile.Location = new Point(188, 3);
+            btnCheckFile.Name = "btnCheckFile";
+            btnCheckFile.Size = new Size(133, 51);
+            btnCheckFile.TabIndex = 3;
+            btnCheckFile.Text = "检测文件";
+            btnCheckFile.UseVisualStyleBackColor = true;
+            btnCheckFile.Click += btnCheckFile_Click;
             // 
             // btnInitTree
             // 
@@ -137,7 +216,7 @@
             tvFiles.Dock = DockStyle.Fill;
             tvFiles.Location = new Point(0, 0);
             tvFiles.Name = "tvFiles";
-            tvFiles.Size = new Size(836, 820);
+            tvFiles.Size = new Size(836, 777);
             tvFiles.TabIndex = 0;
             // 
             // btnCheckAllFile
@@ -168,6 +247,23 @@
             rtbLog.TabIndex = 0;
             rtbLog.Text = "";
             // 
+            // tbResidue
+            // 
+            tbResidue.Location = new Point(664, 82);
+            tbResidue.Name = "tbResidue";
+            tbResidue.ReadOnly = true;
+            tbResidue.Size = new Size(64, 30);
+            tbResidue.TabIndex = 11;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(602, 83);
+            label4.Name = "label4";
+            label4.Size = new Size(46, 24);
+            label4.TabIndex = 10;
+            label4.Text = "剩余";
+            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
@@ -183,6 +279,7 @@
             tabControl1.ResumeLayout(false);
             tabPage2.ResumeLayout(false);
             splitContainer2.Panel1.ResumeLayout(false);
+            splitContainer2.Panel1.PerformLayout();
             splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
             splitContainer2.ResumeLayout(false);
@@ -201,5 +298,15 @@
         private TreeView tvFiles;
         private SplitContainer splitContainer2;
         private Button btnInitTree;
+        private Button btnCheckFile;
+        private TextBox tbCanNotDown;
+        private Label label3;
+        private TextBox tbCanDown;
+        private Label label2;
+        private TextBox tbAllFileCount;
+        private Label label1;
+        private TextBox tb;
+        private Label label4;
+        private TextBox tbResidue;
     }
 }

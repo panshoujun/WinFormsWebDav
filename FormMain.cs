@@ -84,22 +84,7 @@ namespace WinFormsWebDav
         {
             rtbLog.Text = string.Empty;
 
-            //DownloadFileAsRefit();
-
-            //tvFiles.ImageList = imageList1;
-            TreeNode RootNode1 = new TreeNode("根节点1");
-            TreeNode ChildNode1 = new TreeNode("子节点1");
-            TreeNode ChildNode2 = new TreeNode("子节点2");
-            TreeNode ChildNode1_1 = new TreeNode("子节点1_1");
-            TreeNode ChildNode1_2 = new TreeNode("子节点1_2");
-
-            tvFiles.Nodes.Add(RootNode1);
-            RootNode1.Nodes.AddRange(new TreeNode[] { ChildNode1, ChildNode2 });
-
-            var ss = RootNode1.FullPath;
-
-
-            //ChildNode1_1.FullPath = ss;
+            DownloadFileAsRefit("bugtest", "1112.txt"); ;
         }
 
         private void ShowMessage(object sender, EventArgs e)
@@ -116,22 +101,22 @@ namespace WinFormsWebDav
         private async void btnCheckAllFile_ClickAsync(object sender, EventArgs e)
         {
             this.btnCheckAllFile.Enabled = false;
-            var files = new List<Modes.Temp.File>();
-            var projectList = await GetAllProject();
+            //var files = new List<Modes.Temp.File>();
+            //var projectList = await GetAllProject();
 
-            for (int i = 0; i < projectList?.Count(); i++)
-            {
-                tvFiles.Nodes.Add(new TreeNode($"{projectList[i].Name}"));
-                //await GetPathFiles(projectList[i], files, "tree");
-            }
+            //for (int i = 0; i < projectList?.Count(); i++)
+            //{
+            //    tvFiles.Nodes.Add(new TreeNode($"{projectList[i].Name}"));
+            //    //await GetPathFiles(projectList[i], files, "tree");
+            //}
 
-            MessageBox.Show(files.Count.ToString());
+            //MessageBox.Show(files.Count.ToString());
 
-            ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
-            files.ForEach(i =>
-            {
-                ShowMessage(null, new MessageEventArgs { Msg = $"{i.fullPath}\n" });
-            });
+            //ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
+            //files.ForEach(i =>
+            //{
+            //    ShowMessage(null, new MessageEventArgs { Msg = $"{i.fullPath}\n" });
+            //});
             this.btnCheckAllFile.Enabled = true;
         }
 
@@ -301,11 +286,29 @@ namespace WinFormsWebDav
         /// <summary>
         /// 
         /// </summary>
-        private async void DownloadFileAsRefit()
+        private async Task<Tuple<bool, string>> DownloadFileAsRefit(string project, string path)
         {
             //var result = await _documentGateway.DownloadFile("bugtest", "1112.txt");
-            var result = await _documentGateway.DownloadFile("tjPeoject", "111.txt");
-            string sss = await result.Content.ReadAsStringAsync();
+            string msg = string.Empty;
+            try
+            {
+                var result = await _documentGateway.DownloadFile(project, path);
+                if (result != null && result.IsSuccessStatusCode && result.StatusCode == HttpStatusCode.OK)
+                {
+                    return new Tuple<bool, string>(true, msg);
+                }
+                else
+                {
+                    msg = await result.Content.ReadAsStringAsync();
+                    return new Tuple<bool, string>(false, msg);
+                }
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                return new Tuple<bool, string>(true, msg);
+            }
+
         }
 
         string filesPath = $"C:\\bugtest\\files.json";
@@ -331,9 +334,9 @@ namespace WinFormsWebDav
             }
 
             ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
-            files.ForEach(i =>
+            files.ForEach(async i =>
             {
-                ShowMessage(null, new MessageEventArgs { Msg = $"{i.fullPath}\n" });
+                //ShowMessage(null, new MessageEventArgs { Msg = $"{i.fullPath}\n" });
 
                 var pathItems = i.fullPath.Split("/");
                 if (pathItems.Length == 1)
@@ -341,7 +344,12 @@ namespace WinFormsWebDav
                     var node = tvFiles.Nodes.Find(i.projectId, true).FirstOrDefault();
                     if (node != null)
                     {
-                        node.Nodes.Add(new TreeNode { Text = $"{i.name}" });
+                        var result = await DownloadFileAsRefit(projects.Where(p => p.Id.ToString().Equals(i.projectId)).FirstOrDefault().Name, i.fullPath);
+                        node.Nodes.Add(new TreeNode { Text = $"{i.name}", Checked = result.Item1 });
+                        if (result.Item1)
+                        {
+                            ShowMessage(null, new MessageEventArgs { Msg = $"{i.fullPath}文件无法下载:{result.Item2}\n" });
+                        }
                     }
                 }
                 else
@@ -368,7 +376,12 @@ namespace WinFormsWebDav
                     var nextLastPartent = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
                     if (nextLastPartent != null)
                     {
-                        nextLastPartent.Nodes.Add(new TreeNode { Text = $"{pathItems[pathItems.Length - 1]}", Tag = nodePath += $"/{pathItems[pathItems.Length - 1]}", Name = nodePath += $"/{pathItems[pathItems.Length - 1]}" });
+                        var result = await DownloadFileAsRefit(projects.Where(p => p.Id.ToString().Equals(i.projectId)).FirstOrDefault().Name, i.fullPath);
+                        nextLastPartent.Nodes.Add(new TreeNode { Text = $"{pathItems[pathItems.Length - 1]}", Tag = nodePath += $"/{pathItems[pathItems.Length - 1]}", Name = nodePath += $"/{pathItems[pathItems.Length - 1]}", Checked = result.Item1 });
+                        if (result.Item1)
+                        {
+                            ShowMessage(null, new MessageEventArgs { Msg = $"{i.fullPath}文件无法下载:{result.Item2}\n" });
+                        }
                     }
                     else
                     {
@@ -406,6 +419,50 @@ namespace WinFormsWebDav
             {
                 File.WriteAllText(filePath, json);
             }
+        }
+
+
+        string canDownloadFilePath = $"C:\\bugtest\\canDownloadFilePath.txt";
+        string canNotDownloadFilePath = $"C:\\bugtest\\canNotDownloadFilePath.txt";
+        private async void btnCheckFile_Click(object sender, EventArgs e)
+        {
+            var projects = await GetAllProject();
+            var files = await GetAllFile(projects);
+            tbAllFileCount.Text = files.Count.ToString();
+            //if (!File.Exists(canDownloadFilePath))
+            //{
+            //    File.Create(canDownloadFilePath);
+            //}
+
+            //if (!File.Exists(canNotDownloadFilePath))
+            //{
+            //    File.Create(canNotDownloadFilePath);
+            //}
+
+            int canDownload = 0;
+            int canNotDownload = 0;
+            for (int i = 0; i < files.Count; i++)
+            {
+                var result = await DownloadFileAsRefit(projects.Where(p => p.Id.ToString().Equals(files[i].projectId)).FirstOrDefault().Name, files[i].fullPath);
+                if (result.Item1)
+                {
+                    ShowMessage(null, new MessageEventArgs { Msg = $"{files[i].projectId}/{files[i].fullPath}可以下载\n" });
+                    File.AppendAllText(canDownloadFilePath, $"{files[i].projectId}/{files[i].fullPath}\n");
+                    canDownload++;
+                    tbCanDown.Text = canDownload.ToString();
+                }
+                else
+                {
+                    ShowMessage(null, new MessageEventArgs { Msg = $"{files[i].projectId}/{files[i].fullPath}文件无法下载\n" });
+                    File.AppendAllText(canNotDownloadFilePath, $"{files[i].projectId}/{files[i].fullPath}\n");
+                    canNotDownload++;
+                    tbCanNotDown.Text = canNotDownload.ToString();
+                }
+
+                tbResidue.Text = (files.Count - canNotDownload - canDownload).ToString();
+            }
+
+            MessageBox.Show("所有文件检测完成");
         }
     }
 }
