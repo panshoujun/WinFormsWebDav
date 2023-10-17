@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml.Linq;
 using WinFormsWebDav.Modes;
 using WinFormsWebDav.Modes.Dto.Response;
 using WinFormsWebDav.Modes.Options;
@@ -138,8 +139,14 @@ namespace WinFormsWebDav
         /// 获取所有项目
         /// </summary>
         /// <returns></returns>
-        public async Task<List<GetProjectResponse>> GetAllProject()
+        private async Task<List<GetProjectResponse>> GetAllProject()
         {
+            if (File.Exists(projectsPath))
+            {
+                string jsonString = await File.ReadAllTextAsync(projectsPath);
+                return JsonConvert.DeserializeObject<List<GetProjectResponse>>(jsonString);
+            }
+
             int page = 1;
             List<GetProjectResponse> allProjects = new List<GetProjectResponse>();
 
@@ -162,7 +169,29 @@ namespace WinFormsWebDav
                 page++;
             }
 
+            SaveToFile(allProjects, projectsPath);
             return allProjects;
+        }
+
+
+        private async Task<List<Modes.Temp.File>> GetAllFile(List<GetProjectResponse> projects)
+        {
+            var files = new List<Modes.Temp.File>();
+
+            if (File.Exists(filesPath))
+            {
+                string jsonString = await File.ReadAllTextAsync(filesPath);
+                return JsonConvert.DeserializeObject<List<Modes.Temp.File>>(jsonString);
+            }
+
+            for (int i = 0; i < projects?.Count(); i++)
+            {
+                await GetPathFiles(projects[i], files, "tree");
+            }
+
+            SaveToFile(files, filesPath);
+
+            return files;
         }
 
         /// <summary>
@@ -279,53 +308,40 @@ namespace WinFormsWebDav
             string sss = await result.Content.ReadAsStringAsync();
         }
 
-        string filePath = $"C:\\bugtest\\files.txt";
+        string filesPath = $"C:\\bugtest\\files.json";
+        string projectsPath = $"C:\\bugtest\\projects.json";
 
         private async void btnInitTree_Click(object sender, EventArgs e)
         {
             this.btnInitTree.Enabled = false;
-            var files = new List<Modes.Temp.File>();
 
-            if (File.Exists(filePath))
+            var projects = await GetAllProject();
+            var files = await GetAllFile(projects);
+
+
+            for (int i = 0; i < projects.Count; i++)
             {
-                string jsonString = File.ReadAllText(filePath);
-                files = JsonConvert.DeserializeObject<List<Modes.Temp.File>>(jsonString);
+               TreeNode RootNode1 = new TreeNode(projects[i].Name);
+                tvFiles.Nodes.Add(RootNode1);
             }
-            else
-            {
-                var projectList = await GetAllProject();
-                for (int i = 0; i < projectList?.Count(); i++)
-                {
-                    await GetPathFiles(projectList[i], files, "tree");
-                }
-                SaveToFile(files);
-            }
+
 
             ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
             files.ForEach(i =>
             {
                 ShowMessage(null, new MessageEventArgs { Msg = $"{i.fullPath}\n" });
+                var pathItems = i.fullPath.Split("/");
+
             });
             this.btnInitTree.Enabled = true;
         }
 
-        private void SaveToFile(List<Modes.Temp.File> files)
+        private void SaveToFile(object obj, string filePath)
         {
-            var json = JsonConvert.SerializeObject(files, Formatting.Indented);
+            var json = JsonConvert.SerializeObject(obj, Formatting.Indented);
             //判断Json字符串内容是否为空
             if (!string.IsNullOrEmpty(json))
             {
-                //using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, System.IO.FileAccess.ReadWrite, FileShare.ReadWrite))
-                //{
-                //    fs.Seek(0, SeekOrigin.Begin);
-                //    fs.SetLength(0);
-                //    //如果Json文件中有中文数据，可能会出现乱码的现象，那么需要加上如下代码
-                //    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                //    using (StreamWriter sw = new StreamWriter(fs, Encoding.UTF8))
-                //    {
-                //        sw.WriteLine(json);
-                //    }
-                //}
                 File.WriteAllText(filePath, json);
             }
         }
