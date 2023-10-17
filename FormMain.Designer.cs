@@ -33,11 +33,11 @@
             tbWebdav = new TabPage();
             tabPage2 = new TabPage();
             splitContainer2 = new SplitContainer();
-            btnCheckAllFile = new Button();
+            btnInitTree = new Button();
             tvFiles = new TreeView();
+            btnCheckAllFile = new Button();
             btnClear = new Button();
             rtbLog = new RichTextBox();
-            btnInitTree = new Button();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -65,7 +65,7 @@
             splitContainer1.Panel2.Controls.Add(btnCheckAllFile);
             splitContainer1.Panel2.Controls.Add(btnClear);
             splitContainer1.Panel2.Controls.Add(rtbLog);
-            splitContainer1.Size = new Size(1978, 744);
+            splitContainer1.Size = new Size(1978, 944);
             splitContainer1.SplitterDistance = 850;
             splitContainer1.TabIndex = 0;
             // 
@@ -77,7 +77,7 @@
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(850, 744);
+            tabControl1.Size = new Size(850, 944);
             tabControl1.TabIndex = 0;
             // 
             // tbWebdav
@@ -96,9 +96,9 @@
             tabPage2.Location = new Point(4, 33);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(842, 707);
+            tabPage2.Size = new Size(842, 907);
             tabPage2.TabIndex = 1;
-            tabPage2.Text = "tabPage2";
+            tabPage2.Text = "WebDavFiles";
             tabPage2.UseVisualStyleBackColor = true;
             // 
             // splitContainer2
@@ -118,9 +118,27 @@
             splitContainer2.Panel2.Controls.Add(tvFiles);
             splitContainer2.Panel2.RightToLeft = RightToLeft.Yes;
             splitContainer2.RightToLeft = RightToLeft.Yes;
-            splitContainer2.Size = new Size(836, 701);
-            splitContainer2.SplitterDistance = 60;
+            splitContainer2.Size = new Size(836, 901);
+            splitContainer2.SplitterDistance = 77;
             splitContainer2.TabIndex = 1;
+            // 
+            // btnInitTree
+            // 
+            btnInitTree.Location = new Point(19, 6);
+            btnInitTree.Name = "btnInitTree";
+            btnInitTree.Size = new Size(133, 51);
+            btnInitTree.TabIndex = 3;
+            btnInitTree.Text = "初始化树形结构";
+            btnInitTree.UseVisualStyleBackColor = true;
+            btnInitTree.Click += btnInitTree_Click;
+            // 
+            // tvFiles
+            // 
+            tvFiles.Dock = DockStyle.Fill;
+            tvFiles.Location = new Point(0, 0);
+            tvFiles.Name = "tvFiles";
+            tvFiles.Size = new Size(836, 820);
+            tvFiles.TabIndex = 0;
             // 
             // btnCheckAllFile
             // 
@@ -131,14 +149,6 @@
             btnCheckAllFile.Text = "检查文件";
             btnCheckAllFile.UseVisualStyleBackColor = true;
             btnCheckAllFile.Click += btnCheckAllFile_ClickAsync;
-            // 
-            // tvFiles
-            // 
-            tvFiles.Dock = DockStyle.Fill;
-            tvFiles.Location = new Point(0, 0);
-            tvFiles.Name = "tvFiles";
-            tvFiles.Size = new Size(836, 637);
-            tvFiles.TabIndex = 0;
             // 
             // btnClear
             // 
@@ -158,21 +168,11 @@
             rtbLog.TabIndex = 0;
             rtbLog.Text = "";
             // 
-            // btnInitTree
-            // 
-            btnInitTree.Location = new Point(19, 6);
-            btnInitTree.Name = "btnInitTree";
-            btnInitTree.Size = new Size(133, 51);
-            btnInitTree.TabIndex = 3;
-            btnInitTree.Text = "初始化树形结构";
-            btnInitTree.UseVisualStyleBackColor = true;
-            btnInitTree.Click += btnInitTree_Click;
-            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1978, 744);
+            ClientSize = new Size(1978, 944);
             Controls.Add(splitContainer1);
             Name = "FormMain";
             Text = "FormMain";

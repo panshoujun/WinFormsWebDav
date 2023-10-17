@@ -313,27 +313,89 @@ namespace WinFormsWebDav
 
         private async void btnInitTree_Click(object sender, EventArgs e)
         {
+            tvFiles.Nodes.Clear();
             this.btnInitTree.Enabled = false;
 
             var projects = await GetAllProject();
             var files = await GetAllFile(projects);
 
 
+            TreeNode rootNode = new TreeNode("根节点");
+            tvFiles.Nodes.Add(rootNode);
             for (int i = 0; i < projects.Count; i++)
             {
-               TreeNode RootNode1 = new TreeNode(projects[i].Name);
-                tvFiles.Nodes.Add(RootNode1);
+                TreeNode treeNode = new TreeNode(projects[i].Name);
+                treeNode.Tag = projects[i].Id.ToString();
+                treeNode.Name = projects[i].Id.ToString();
+                rootNode.Nodes.Add(treeNode);
             }
-
 
             ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
             files.ForEach(i =>
             {
                 ShowMessage(null, new MessageEventArgs { Msg = $"{i.fullPath}\n" });
+
                 var pathItems = i.fullPath.Split("/");
+                if (pathItems.Length == 1)
+                {
+                    var node = tvFiles.Nodes.Find(i.projectId, true).FirstOrDefault();
+                    if (node != null)
+                    {
+                        node.Nodes.Add(new TreeNode { Text = $"{i.name}" });
+                    }
+                }
+                else
+                {
+                    var nodePath = $"{i.projectId}";
+                    for (int j = 0; j < pathItems.Length - 1; j++)
+                    {
+                        nodePath += $"/{pathItems[j]}";
+                        var next = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
+                        if (next == null)
+                        {
+                            var partent = tvFiles.Nodes.Find(nodePath.Substring(0, nodePath.Length - pathItems[j].Length - 1), true).FirstOrDefault();
+                            if (partent != null)
+                            {
+                                partent.Nodes.Add(new TreeNode { Text = $"{pathItems[j]}", Tag = nodePath, Name = nodePath });
+                            }
+                            else
+                            {
+                                MessageBox.Show($"aaa{nodePath}");
+                            }
+                        }
+                    }
+
+                    var nextLastPartent = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
+                    if (nextLastPartent != null)
+                    {
+                        nextLastPartent.Nodes.Add(new TreeNode { Text = $"{pathItems[pathItems.Length - 1]}", Tag = nodePath += $"/{pathItems[pathItems.Length - 1]}", Name = nodePath += $"/{pathItems[pathItems.Length - 1]}" });
+                    }
+                    else
+                    {
+                        MessageBox.Show($"bbb{nodePath}");
+                    }
+
+                }
 
             });
             this.btnInitTree.Enabled = true;
+        }
+
+        private TreeNode FindNode(TreeNodeCollection nodes, string searchText)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                if (node.Text.Equals(searchText))
+                {
+                    return node;
+                }
+                TreeNode foundNode = FindNode(node.Nodes, searchText);
+                if (foundNode != null)
+                {
+                    return foundNode;
+                }
+            }
+            return null;
         }
 
         private void SaveToFile(object obj, string filePath)
