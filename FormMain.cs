@@ -313,6 +313,7 @@ namespace WinFormsWebDav
 
         string filesPath = $"C:\\bugtest\\files.json";
         string projectsPath = $"C:\\bugtest\\projects.json";
+        string filesCheckResultPath = $"C:\\bugtest\\checkResult.json";
 
         private async void btnInitTree_Click(object sender, EventArgs e)
         {
@@ -426,33 +427,36 @@ namespace WinFormsWebDav
         string canNotDownloadFilePath = $"C:\\bugtest\\canNotDownloadFilePath.txt";
         private async void btnCheckFile_Click(object sender, EventArgs e)
         {
+            CheckAllFileResponse resp = new CheckAllFileResponse();
             var projects = await GetAllProject();
             var files = await GetAllFile(projects);
             tbAllFileCount.Text = files.Count.ToString();
 
-            int canDownload = 0;
-            int canNotDownload = 0;
+            resp.Total = files.Count;
+
             for (int i = 0; i < files.Count; i++)
             {
                 var result = await DownloadFileAsRefit(projects.Where(p => p.Id.ToString().Equals(files[i].projectId)).FirstOrDefault().Name, files[i].fullPath);
                 if (result.Item1)
                 {
+                    resp.SuccessFilePath.Add($"{files[i].projectId}/{files[i].fullPath}");
                     ShowMessage(null, new MessageEventArgs { Msg = $"{files[i].projectId}/{files[i].fullPath}可以下载\n" });
                     File.AppendAllText(canDownloadFilePath, $"{files[i].projectId}/{files[i].fullPath}\n");
-                    canDownload++;
-                    tbCanDown.Text = canDownload.ToString();
+                    resp.SuccessCount++;
+                    tbCanDown.Text = resp.SuccessCount.ToString();
                 }
                 else
                 {
+                    resp.SuccessFilePath.Add($"{files[i].projectId}/{files[i].fullPath}");
                     ShowMessage(null, new MessageEventArgs { Msg = $"{files[i].projectId}/{files[i].fullPath}文件无法下载\n" });
                     File.AppendAllText(canNotDownloadFilePath, $"{files[i].projectId}/{files[i].fullPath}\n");
-                    canNotDownload++;
-                    tbCanNotDown.Text = canNotDownload.ToString();
+                    resp.FailCount++;
+                    tbCanNotDown.Text = resp.FailCount.ToString();
                 }
 
-                tbResidue.Text = (files.Count - canNotDownload - canDownload).ToString();
+                tbResidue.Text = (resp.Total - resp.FailCount - resp.SuccessCount).ToString();
             }
-
+            SaveToFile(resp, filesCheckResultPath);
             MessageBox.Show("所有文件检测完成");
         }
     }

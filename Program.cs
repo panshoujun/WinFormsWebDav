@@ -82,9 +82,6 @@ namespace WinFormsWebDav
         /// <param name="services"></param>
         public static void ConfigureServices(ServiceCollection services)
         {
-            //批量注入可以使用Scrutor或者自己封装
-            //services.AddScoped<YlbBio>();//
-
             services.AddHttpClient();
 
             //窗体
@@ -155,7 +152,7 @@ namespace WinFormsWebDav
         }
 
         /// <summary>
-        /// 
+        /// 注册gw
         /// </summary>
         /// <param name="services"></param>
         private static void SetupServices(IServiceCollection services)
