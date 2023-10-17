@@ -429,15 +429,6 @@ namespace WinFormsWebDav
             var projects = await GetAllProject();
             var files = await GetAllFile(projects);
             tbAllFileCount.Text = files.Count.ToString();
-            //if (!File.Exists(canDownloadFilePath))
-            //{
-            //    File.Create(canDownloadFilePath);
-            //}
-
-            //if (!File.Exists(canNotDownloadFilePath))
-            //{
-            //    File.Create(canNotDownloadFilePath);
-            //}
 
             int canDownload = 0;
             int canNotDownload = 0;
