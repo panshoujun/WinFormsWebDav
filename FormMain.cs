@@ -1,6 +1,10 @@
 ﻿using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System.IO;
 using System.Net;
+using System.Net.Http.Json;
+using System.Text;
+using System.Windows.Forms;
 using WinFormsWebDav.Modes;
 using WinFormsWebDav.Modes.Dto.Response;
 using WinFormsWebDav.Modes.Options;
@@ -46,6 +50,8 @@ namespace WinFormsWebDav
             InitializeComponent();
 
 
+            tvFiles.CheckBoxes = true;
+
             tbWebdav.Controls.Add(_webdav);
             tbWebdav.Location = new Point(4, 33);
             tbWebdav.Name = "Webdav";
@@ -77,8 +83,22 @@ namespace WinFormsWebDav
         {
             rtbLog.Text = string.Empty;
 
-            DownloadFileAsHttp();
+            //DownloadFileAsRefit();
 
+            //tvFiles.ImageList = imageList1;
+            TreeNode RootNode1 = new TreeNode("根节点1");
+            TreeNode ChildNode1 = new TreeNode("子节点1");
+            TreeNode ChildNode2 = new TreeNode("子节点2");
+            TreeNode ChildNode1_1 = new TreeNode("子节点1_1");
+            TreeNode ChildNode1_2 = new TreeNode("子节点1_2");
+
+            tvFiles.Nodes.Add(RootNode1);
+            RootNode1.Nodes.AddRange(new TreeNode[] { ChildNode1, ChildNode2 });
+
+            var ss = RootNode1.FullPath;
+
+
+            //ChildNode1_1.FullPath = ss;
         }
 
         private void ShowMessage(object sender, EventArgs e)
@@ -100,7 +120,8 @@ namespace WinFormsWebDav
 
             for (int i = 0; i < projectList?.Count(); i++)
             {
-                await GetPathFiles(projectList[i], files, "tree");
+                tvFiles.Nodes.Add(new TreeNode($"{projectList[i].Name}"));
+                //await GetPathFiles(projectList[i], files, "tree");
             }
 
             MessageBox.Show(files.Count.ToString());
@@ -256,6 +277,57 @@ namespace WinFormsWebDav
             //var result = await _documentGateway.DownloadFile("bugtest", "1112.txt");
             var result = await _documentGateway.DownloadFile("tjPeoject", "111.txt");
             string sss = await result.Content.ReadAsStringAsync();
+        }
+
+        string filePath = $"C:\\bugtest\\files.txt";
+
+        private async void btnInitTree_Click(object sender, EventArgs e)
+        {
+            this.btnInitTree.Enabled = false;
+            var files = new List<Modes.Temp.File>();
+
+            if (File.Exists(filePath))
+            {
+                string jsonString = File.ReadAllText(filePath);
+                files = JsonConvert.DeserializeObject<List<Modes.Temp.File>>(jsonString);
+            }
+            else
+            {
+                var projectList = await GetAllProject();
+                for (int i = 0; i < projectList?.Count(); i++)
+                {
+                    await GetPathFiles(projectList[i], files, "tree");
+                }
+                SaveToFile(files);
+            }
+
+            ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
+            files.ForEach(i =>
+            {
+                ShowMessage(null, new MessageEventArgs { Msg = $"{i.fullPath}\n" });
+            });
+            this.btnInitTree.Enabled = true;
+        }
+
+        private void SaveToFile(List<Modes.Temp.File> files)
+        {
+            var json = JsonConvert.SerializeObject(files, Formatting.Indented);
+            //判断Json字符串内容是否为空
+            if (!string.IsNullOrEmpty(json))
+            {
+                //using (FileStream fs = new FileStream(filePath, FileMode.OpenOrCreate, System.IO.FileAccess.ReadWrite, FileShare.ReadWrite))
+                //{
+                //    fs.Seek(0, SeekOrigin.Begin);
+                //    fs.SetLength(0);
+                //    //如果Json文件中有中文数据，可能会出现乱码的现象，那么需要加上如下代码
+                //    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                //    using (StreamWriter sw = new StreamWriter(fs, Encoding.UTF8))
+                //    {
+                //        sw.WriteLine(json);
+                //    }
+                //}
+                File.WriteAllText(filePath, json);
+            }
         }
     }
 }
