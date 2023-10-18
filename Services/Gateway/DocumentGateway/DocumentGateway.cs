@@ -43,5 +43,10 @@ namespace WinFormsWebDav.Services.Gateway.DocumentGateway
         {
             return await _documentApi.DownloadFile(projectName, path);
         }
+
+        public async Task<HttpResponseMessage> DeleteFile(Guid projectId, string path)
+        {
+            return await _documentApi.DeleteFile(projectId, path);
+        }
     }
 }

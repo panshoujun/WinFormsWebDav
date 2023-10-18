@@ -11,5 +11,7 @@ namespace WinFormsWebDav.Services.Gateway.DocumentGateway
         Task<Rootobject> GetFolderSubItems(Guid projectId, string path);
 
         Task<HttpResponseMessage> DownloadFile(string projectName, string path);
+
+        Task<HttpResponseMessage> DeleteFile(Guid projectId, string path);
     }
 }

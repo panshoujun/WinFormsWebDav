@@ -17,5 +17,8 @@ namespace WinFormsWebDav.Services.Api
 
         [Get("/api/document/file/download")]
         Task<HttpResponseMessage> DownloadFile(string projectName, string path);
+
+        [Delete("/api/document/project/{projectId}/file/{path}")]
+        Task<HttpResponseMessage> DeleteFile(Guid projectId, string path);
     }
 }

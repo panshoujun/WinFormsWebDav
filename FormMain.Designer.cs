@@ -33,6 +33,8 @@
             tbWebdav = new TabPage();
             tabPage2 = new TabPage();
             splitContainer2 = new SplitContainer();
+            tbResidue = new TextBox();
+            label4 = new Label();
             tbCanNotDown = new TextBox();
             label3 = new Label();
             tbCanDown = new TextBox();
@@ -42,11 +44,9 @@
             btnCheckFile = new Button();
             btnInitTree = new Button();
             tvFiles = new TreeView();
-            btnCheckAllFile = new Button();
             btnClear = new Button();
             rtbLog = new RichTextBox();
-            tbResidue = new TextBox();
-            label4 = new Label();
+            btnDeleteFile = new Button();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -71,7 +71,6 @@
             // 
             // splitContainer1.Panel2
             // 
-            splitContainer1.Panel2.Controls.Add(btnCheckAllFile);
             splitContainer1.Panel2.Controls.Add(btnClear);
             splitContainer1.Panel2.Controls.Add(rtbLog);
             splitContainer1.Size = new Size(1978, 944);
@@ -119,6 +118,7 @@
             // 
             // splitContainer2.Panel1
             // 
+            splitContainer2.Panel1.Controls.Add(btnDeleteFile);
             splitContainer2.Panel1.Controls.Add(tbResidue);
             splitContainer2.Panel1.Controls.Add(label4);
             splitContainer2.Panel1.Controls.Add(tbCanNotDown);
@@ -139,6 +139,23 @@
             splitContainer2.Size = new Size(836, 901);
             splitContainer2.SplitterDistance = 120;
             splitContainer2.TabIndex = 1;
+            // 
+            // tbResidue
+            // 
+            tbResidue.Location = new Point(664, 82);
+            tbResidue.Name = "tbResidue";
+            tbResidue.ReadOnly = true;
+            tbResidue.Size = new Size(64, 30);
+            tbResidue.TabIndex = 11;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(602, 83);
+            label4.Name = "label4";
+            label4.Size = new Size(46, 24);
+            label4.TabIndex = 10;
+            label4.Text = "剩余";
             // 
             // tbCanNotDown
             // 
@@ -219,16 +236,6 @@
             tvFiles.Size = new Size(836, 777);
             tvFiles.TabIndex = 0;
             // 
-            // btnCheckAllFile
-            // 
-            btnCheckAllFile.Location = new Point(38, 657);
-            btnCheckAllFile.Name = "btnCheckAllFile";
-            btnCheckAllFile.Size = new Size(133, 51);
-            btnCheckAllFile.TabIndex = 2;
-            btnCheckAllFile.Text = "检查文件";
-            btnCheckAllFile.UseVisualStyleBackColor = true;
-            btnCheckAllFile.Click += btnCheckAllFile_ClickAsync;
-            // 
             // btnClear
             // 
             btnClear.Location = new Point(457, 657);
@@ -247,22 +254,15 @@
             rtbLog.TabIndex = 0;
             rtbLog.Text = "";
             // 
-            // tbResidue
+            // btnDeleteFile
             // 
-            tbResidue.Location = new Point(664, 82);
-            tbResidue.Name = "tbResidue";
-            tbResidue.ReadOnly = true;
-            tbResidue.Size = new Size(64, 30);
-            tbResidue.TabIndex = 11;
-            // 
-            // label4
-            // 
-            label4.AutoSize = true;
-            label4.Location = new Point(602, 83);
-            label4.Name = "label4";
-            label4.Size = new Size(46, 24);
-            label4.TabIndex = 10;
-            label4.Text = "剩余";
+            btnDeleteFile.Location = new Point(368, 3);
+            btnDeleteFile.Name = "btnDeleteFile";
+            btnDeleteFile.Size = new Size(133, 51);
+            btnDeleteFile.TabIndex = 12;
+            btnDeleteFile.Text = "删除文件";
+            btnDeleteFile.UseVisualStyleBackColor = true;
+            btnDeleteFile.Click += btnDeleteFile_Click;
             // 
             // FormMain
             // 
@@ -294,7 +294,6 @@
         private TabPage tabPage2;
         private Button btnClear;
         private RichTextBox rtbLog;
-        private Button btnCheckAllFile;
         private TreeView tvFiles;
         private SplitContainer splitContainer2;
         private Button btnInitTree;
@@ -308,5 +307,6 @@
         private TextBox tb;
         private Label label4;
         private TextBox tbResidue;
+        private Button btnDeleteFile;
     }
 }

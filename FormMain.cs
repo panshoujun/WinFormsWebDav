@@ -1,14 +1,9 @@
 ﻿using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.IO;
 using System.Net;
-using System.Net.Http.Json;
-using System.Text;
-using System.Windows.Forms;
-using System.Xml.Linq;
 using WinFormsWebDav.Enums;
 using WinFormsWebDav.Modes;
+using WinFormsWebDav.Modes.Dto.Base;
 using WinFormsWebDav.Modes.Dto.Response;
 using WinFormsWebDav.Modes.Options;
 using WinFormsWebDav.Services.Gateway.DocumentGateway;
@@ -86,40 +81,13 @@ namespace WinFormsWebDav
         {
             rtbLog.Text = string.Empty;
 
-            DownloadFileAsRefit("bugtest", "1112.txt"); ;
+            DownloadFileAsRefit("bugtest", "1112.txt");
         }
 
         private void ShowMessage(object sender, EventArgs e)
         {
             // 修改其他控件的值
             rtbLog.Text += ((MessageEventArgs)e).Msg;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async void btnCheckAllFile_ClickAsync(object sender, EventArgs e)
-        {
-            this.btnCheckAllFile.Enabled = false;
-            //var files = new List<Modes.Temp.File>();
-            //var projectList = await GetAllProject();
-
-            //for (int i = 0; i < projectList?.Count(); i++)
-            //{
-            //    tvFiles.Nodes.Add(new TreeNode($"{projectList[i].Name}"));
-            //    //await GetPathFiles(projectList[i], files, "tree");
-            //}
-
-            //MessageBox.Show(files.Count.ToString());
-
-            //ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
-            //files.ForEach(i =>
-            //{
-            //    ShowMessage(null, new MessageEventArgs { Msg = $"{i.fullPath}\n" });
-            //});
-            this.btnCheckAllFile.Enabled = true;
         }
 
         /// <summary>
@@ -320,9 +288,27 @@ namespace WinFormsWebDav
 
         }
 
+        private async Task<HttpResponseMessage> DeleteFileAsRefit(string project, string path)
+        {
+            //var result = await _documentGateway.DownloadFile("bugtest", "1112.txt");
+            string msg = string.Empty;
+            try
+            {
+                var result = await _documentGateway.DeleteFile(Guid.Parse(project), path);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message;
+                return null;
+            }
+
+        }
+
         string filesPath = $"C:\\bugtest\\files.json";
         string projectsPath = $"C:\\bugtest\\projects.json";
         string filesCheckResultPath = $"C:\\bugtest\\checkResult.json";
+        string filesDeleteResultPath = $"C:\\bugtest\\deleteResult.json";
         string rootPath = "root";
         string rootText = "根节点";
 
@@ -553,14 +539,21 @@ namespace WinFormsWebDav
 
             tbAllFileCount.Text = files.Count.ToString();
 
-            var resp = CheckFiles(projects, files);
+            var resp = await CheckFiles(files);
 
             SaveToFile(resp, filesCheckResultPath);
 
+            ShowMessage(null, new MessageEventArgs { Msg = $"检测文件结果:{JsonConvert.SerializeObject(resp, Formatting.Indented)}\n" });
             MessageBox.Show("所有文件检测完成");
         }
 
-        private async Task<CheckAllFileResponse> CheckFiles(List<GetProjectResponse> projects, List<Modes.Temp.File> files)
+        /// <summary>
+        /// 检查文件是否可以下载
+        /// </summary>
+        /// <param name="projects"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        private async Task<CheckAllFileResponse> CheckFiles(List<Modes.Temp.File> files)
         {
             CheckAllFileResponse resp = new CheckAllFileResponse();
 
@@ -568,7 +561,7 @@ namespace WinFormsWebDav
 
             for (int i = 0; i < files.Count; i++)
             {
-                var result = await DownloadFileAsRefit(projects.Where(p => p.Id.ToString().Equals(files[i].projectId)).FirstOrDefault().Name, files[i].fullPath);
+                var result = await DownloadFileAsRefit(files[i].projectName, files[i].fullPath);
                 if (result.Item1)
                 {
                     resp.SuccessFilePath.Add($"{files[i].projectId}/{files[i].fullPath}");
@@ -579,7 +572,7 @@ namespace WinFormsWebDav
                 }
                 else
                 {
-                    resp.SuccessFilePath.Add($"{files[i].projectId}/{files[i].fullPath}");
+                    resp.FailFilePath.Add($"{files[i].projectId}/{files[i].fullPath}");
                     ShowMessage(null, new MessageEventArgs { Msg = $"{files[i].projectId}/{files[i].fullPath}文件无法下载\n" });
                     File.AppendAllText(canNotDownloadFilePath, $"{files[i].projectId}/{files[i].fullPath}\n");
                     resp.FailCount++;
@@ -589,5 +582,43 @@ namespace WinFormsWebDav
             }
             return resp;
         }
+
+        /// <summary>
+        /// 删除文件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void btnDeleteFile_Click(object sender, EventArgs e)
+        {
+            CheckAllFileResponse checkAllFile = new CheckAllFileResponse();
+            DeleteAllFileResponse deleteAllFile = new DeleteAllFileResponse();
+            if (File.Exists(filesCheckResultPath))
+            {
+                string jsonString = await File.ReadAllTextAsync(filesCheckResultPath);
+                checkAllFile = JsonConvert.DeserializeObject<CheckAllFileResponse>(jsonString);
+            }
+            else
+            {
+                MessageBox.Show("请先检查文件");
+            }
+
+            for (int i = 0; i < 5; i++)//checkAllFile.FailFilePath.Count
+            {
+                var split = checkAllFile.FailFilePath[i].Split("/");
+                var path = string.Join("/", split.Skip(1));
+                var result = await DeleteFileAsRefit(split[0], path);
+                if (result != null)
+                {
+                    deleteAllFile.Total++;
+                    deleteAllFile.FileResult.Add((checkAllFile.FailFilePath[i], (int)result.StatusCode));
+                }
+            }
+
+            SaveToFile(deleteAllFile, filesDeleteResultPath);
+
+            ShowMessage(null, new MessageEventArgs { Msg = $"删除文件结果:{JsonConvert.SerializeObject(deleteAllFile, Formatting.Indented)}\n" });
+        }
     }
+
 }
+
