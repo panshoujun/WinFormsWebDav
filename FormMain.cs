@@ -149,7 +149,7 @@ namespace WinFormsWebDav
                 await GetPathFiles(projects[i], files, "tree");
             }
 
-            files.ForEach(f => f.projectName = projects.Where(p => p.Id.Equals(f.projectId)).FirstOrDefault().Name);
+            files.ForEach(f => f.projectName = projects.Where(p => p.Id.ToString().Equals(f.projectId)).FirstOrDefault().Name);
 
             SaveToFile(files, filesPath);
 
@@ -394,6 +394,8 @@ namespace WinFormsWebDav
 
         private async void btnInitTree_ClickNew(object sender, EventArgs e)
         {
+            SetBtnEnabled(false);
+
             tvFiles.Nodes.Clear();
             this.btnInitTree.Enabled = false;
 
@@ -405,7 +407,15 @@ namespace WinFormsWebDav
             InitTree(files);
 
             SetNodeCount(tvFiles.Nodes[0], files, true);
-            this.btnInitTree.Enabled = true;
+
+            SetBtnEnabled(true);
+        }
+
+        private void SetBtnEnabled(bool IsEnabled)
+        {
+            btnInitTree.Enabled = IsEnabled;
+            btnCheckFile.Enabled = IsEnabled;
+            btnDeleteFile.Enabled = IsEnabled;
         }
 
         /// <summary>
@@ -534,6 +544,8 @@ namespace WinFormsWebDav
         string canNotDownloadFilePath = $"C:\\bugtest\\canNotDownloadFilePath.txt";
         private async void btnCheckFile_Click(object sender, EventArgs e)
         {
+            SetBtnEnabled(false);
+
             var projects = await GetAllProject();
             var files = await GetAllFile(projects);
 
@@ -543,7 +555,9 @@ namespace WinFormsWebDav
 
             SaveToFile(resp, filesCheckResultPath);
 
-            ShowMessage(null, new MessageEventArgs { Msg = $"检测文件结果:{JsonConvert.SerializeObject(resp, Formatting.Indented)}\n" });
+            //ShowMessage(null, new MessageEventArgs { Msg = $"检测文件结果:{JsonConvert.SerializeObject(resp, Formatting.Indented)}\n" });
+
+            SetBtnEnabled(true);
             MessageBox.Show("所有文件检测完成");
         }
 
@@ -590,6 +604,7 @@ namespace WinFormsWebDav
         /// <param name="e"></param>
         private async void btnDeleteFile_Click(object sender, EventArgs e)
         {
+            SetBtnEnabled(false);
             CheckAllFileResponse checkAllFile = new CheckAllFileResponse();
             DeleteAllFileResponse deleteAllFile = new DeleteAllFileResponse();
             if (File.Exists(filesCheckResultPath))
@@ -615,7 +630,7 @@ namespace WinFormsWebDav
             }
 
             SaveToFile(deleteAllFile, filesDeleteResultPath);
-
+            SetBtnEnabled(true);
             ShowMessage(null, new MessageEventArgs { Msg = $"删除文件结果:{JsonConvert.SerializeObject(deleteAllFile, Formatting.Indented)}\n" });
         }
     }
