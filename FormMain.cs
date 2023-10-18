@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System.Drawing;
 using System.Net;
 using WinFormsWebDav.Enums;
 using WinFormsWebDav.Modes;
@@ -47,9 +48,10 @@ namespace WinFormsWebDav
             _webdav = webdav;
             InitializeComponent();
 
-            //tvFiles.MouseClick += treeView1_MouseClick;
-            tvFiles.AfterCheck += skinTreeView1_AfterCheck;
-            tvFiles.DrawNode += ClassTreeList_DrawNode;
+            tvFiles.MouseClick += treeView1_MouseClick;
+            //tvFiles.AfterCheck += skinTreeView1_AfterCheck;
+            //tvFiles.DrawMode = TreeViewDrawMode.OwnerDrawText;
+            //tvFiles.DrawNode += ClassTreeList_DrawNode;
             tvFiles.CheckBoxes = true;
 
             tbWebdav.Controls.Add(_webdav);
@@ -854,9 +856,9 @@ namespace WinFormsWebDav
             if (e.Node.ToolTipText.EndsWith("部分勾选") && e.Node.Checked == false)
             {  //判断为半勾选状态
                 var location = e.Node.Bounds.Location;
-                location.Offset(-10, 7);
-                var size = new Size(7, 7);
-                e.Graphics.FillRectangle(brush, new Rectangle(location, size)); //这里绘制的是正方形
+                location.Offset(-20, 3);
+                var size = new Size(20, 20);
+                e.Graphics.FillRectangle(Brushes.Blue, new Rectangle(location, size)); //这里绘制的是正方形
             }
             //绘制文本
             e.Graphics.DrawString(e.Node.Text, treeview.Font, brush, e.Bounds.Left, e.Bounds.Top);
