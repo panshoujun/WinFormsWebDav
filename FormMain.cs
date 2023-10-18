@@ -168,13 +168,20 @@ namespace WinFormsWebDav
             if (File.Exists(filesPath))
             {
                 string jsonString = await File.ReadAllTextAsync(filesPath);
-                return JsonConvert.DeserializeObject<List<Modes.Temp.File>>(jsonString);
+                files = JsonConvert.DeserializeObject<List<Modes.Temp.File>>(jsonString);
+                files?.ForEach(f =>
+                {
+                    f.projectName = projects?.Where(p => p.Id.ToString().Equals(f.projectId))?.FirstOrDefault()?.Name;
+                });
+                return files;
             }
 
             for (int i = 0; i < projects?.Count(); i++)
             {
                 await GetPathFiles(projects[i], files, "tree");
             }
+
+            files.ForEach(f => f.projectName = projects.Where(p => p.Id.Equals(f.projectId)).FirstOrDefault().Name);
 
             SaveToFile(files, filesPath);
 
@@ -399,6 +406,22 @@ namespace WinFormsWebDav
             this.btnInitTree.Enabled = true;
         }
 
+        private async void btnInitTree_ClickNew(object sender, EventArgs e)
+        {
+            tvFiles.Nodes.Clear();
+            this.btnInitTree.Enabled = false;
+
+            var projects = await GetAllProject();
+            var files = await GetAllFile(projects);
+
+            ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
+
+            InitTree(files);
+
+            SetNodeCount(tvFiles.Nodes[0], files, true);
+            this.btnInitTree.Enabled = true;
+        }
+
         /// <summary>
         /// 设置节点文件数量
         /// </summary>
@@ -406,7 +429,7 @@ namespace WinFormsWebDav
         /// <param name="projects"></param>
         /// <param name="files"></param>
         /// <param name="sum"></param>
-        private void SetNodeCount(TreeNode node, List<GetProjectResponse> projects, List<Modes.Temp.File> files, bool IsSet = false)
+        private void SetNodeCount(TreeNode node, List<Modes.Temp.File> files, bool IsSet = false)
         {
             int sum = 0;
             foreach (TreeNode item in node.Nodes)
@@ -415,11 +438,11 @@ namespace WinFormsWebDav
                 if (tag.Equals(NodeTypeEnums.File.ToString()))
                     continue;
 
-                var count = GetFileCount(projects, files, item);
+                var count = GetFileCount(files, item);
                 sum += count;
 
                 item.Text = $"{item.Text}({count})";
-                SetNodeCount(item, projects, files);
+                SetNodeCount(item, files);
             }
 
             if (IsSet)
@@ -435,7 +458,7 @@ namespace WinFormsWebDav
         /// <param name="files"></param>
         /// <param name="item"></param>
         /// <returns></returns>
-        private int GetFileCount(List<GetProjectResponse> projects, List<Modes.Temp.File> files, TreeNode item)
+        private int GetFileCount(List<Modes.Temp.File> files, TreeNode item)
         {
             var count = 0;
 
@@ -447,7 +470,7 @@ namespace WinFormsWebDav
                 }
 
                 var split = file.fullPath.Split('/').SkipLast(1);
-                var path = $"{rootPath}/{projects.Where(p => p.Id.ToString().Equals(item.ToolTipText)).FirstOrDefault().Name}";
+                var path = $"{rootPath}/{file.projectName}";
                 if (split.Any())
                 {
                     path += "/";
@@ -458,41 +481,23 @@ namespace WinFormsWebDav
                 {
                     count++;
                 }
-
             }
             return count;
-        }
-
-
-        private async void btnInitTree_ClickNew(object sender, EventArgs e)
-        {
-            tvFiles.Nodes.Clear();
-            this.btnInitTree.Enabled = false;
-
-            var projects = await GetAllProject();
-            var files = await GetAllFile(projects);
-
-            ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
-
-            InitTree(projects, files);
-
-            SetNodeCount(tvFiles.Nodes[0], projects, files, true);
-            this.btnInitTree.Enabled = true;
         }
 
         /// <summary>
         /// 初始化tree
         /// </summary>
-        /// <param name="projects"></param>
+        /// <param name=""></param>
         /// <param name="files"></param>
-        private void InitTree(List<GetProjectResponse> projects, List<Modes.Temp.File> files)
+        private void InitTree(List<Modes.Temp.File> files)
         {
             tvFiles.Nodes.Add(new TreeNode() { Text = rootText, Name = rootPath, Tag = rootPath });
 
             for (int i = 0; i < files.Count; i++)
             {
                 var nodePath = rootPath;
-                var pathItems = $"{projects.Where(p => p.Id.ToString().Equals(files[i].projectId)).FirstOrDefault().Name}/{files[i].fullPath}".Split("/");
+                var pathItems = $"{files[i].projectName}/{files[i].fullPath}".Split("/");
 
                 for (int j = 0; j < pathItems.Length - 1; j++)
                 {

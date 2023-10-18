@@ -40,6 +40,7 @@ namespace WinFormsWebDav.Modes.Temp
         public bool isLocked { get; set; }
         public string id { get; set; }
         public string projectId { get; set; }
+        public string projectName { get; set; }
         public string name { get; set; }
         public string fullPath { get; set; }
         public string parentId { get; set; }
