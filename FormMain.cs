@@ -102,8 +102,6 @@ namespace WinFormsWebDav
         private void btnClear_Click(object sender, EventArgs e)
         {
             rtbLog.Text = string.Empty;
-
-            DownloadFileAsRefit("bugtest", "1112.txt");
         }
 
         /// <summary>
@@ -119,6 +117,10 @@ namespace WinFormsWebDav
             var files = await GetAllFile(projects);
 
             tbAllFileCount.Text = files.Count.ToString();
+
+            tvFiles.Nodes.Clear();
+            InitTree(files);
+            SetNodeCount(tvFiles.Nodes[0], files, true);
 
             var resp = await CheckFiles(files);
 
