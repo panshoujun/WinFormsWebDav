@@ -397,21 +397,68 @@ namespace WinFormsWebDav
             this.btnInitTree.Enabled = true;
         }
 
-
-        private void SetNodeCount(TreeNode node, List<Modes.Temp.File> files)
+        /// <summary>
+        /// 设置节点文件数量
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="projects"></param>
+        /// <param name="files"></param>
+        /// <param name="sum"></param>
+        private void SetNodeCount(TreeNode node, List<GetProjectResponse> projects, List<Modes.Temp.File> files, bool IsSet = false)
         {
+            int sum = 0;
             foreach (TreeNode item in node.Nodes)
             {
-                var tag = node.Tag.ToString();
-                if (!tag.Equals("file"))
+                var tag = item.Tag.ToString();
+                if (tag.Equals("file"))
+                    continue;
+
+                var count = GetFileCount(projects, files, item);
+                sum += count;
+
+                item.Text = $"{item.Text}@{count}";
+                SetNodeCount(item, projects, files);
+            }
+
+            if (IsSet)
+            {
+                node.Text = $"{node.Text}@{sum}";
+            }
+        }
+
+        /// <summary>
+        /// 获取节点文件数量
+        /// </summary>
+        /// <param name="projects"></param>
+        /// <param name="files"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        private int GetFileCount(List<GetProjectResponse> projects, List<Modes.Temp.File> files, TreeNode item)
+        {
+            var count = 0;
+
+            foreach (var file in files)
+            {
+                if (file.projectId != item.ToolTipText)
                 {
-                    var count = files.Count(p => $"{p.projectId}/{p.fullPath}".Contains(tag));
-                    var split = node.Text.Split("@");
-                    node.Text = $"{split[0]}@{count}";
-                    SetNodeCount(item, files);
+                    continue;
+                }
+
+                var split = file.fullPath.Split('/').SkipLast(1);
+                var path = $"{rootPath}/{projects.Where(p => p.Id.ToString().Equals(item.ToolTipText)).FirstOrDefault().Name}";
+                if (split.Any())
+                {
+                    path += "/";
+                    path += string.Join($"/", split);
+                }
+
+                if (path.Contains(item.Name))
+                {
+                    count++;
                 }
 
             }
+            return count;
         }
 
 
@@ -444,7 +491,7 @@ namespace WinFormsWebDav
                         var partent = tvFiles.Nodes.Find(nodePath.Substring(0, nodePath.Length - pathItems[j].Length - 1), true).FirstOrDefault();
                         if (partent != null)
                         {
-                            partent.Nodes.Add(new TreeNode { Text = $"{pathItems[j]}", Tag = nodePath, Name = nodePath });
+                            partent.Nodes.Add(new TreeNode { Text = $"{pathItems[j]}", Tag = nodePath, Name = nodePath, ToolTipText = files[i].projectId });
                         }
                         else
                         {
@@ -456,7 +503,7 @@ namespace WinFormsWebDav
                 var nextLastPartent = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
                 if (nextLastPartent != null)
                 {
-                    nextLastPartent.Text = $"{nextLastPartent.Text}@1";
+                    //nextLastPartent.Text = $"{nextLastPartent.Text}@1";
                     //nextLastPartent.Nodes.Add(new TreeNode { Text = $"{pathItems[pathItems.Length - 1]}", Tag = nodePath += $"/{pathItems[pathItems.Length - 1]}", Name = nodePath += $"/{pathItems[pathItems.Length - 1]}" });
                     nextLastPartent.Nodes.Add(new TreeNode { Text = $"{pathItems[pathItems.Length - 1]}", Tag = $"file", Name = nodePath += $"/{pathItems[pathItems.Length - 1]}" });
                 }
@@ -468,8 +515,8 @@ namespace WinFormsWebDav
 
             }
 
-            //CheckNodes2(rootNode);
-            SetNodeCount(rootNode, files);
+
+            SetNodeCount(rootNode, projects, files, true);
             this.btnInitTree.Enabled = true;
         }
 
