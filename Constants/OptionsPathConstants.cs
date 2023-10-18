@@ -11,5 +11,7 @@
         public const string DEFAULT_QUEUE = "DefaultInfo:DefaultQueue";
 
         public const string DEFAULT_WEBDAV = "DefaultInfo:DefaultWebdav";
+
+        public const string FILE_CHECK = "FileCheck";
     }
 }

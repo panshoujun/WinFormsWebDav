@@ -128,6 +128,9 @@ namespace WinFormsWebDav
 
             services.Configure<DefaultQueueOptions>(config.GetSection(OptionsPathConstants.DEFAULT_QUEUE));
             services.Configure<DefaultWebdavOptions>(config.GetSection(OptionsPathConstants.DEFAULT_WEBDAV));
+
+            services.Configure<FileCheckOptions>(config.GetSection(OptionsPathConstants.FILE_CHECK));
+
         }
 
 

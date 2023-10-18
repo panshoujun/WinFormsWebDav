@@ -15,8 +15,6 @@ namespace WinFormsWebDav
     {
         public delegate void setStatusDelegate(string requestInfo);
 
-        public static SystemOptions staticSystemOptions = new SystemOptions();
-
         //组件
         private readonly FileLockAndUnLockUc _fileLockAndUnLock;
         private readonly AppWatcherUc _appWatcherUc1;
@@ -26,21 +24,24 @@ namespace WinFormsWebDav
         //参数
         private readonly test _test;
         private readonly SystemOptions _systemOptions;
+        private readonly FileCheckOptions _fileCheckOptions;
 
-        //
+        //gw
         private readonly IProjectGW _projectGW;
         private readonly IDocumentGateway _documentGateway;
 
 
         public FormMain(FileLockAndUnLockUc fileLockAndUnLock, AppWatcherUc appWatcherUc1, MicroSoftMessageQueuingUc microSoftMessageQueuingUc1, WebDavUc webdav,
             IProjectGW projectGW, IDocumentGateway documentGateway,
-            IOptions<test> test, IOptions<SystemOptions> systemOptions)
+            IOptions<test> test, IOptions<SystemOptions> systemOptions, IOptions<FileCheckOptions> fileCheckOptions)
         {
             _projectGW = projectGW;
             _documentGateway = documentGateway;
 
             _test = test.Value;
             _systemOptions = systemOptions.Value;
+            _fileCheckOptions = fileCheckOptions.Value;
+
             _fileLockAndUnLock = fileLockAndUnLock;
             _appWatcherUc1 = appWatcherUc1;
             _microSoftMessageQueuingUc1 = microSoftMessageQueuingUc1;
@@ -73,6 +74,28 @@ namespace WinFormsWebDav
         }
 
         /// <summary>
+        /// 展示消息
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ShowMessage(object sender, EventArgs e)
+        {
+            // 修改其他控件的值
+            rtbLog.Text += ((MessageEventArgs)e).Msg;
+        }
+
+        /// <summary>
+        /// 设置btn
+        /// </summary>
+        /// <param name="IsEnabled"></param>
+        private void SetBtnEnabled(bool IsEnabled)
+        {
+            btnInitTree.Enabled = IsEnabled;
+            btnCheckFile.Enabled = IsEnabled;
+            btnDeleteFile.Enabled = IsEnabled;
+        }
+
+        /// <summary>
         /// 清除日志
         /// </summary>
         /// <param name="sender"></param>
@@ -84,10 +107,89 @@ namespace WinFormsWebDav
             DownloadFileAsRefit("bugtest", "1112.txt");
         }
 
-        private void ShowMessage(object sender, EventArgs e)
+        /// <summary>
+        /// 文件检查
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void btnCheckFile_Click(object sender, EventArgs e)
         {
-            // 修改其他控件的值
-            rtbLog.Text += ((MessageEventArgs)e).Msg;
+            SetBtnEnabled(false);
+
+            var projects = await GetAllProject();
+            var files = await GetAllFile(projects);
+
+            tbAllFileCount.Text = files.Count.ToString();
+
+            var resp = await CheckFiles(files);
+
+            SaveToFile(resp, _fileCheckOptions.FilesCheckResultPath);
+
+            //ShowMessage(null, new MessageEventArgs { Msg = $"检测文件结果:{JsonConvert.SerializeObject(resp, Formatting.Indented)}\n" });
+
+            SetBtnEnabled(true);
+            MessageBox.Show("所有文件检测完成");
+        }
+
+        /// <summary>
+        /// 删除文件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void btnDeleteFile_Click(object sender, EventArgs e)
+        {
+            SetBtnEnabled(false);
+            CheckAllFileResponse checkAllFile = new CheckAllFileResponse();
+            DeleteAllFileResponse deleteAllFile = new DeleteAllFileResponse();
+            if (File.Exists(_fileCheckOptions.FilesCheckResultPath))
+            {
+                string jsonString = await File.ReadAllTextAsync(_fileCheckOptions.FilesCheckResultPath);
+                checkAllFile = JsonConvert.DeserializeObject<CheckAllFileResponse>(jsonString);
+            }
+            else
+            {
+                MessageBox.Show("请先检查文件");
+            }
+
+            for (int i = 0; i < 5; i++)//checkAllFile.FailFilePath.Count
+            {
+                var split = checkAllFile.FailFilePath[i].Split("/");
+                var path = string.Join("/", split.Skip(1));
+                var result = await DeleteFileAsRefit(split[0], path);
+                if (result != null)
+                {
+                    deleteAllFile.Total++;
+                    deleteAllFile.FileResult.Add((checkAllFile.FailFilePath[i], (int)result.StatusCode));
+                }
+            }
+
+            SaveToFile(deleteAllFile, _fileCheckOptions.FilesDeleteResultPath);
+            SetBtnEnabled(true);
+            ShowMessage(null, new MessageEventArgs { Msg = $"删除文件结果:{JsonConvert.SerializeObject(deleteAllFile, Formatting.Indented)}\n" });
+        }
+
+        /// <summary>
+        /// 初始化tree
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void btnInitTree_ClickNew(object sender, EventArgs e)
+        {
+            SetBtnEnabled(false);
+
+            tvFiles.Nodes.Clear();
+            this.btnInitTree.Enabled = false;
+
+            var projects = await GetAllProject();
+            var files = await GetAllFile(projects);
+
+            ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
+
+            InitTree(files);
+
+            SetNodeCount(tvFiles.Nodes[0], files, true);
+
+            SetBtnEnabled(true);
         }
 
         /// <summary>
@@ -96,9 +198,9 @@ namespace WinFormsWebDav
         /// <returns></returns>
         private async Task<List<GetProjectResponse>> GetAllProject()
         {
-            if (File.Exists(projectsPath))
+            if (File.Exists(_fileCheckOptions.ProjectsPath))
             {
-                string jsonString = await File.ReadAllTextAsync(projectsPath);
+                string jsonString = await File.ReadAllTextAsync(_fileCheckOptions.ProjectsPath);
                 return JsonConvert.DeserializeObject<List<GetProjectResponse>>(jsonString);
             }
 
@@ -124,18 +226,22 @@ namespace WinFormsWebDav
                 page++;
             }
 
-            SaveToFile(allProjects, projectsPath);
+            SaveToFile(allProjects, _fileCheckOptions.ProjectsPath);
             return allProjects;
         }
 
-
+        /// <summary>
+        /// 获取所有文件
+        /// </summary>
+        /// <param name="projects"></param>
+        /// <returns></returns>
         private async Task<List<Modes.Temp.File>> GetAllFile(List<GetProjectResponse> projects)
         {
             var files = new List<Modes.Temp.File>();
 
-            if (File.Exists(filesPath))
+            if (File.Exists(_fileCheckOptions.FilesPath))
             {
-                string jsonString = await File.ReadAllTextAsync(filesPath);
+                string jsonString = await File.ReadAllTextAsync(_fileCheckOptions.FilesPath);
                 files = JsonConvert.DeserializeObject<List<Modes.Temp.File>>(jsonString);
                 files?.ForEach(f =>
                 {
@@ -151,7 +257,7 @@ namespace WinFormsWebDav
 
             files.ForEach(f => f.projectName = projects.Where(p => p.Id.ToString().Equals(f.projectId)).FirstOrDefault().Name);
 
-            SaveToFile(files, filesPath);
+            SaveToFile(files, _fileCheckOptions.FilesPath);
 
             return files;
         }
@@ -164,28 +270,22 @@ namespace WinFormsWebDav
         /// <returns></returns>
         public async Task GetPathFiles(GetProjectResponse project, List<Modes.Temp.File> files, string path = "tree")
         {
-            try
+            var result = await _documentGateway.GetFolderSubItems(project.Id, path);
+
+            if (result?.data?.files.Count > 0)
             {
-                var result = await _documentGateway.GetFolderSubItems(project.Id, path);
-
-                if (result?.data?.files.Count > 0)
-                {
-                    files.AddRange(result.data.files);
-                }
-
-                for (int i = 0; i < result?.data?.folders?.Count; i++)
-                {
-                    await GetPathFiles(project, files, $"{path}/{result?.data?.folders[i].name}");
-                }
+                files.AddRange(result.data.files);
             }
-            catch (Exception ex)
+
+            for (int i = 0; i < result?.data?.folders?.Count; i++)
             {
-                throw;
+                await GetPathFiles(project, files, $"{path}/{result?.data?.folders[i].name}");
             }
         }
 
+        #region 文件下载
         /// <summary>
-        /// 
+        /// 文件下载(WebClient)
         /// </summary>
         private void DownloadFileAsWebClient()
         {
@@ -199,6 +299,9 @@ namespace WinFormsWebDav
             }
         }
 
+        /// <summary>
+        /// 文件下载(WebRequest)
+        /// </summary>
         private void DownloadFileAsWebClientAsWebRequest()
         {
             string url = "http://qatest007.cscloud.cscad.net:6003/api/document/file/download?path=1112.txt&projectName=bugtest";
@@ -233,6 +336,9 @@ namespace WinFormsWebDav
             response.Close();
         }
 
+        /// <summary>
+        /// 文件下载(HttpClient)
+        /// </summary>
         private async void DownloadFileAsHttpClient()
         {
             string savePath = $"C:\\bugtest\\1112.txt";
@@ -261,7 +367,7 @@ namespace WinFormsWebDav
         }
 
         /// <summary>
-        /// 
+        /// 文件下载(Refit)
         /// </summary>
         private async Task<Tuple<bool, string>> DownloadFileAsRefit(string project, string path)
         {
@@ -287,7 +393,14 @@ namespace WinFormsWebDav
             }
 
         }
+        #endregion
 
+        /// <summary>
+        /// 文件删除
+        /// </summary>
+        /// <param name="project"></param>
+        /// <param name="path"></param>
+        /// <returns></returns>
         private async Task<HttpResponseMessage> DeleteFileAsRefit(string project, string path)
         {
             //var result = await _documentGateway.DownloadFile("bugtest", "1112.txt");
@@ -305,13 +418,159 @@ namespace WinFormsWebDav
 
         }
 
-        string filesPath = $"C:\\bugtest\\files.json";
-        string projectsPath = $"C:\\bugtest\\projects.json";
-        string filesCheckResultPath = $"C:\\bugtest\\checkResult.json";
-        string filesDeleteResultPath = $"C:\\bugtest\\deleteResult.json";
-        string rootPath = "root";
-        string rootText = "根节点";
+        /// <summary>
+        /// 设置节点文件数量
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="projects"></param>
+        /// <param name="files"></param>
+        /// <param name="sum"></param>
+        private void SetNodeCount(TreeNode node, List<Modes.Temp.File> files, bool IsSet = false)
+        {
+            int sum = 0;
+            foreach (TreeNode item in node.Nodes)
+            {
+                var tag = item.Tag.ToString();
+                if (tag.Equals(NodeTypeEnums.File.ToString()))
+                    continue;
 
+                var count = GetFileCount(files, item);
+                sum += count;
+
+                item.Text = $"{item.Text}({count})";
+                SetNodeCount(item, files);
+            }
+
+            if (IsSet)
+            {
+                node.Text = $"{node.Text}({sum})";
+            }
+        }
+
+        /// <summary>
+        /// 获取节点文件数量
+        /// </summary>
+        /// <param name="projects"></param>
+        /// <param name="files"></param>
+        /// <param name="item"></param>
+        /// <returns></returns>
+        private int GetFileCount(List<Modes.Temp.File> files, TreeNode item)
+        {
+            var count = 0;
+
+            foreach (var file in files)
+            {
+                if (file.projectId != item.ToolTipText)
+                {
+                    continue;
+                }
+
+                var split = file.fullPath.Split('/').SkipLast(1);
+                var path = $"{_fileCheckOptions.RootNodePath}/{file.projectName}";
+                if (split.Any())
+                {
+                    path += "/";
+                    path += string.Join($"/", split);
+                }
+
+                if (path.Contains(item.Name))
+                {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// 初始化tree
+        /// </summary>
+        /// <param name=""></param>
+        /// <param name="files"></param>
+        private void InitTree(List<Modes.Temp.File> files)
+        {
+            tvFiles.Nodes.Add(new TreeNode() { Text = _fileCheckOptions.RootNodeText, Name = _fileCheckOptions.RootNodePath, Tag = _fileCheckOptions.RootNodePath });
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                var nodePath = _fileCheckOptions.RootNodePath;
+                var pathItems = $"{files[i].projectName}/{files[i].fullPath}".Split("/");
+
+                for (int j = 0; j < pathItems.Length - 1; j++)
+                {
+                    nodePath += $"/{pathItems[j]}";
+
+                    var node = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
+                    if (node == null)
+                    {
+                        var partent = tvFiles.Nodes.Find(nodePath.Substring(0, nodePath.Length - pathItems[j].Length - 1), true).FirstOrDefault();
+                        partent?.Nodes.Add(new TreeNode { Text = $"{pathItems[j]}", Tag = nodePath, Name = nodePath, ToolTipText = files[i].projectId });
+                    }
+                }
+
+                var filePartent = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
+                var nodeTxt = $"{pathItems[pathItems.Length - 1]}";
+                filePartent?.Nodes.Add(new TreeNode { Text = nodeTxt, Tag = NodeTypeEnums.File.ToString(), Name = $"{nodePath}{nodeTxt}" });
+            }
+
+        }
+
+        /// <summary>
+        /// 保存文件
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="filePath"></param>
+        private void SaveToFile(object obj, string filePath)
+        {
+            var json = JsonConvert.SerializeObject(obj, Formatting.Indented);
+            //判断Json字符串内容是否为空
+            if (!string.IsNullOrEmpty(json))
+            {
+                File.WriteAllText(filePath, json);
+            }
+        }
+
+        /// <summary>
+        /// 检查文件是否可以下载
+        /// </summary>
+        /// <param name="projects"></param>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        private async Task<CheckAllFileResponse> CheckFiles(List<Modes.Temp.File> files)
+        {
+            CheckAllFileResponse resp = new CheckAllFileResponse();
+
+            resp.Total = files.Count;
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                var result = await DownloadFileAsRefit(files[i].projectName, files[i].fullPath);
+                if (result.Item1)
+                {
+                    resp.SuccessFilePath.Add($"{files[i].projectId}/{files[i].fullPath}");
+                    ShowMessage(null, new MessageEventArgs { Msg = $"{files[i].projectId}/{files[i].fullPath}可以下载\n" });
+                    File.AppendAllText(canDownloadFilePath, $"{files[i].projectId}/{files[i].fullPath}\n");
+                    resp.SuccessCount++;
+                    tbCanDown.Text = resp.SuccessCount.ToString();
+                }
+                else
+                {
+                    resp.FailFilePath.Add($"{files[i].projectId}/{files[i].fullPath}");
+                    ShowMessage(null, new MessageEventArgs { Msg = $"{files[i].projectId}/{files[i].fullPath}文件无法下载\n" });
+                    File.AppendAllText(canNotDownloadFilePath, $"{files[i].projectId}/{files[i].fullPath}\n");
+                    resp.FailCount++;
+                    tbCanNotDown.Text = resp.FailCount.ToString();
+                }
+                tbResidue.Text = (resp.Total - resp.FailCount - resp.SuccessCount).ToString();
+            }
+            return resp;
+        }
+
+        #region  弃用
+        /// <summary>
+        /// 初始化tree
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private async void btnInitTree_Click(object sender, EventArgs e)
         {
             tvFiles.Nodes.Clear();
@@ -391,248 +650,7 @@ namespace WinFormsWebDav
             });
             this.btnInitTree.Enabled = true;
         }
-
-        private async void btnInitTree_ClickNew(object sender, EventArgs e)
-        {
-            SetBtnEnabled(false);
-
-            tvFiles.Nodes.Clear();
-            this.btnInitTree.Enabled = false;
-
-            var projects = await GetAllProject();
-            var files = await GetAllFile(projects);
-
-            ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
-
-            InitTree(files);
-
-            SetNodeCount(tvFiles.Nodes[0], files, true);
-
-            SetBtnEnabled(true);
-        }
-
-        private void SetBtnEnabled(bool IsEnabled)
-        {
-            btnInitTree.Enabled = IsEnabled;
-            btnCheckFile.Enabled = IsEnabled;
-            btnDeleteFile.Enabled = IsEnabled;
-        }
-
-        /// <summary>
-        /// 设置节点文件数量
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="projects"></param>
-        /// <param name="files"></param>
-        /// <param name="sum"></param>
-        private void SetNodeCount(TreeNode node, List<Modes.Temp.File> files, bool IsSet = false)
-        {
-            int sum = 0;
-            foreach (TreeNode item in node.Nodes)
-            {
-                var tag = item.Tag.ToString();
-                if (tag.Equals(NodeTypeEnums.File.ToString()))
-                    continue;
-
-                var count = GetFileCount(files, item);
-                sum += count;
-
-                item.Text = $"{item.Text}({count})";
-                SetNodeCount(item, files);
-            }
-
-            if (IsSet)
-            {
-                node.Text = $"{node.Text}({sum})";
-            }
-        }
-
-        /// <summary>
-        /// 获取节点文件数量
-        /// </summary>
-        /// <param name="projects"></param>
-        /// <param name="files"></param>
-        /// <param name="item"></param>
-        /// <returns></returns>
-        private int GetFileCount(List<Modes.Temp.File> files, TreeNode item)
-        {
-            var count = 0;
-
-            foreach (var file in files)
-            {
-                if (file.projectId != item.ToolTipText)
-                {
-                    continue;
-                }
-
-                var split = file.fullPath.Split('/').SkipLast(1);
-                var path = $"{rootPath}/{file.projectName}";
-                if (split.Any())
-                {
-                    path += "/";
-                    path += string.Join($"/", split);
-                }
-
-                if (path.Contains(item.Name))
-                {
-                    count++;
-                }
-            }
-            return count;
-        }
-
-        /// <summary>
-        /// 初始化tree
-        /// </summary>
-        /// <param name=""></param>
-        /// <param name="files"></param>
-        private void InitTree(List<Modes.Temp.File> files)
-        {
-            tvFiles.Nodes.Add(new TreeNode() { Text = rootText, Name = rootPath, Tag = rootPath });
-
-            for (int i = 0; i < files.Count; i++)
-            {
-                var nodePath = rootPath;
-                var pathItems = $"{files[i].projectName}/{files[i].fullPath}".Split("/");
-
-                for (int j = 0; j < pathItems.Length - 1; j++)
-                {
-                    nodePath += $"/{pathItems[j]}";
-
-                    var node = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
-                    if (node == null)
-                    {
-                        var partent = tvFiles.Nodes.Find(nodePath.Substring(0, nodePath.Length - pathItems[j].Length - 1), true).FirstOrDefault();
-                        partent?.Nodes.Add(new TreeNode { Text = $"{pathItems[j]}", Tag = nodePath, Name = nodePath, ToolTipText = files[i].projectId });
-                    }
-                }
-
-                var filePartent = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
-                var nodeTxt = $"{pathItems[pathItems.Length - 1]}";
-                filePartent?.Nodes.Add(new TreeNode { Text = nodeTxt, Tag = NodeTypeEnums.File.ToString(), Name = $"{nodePath}{nodeTxt}" });
-            }
-
-        }
-        private TreeNode FindNode(TreeNodeCollection nodes, string searchText)
-        {
-            foreach (TreeNode node in nodes)
-            {
-                if (node.Text.Equals(searchText))
-                {
-                    return node;
-                }
-                TreeNode foundNode = FindNode(node.Nodes, searchText);
-                if (foundNode != null)
-                {
-                    return foundNode;
-                }
-            }
-            return null;
-        }
-
-        private void SaveToFile(object obj, string filePath)
-        {
-            var json = JsonConvert.SerializeObject(obj, Formatting.Indented);
-            //判断Json字符串内容是否为空
-            if (!string.IsNullOrEmpty(json))
-            {
-                File.WriteAllText(filePath, json);
-            }
-        }
-
-        string canDownloadFilePath = $"C:\\bugtest\\canDownloadFilePath.txt";
-        string canNotDownloadFilePath = $"C:\\bugtest\\canNotDownloadFilePath.txt";
-        private async void btnCheckFile_Click(object sender, EventArgs e)
-        {
-            SetBtnEnabled(false);
-
-            var projects = await GetAllProject();
-            var files = await GetAllFile(projects);
-
-            tbAllFileCount.Text = files.Count.ToString();
-
-            var resp = await CheckFiles(files);
-
-            SaveToFile(resp, filesCheckResultPath);
-
-            //ShowMessage(null, new MessageEventArgs { Msg = $"检测文件结果:{JsonConvert.SerializeObject(resp, Formatting.Indented)}\n" });
-
-            SetBtnEnabled(true);
-            MessageBox.Show("所有文件检测完成");
-        }
-
-        /// <summary>
-        /// 检查文件是否可以下载
-        /// </summary>
-        /// <param name="projects"></param>
-        /// <param name="files"></param>
-        /// <returns></returns>
-        private async Task<CheckAllFileResponse> CheckFiles(List<Modes.Temp.File> files)
-        {
-            CheckAllFileResponse resp = new CheckAllFileResponse();
-
-            resp.Total = files.Count;
-
-            for (int i = 0; i < files.Count; i++)
-            {
-                var result = await DownloadFileAsRefit(files[i].projectName, files[i].fullPath);
-                if (result.Item1)
-                {
-                    resp.SuccessFilePath.Add($"{files[i].projectId}/{files[i].fullPath}");
-                    ShowMessage(null, new MessageEventArgs { Msg = $"{files[i].projectId}/{files[i].fullPath}可以下载\n" });
-                    File.AppendAllText(canDownloadFilePath, $"{files[i].projectId}/{files[i].fullPath}\n");
-                    resp.SuccessCount++;
-                    tbCanDown.Text = resp.SuccessCount.ToString();
-                }
-                else
-                {
-                    resp.FailFilePath.Add($"{files[i].projectId}/{files[i].fullPath}");
-                    ShowMessage(null, new MessageEventArgs { Msg = $"{files[i].projectId}/{files[i].fullPath}文件无法下载\n" });
-                    File.AppendAllText(canNotDownloadFilePath, $"{files[i].projectId}/{files[i].fullPath}\n");
-                    resp.FailCount++;
-                    tbCanNotDown.Text = resp.FailCount.ToString();
-                }
-                tbResidue.Text = (resp.Total - resp.FailCount - resp.SuccessCount).ToString();
-            }
-            return resp;
-        }
-
-        /// <summary>
-        /// 删除文件
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async void btnDeleteFile_Click(object sender, EventArgs e)
-        {
-            SetBtnEnabled(false);
-            CheckAllFileResponse checkAllFile = new CheckAllFileResponse();
-            DeleteAllFileResponse deleteAllFile = new DeleteAllFileResponse();
-            if (File.Exists(filesCheckResultPath))
-            {
-                string jsonString = await File.ReadAllTextAsync(filesCheckResultPath);
-                checkAllFile = JsonConvert.DeserializeObject<CheckAllFileResponse>(jsonString);
-            }
-            else
-            {
-                MessageBox.Show("请先检查文件");
-            }
-
-            for (int i = 0; i < 5; i++)//checkAllFile.FailFilePath.Count
-            {
-                var split = checkAllFile.FailFilePath[i].Split("/");
-                var path = string.Join("/", split.Skip(1));
-                var result = await DeleteFileAsRefit(split[0], path);
-                if (result != null)
-                {
-                    deleteAllFile.Total++;
-                    deleteAllFile.FileResult.Add((checkAllFile.FailFilePath[i], (int)result.StatusCode));
-                }
-            }
-
-            SaveToFile(deleteAllFile, filesDeleteResultPath);
-            SetBtnEnabled(true);
-            ShowMessage(null, new MessageEventArgs { Msg = $"删除文件结果:{JsonConvert.SerializeObject(deleteAllFile, Formatting.Indented)}\n" });
-        }
+        #endregion
     }
 
 }
