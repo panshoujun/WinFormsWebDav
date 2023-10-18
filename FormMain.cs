@@ -3,7 +3,6 @@ using Newtonsoft.Json;
 using System.Net;
 using WinFormsWebDav.Enums;
 using WinFormsWebDav.Modes;
-using WinFormsWebDav.Modes.Dto.Base;
 using WinFormsWebDav.Modes.Dto.Response;
 using WinFormsWebDav.Modes.Options;
 using WinFormsWebDav.Services.Gateway.DocumentGateway;
@@ -148,7 +147,9 @@ namespace WinFormsWebDav
             }
             else
             {
-                MessageBox.Show("请先检查文件");
+                MessageBox.Show("请先检测文件");
+                SetBtnEnabled(true);
+                return;
             }
 
             for (int i = 0; i < 5; i++)//checkAllFile.FailFilePath.Count
@@ -525,6 +526,12 @@ namespace WinFormsWebDav
             //判断Json字符串内容是否为空
             if (!string.IsNullOrEmpty(json))
             {
+                var path = string.Join("\\", filePath.Split("\\").SkipLast(1));
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
                 File.WriteAllText(filePath, json);
             }
         }
