@@ -48,10 +48,13 @@ namespace WinFormsWebDav
             _webdav = webdav;
             InitializeComponent();
 
+            #region 选中联动 有问题
             tvFiles.MouseClick += treeView1_MouseClick;
             //tvFiles.AfterCheck += skinTreeView1_AfterCheck;
             //tvFiles.DrawMode = TreeViewDrawMode.OwnerDrawText;
             //tvFiles.DrawNode += ClassTreeList_DrawNode;
+            #endregion
+
             tvFiles.CheckBoxes = true;
 
             tbWebdav.Controls.Add(_webdav);
@@ -700,6 +703,7 @@ namespace WinFormsWebDav
         }
         #endregion
 
+        #region 选中联动有问题
         #region
         private void treeView1_MouseClick(object sender, MouseEventArgs e)
         {
@@ -864,8 +868,6 @@ namespace WinFormsWebDav
             e.Graphics.DrawString(e.Node.Text, treeview.Font, brush, e.Bounds.Left, e.Bounds.Top);
         }
         #endregion
-
-        #region
         #endregion
     }
 }
