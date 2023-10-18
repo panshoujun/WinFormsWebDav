@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml.Linq;
+using WinFormsWebDav.Enums;
 using WinFormsWebDav.Modes;
 using WinFormsWebDav.Modes.Dto.Response;
 using WinFormsWebDav.Modes.Options;
@@ -316,6 +317,7 @@ namespace WinFormsWebDav
         string projectsPath = $"C:\\bugtest\\projects.json";
         string filesCheckResultPath = $"C:\\bugtest\\checkResult.json";
         string rootPath = "root";
+        string rootText = "根节点";
 
         private async void btnInitTree_Click(object sender, EventArgs e)
         {
@@ -410,7 +412,7 @@ namespace WinFormsWebDav
             foreach (TreeNode item in node.Nodes)
             {
                 var tag = item.Tag.ToString();
-                if (tag.Equals("file"))
+                if (tag.Equals(NodeTypeEnums.File.ToString()))
                     continue;
 
                 var count = GetFileCount(projects, files, item);
@@ -470,23 +472,27 @@ namespace WinFormsWebDav
             var projects = await GetAllProject();
             var files = await GetAllFile(projects);
 
+            ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
+
             InitTree(projects, files);
 
             SetNodeCount(tvFiles.Nodes[0], projects, files, true);
             this.btnInitTree.Enabled = true;
         }
 
+        /// <summary>
+        /// 初始化tree
+        /// </summary>
+        /// <param name="projects"></param>
+        /// <param name="files"></param>
         private void InitTree(List<GetProjectResponse> projects, List<Modes.Temp.File> files)
         {
-            TreeNode rootNode = new TreeNode() { Text = "根节点", Name = rootPath, Tag = rootPath };
-            tvFiles.Nodes.Add(rootNode);
-
-            ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
+            tvFiles.Nodes.Add(new TreeNode() { Text = rootText, Name = rootPath, Tag = rootPath });
 
             for (int i = 0; i < files.Count; i++)
             {
-                var pathItems = $"{projects.Where(p => p.Id.ToString().Equals(files[i].projectId)).FirstOrDefault().Name}/{files[i].fullPath}".Split("/");
                 var nodePath = rootPath;
+                var pathItems = $"{projects.Where(p => p.Id.ToString().Equals(files[i].projectId)).FirstOrDefault().Name}/{files[i].fullPath}".Split("/");
 
                 for (int j = 0; j < pathItems.Length - 1; j++)
                 {
@@ -496,26 +502,13 @@ namespace WinFormsWebDav
                     if (node == null)
                     {
                         var partent = tvFiles.Nodes.Find(nodePath.Substring(0, nodePath.Length - pathItems[j].Length - 1), true).FirstOrDefault();
-                        if (partent != null)
-                        {
-                            partent.Nodes.Add(new TreeNode { Text = $"{pathItems[j]}", Tag = nodePath, Name = nodePath, ToolTipText = files[i].projectId });
-                        }
-                        else
-                        {
-                            MessageBox.Show($"aaa{nodePath}");
-                        }
+                        partent?.Nodes.Add(new TreeNode { Text = $"{pathItems[j]}", Tag = nodePath, Name = nodePath, ToolTipText = files[i].projectId });
                     }
                 }
 
-                var nextLastPartent = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
-                if (nextLastPartent != null)
-                {
-                    nextLastPartent.Nodes.Add(new TreeNode { Text = $"{pathItems[pathItems.Length - 1]}", Tag = $"file", Name = nodePath += $"/{pathItems[pathItems.Length - 1]}" });
-                }
-                else
-                {
-                    MessageBox.Show($"bbb{nodePath}");
-                }
+                var filePartent = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
+                var nodeTxt = $"{pathItems[pathItems.Length - 1]}";
+                filePartent?.Nodes.Add(new TreeNode { Text = nodeTxt, Tag = NodeTypeEnums.File.ToString(), Name = $"{nodePath}{nodeTxt}" });
             }
 
         }
