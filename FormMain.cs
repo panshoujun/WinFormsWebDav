@@ -548,7 +548,7 @@ namespace WinFormsWebDav
                 {
                     resp.SuccessFilePath.Add($"{files[i].projectId}/{files[i].fullPath}");
                     ShowMessage(null, new MessageEventArgs { Msg = $"{files[i].projectId}/{files[i].fullPath}可以下载\n" });
-                    File.AppendAllText(canDownloadFilePath, $"{files[i].projectId}/{files[i].fullPath}\n");
+                    File.AppendAllText(_fileCheckOptions.CanDownloadFilePath, $"{files[i].projectId}/{files[i].fullPath}\n");
                     resp.SuccessCount++;
                     tbCanDown.Text = resp.SuccessCount.ToString();
                 }
@@ -556,7 +556,7 @@ namespace WinFormsWebDav
                 {
                     resp.FailFilePath.Add($"{files[i].projectId}/{files[i].fullPath}");
                     ShowMessage(null, new MessageEventArgs { Msg = $"{files[i].projectId}/{files[i].fullPath}文件无法下载\n" });
-                    File.AppendAllText(canNotDownloadFilePath, $"{files[i].projectId}/{files[i].fullPath}\n");
+                    File.AppendAllText(_fileCheckOptions.CanNotDownloadFilePath, $"{files[i].projectId}/{files[i].fullPath}\n");
                     resp.FailCount++;
                     tbCanNotDown.Text = resp.FailCount.ToString();
                 }
