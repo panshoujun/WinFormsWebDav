@@ -47,7 +47,9 @@ namespace WinFormsWebDav
             _webdav = webdav;
             InitializeComponent();
 
-
+            //tvFiles.MouseClick += treeView1_MouseClick;
+            tvFiles.AfterCheck += skinTreeView1_AfterCheck;
+            tvFiles.DrawNode += ClassTreeList_DrawNode;
             tvFiles.CheckBoxes = true;
 
             tbWebdav.Controls.Add(_webdav);
@@ -425,6 +427,12 @@ namespace WinFormsWebDav
 
         }
 
+        /// <summary>
+        /// 设置node是否选中
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="checkAllFile"></param>
+        /// <param name="projects"></param>
         private void SetNodeChecked(TreeNode node, CheckAllFileResponse checkAllFile, List<GetProjectResponse> projects)
         {
             foreach (TreeNode item in node.Nodes)
@@ -439,7 +447,7 @@ namespace WinFormsWebDav
                 split[0] = projects.Where(p => p.Name == split.FirstOrDefault()).FirstOrDefault().Id.ToString();
                 if (checkAllFile.FailFilePath.Any(p => p.Equals(string.Join("/", split))))
                 {
-                    item.Checked= true; 
+                    item.Checked = true;
                 }
             }
         }
@@ -486,7 +494,7 @@ namespace WinFormsWebDav
 
             foreach (var file in files)
             {
-                if (file.projectId != item.ToolTipText)
+                if (file.projectName != item.Text)
                 {
                     continue;
                 }
@@ -689,7 +697,174 @@ namespace WinFormsWebDav
             this.btnInitTree.Enabled = true;
         }
         #endregion
-    }
 
+        #region
+        private void treeView1_MouseClick(object sender, MouseEventArgs e)
+        {
+            TreeNode node = tvFiles.GetNodeAt(new Point(e.X, e.Y));
+            if (node != null)
+            {
+                ChangeChild(node, node.Checked);//影响子节点
+                ChangeParent(node);//影响父节点
+            }
+        }
+
+        //递归子节点跟随其全选或全不选
+        private void ChangeChild(TreeNode node, bool state)
+        {
+            node.Checked = state;
+            foreach (TreeNode tn in node.Nodes)
+                ChangeChild(tn, state);
+        }
+
+        //递归父节点跟随其全选或全不选
+        private void ChangeParent(TreeNode node)
+        {
+            if (node.Parent != null)
+            {
+                //兄弟节点被选中的个数
+                int brotherNodeCheckedCount = 0;
+                //遍历该节点的兄弟节点
+                foreach (TreeNode tn in node.Parent.Nodes)
+                {
+                    if (tn.Checked == true)
+                        brotherNodeCheckedCount++;
+                }
+                //兄弟节点全没选，其父节点也不选
+                if (brotherNodeCheckedCount == 0)
+                {
+                    node.Parent.Checked = false;
+                    ChangeParent(node.Parent);
+                }
+                //兄弟节点只要有一个被选，其父节点也被选
+                if (brotherNodeCheckedCount >= 1)
+                {
+                    node.Parent.Checked = true;
+                    ChangeParent(node.Parent);
+                }
+            }
+        }
+        #endregion
+
+        #region
+        //取消节点选中状态之后，取消所有父节点的选中状态
+        private void setParentNodeCheckedState(TreeNode currNode, bool state)
+        {
+            TreeNode parentNode = currNode.Parent; //获得当前节点的父节点
+            parentNode.Checked = state; //设置父节点的选中状态
+            if (state == false) //当状态设置为false 
+            {
+                int flag = 0;
+                foreach (TreeNode broNode in parentNode.Nodes) //判断该父节点的子节点中，是否有半勾选状态的选项
+                {
+                    if (broNode.Checked || broNode.ToolTipText.Equals("部分勾选"))
+                    {
+                        flag = 1;
+                    }
+                }
+                if (flag == 1) // 有设置父节点为半勾选状态
+                {
+                    parentNode.ToolTipText = "部分勾选";
+                    parentNode.Checked = false;
+                }
+                else
+                {   //设置父节点状态为 未勾选
+                    parentNode.ToolTipText = "";
+                    parentNode.Checked = true;
+                    parentNode.Checked = false;  //需要改变节点的Checked状态，才能重新绘制控件；
+                }
+            }
+            else
+            {   //当父节点设置为选中状态时
+                int flag = 0;
+                foreach (TreeNode broNode in parentNode.Nodes)//判断该父节点的子节点下是否有未选中的节点。
+                {
+                    if (!broNode.Checked)
+                    {
+                        flag = 1;
+                    }
+                }
+                if (flag == 1)
+                {
+                    parentNode.ToolTipText = "部分勾选";
+                    parentNode.Checked = false;
+                }
+                else
+                {
+                    parentNode.ToolTipText = "";
+                    parentNode.Checked = true;
+                }
+            }
+            if (currNode.Parent.Parent != null) //如果父节点之上还有父节点
+            {
+                setParentNodeCheckedState(currNode.Parent, state); //递归调用
+            }
+        }
+
+        //选中节点之后，选中节点的所有子节点
+        private void setChildNodeCheckedState(TreeNode currNode, bool state)
+        {
+            TreeNodeCollection nodes = currNode.Nodes; //获取所有子节点
+            if (nodes.Count > 0) //存在子节点
+                foreach (TreeNode tn in nodes)
+                {
+                    tn.Checked = state;
+                    tn.ToolTipText = "";
+                    setChildNodeCheckedState(tn, state);//递归调用子节点的子节点
+                }
+        }
+
+        private void skinTreeView1_AfterCheck(object sender, TreeViewEventArgs e)
+        {
+            if (e.Action == TreeViewAction.ByMouse) //鼠标点击
+            {
+                //textBox1.Text = e.Node.Text;
+                if (e.Node.Checked) //选中
+                {
+                    e.Node.ToolTipText = "";
+                    //选中节点之后，选中节点的所有子节点
+                    setChildNodeCheckedState(e.Node, true);
+                    if (e.Node.Parent != null)
+                    {
+                        setParentNodeCheckedState(e.Node, true);
+                    }
+                }
+                else  //取消选中
+                {
+                    e.Node.ToolTipText = "";
+                    //取消节点选中状态之后，取消所有子节点的选中状态
+                    setChildNodeCheckedState(e.Node, false);
+                    //如果节点存在父节点，取消父节点的选中状态
+                    if (e.Node.Parent != null)
+                    {
+                        setParentNodeCheckedState(e.Node, false);
+                    }
+                }
+            }
+        }
+
+        private void ClassTreeList_DrawNode(object sender, DrawTreeNodeEventArgs e)
+        {
+            if (e.Bounds.Location.X <= 0)
+            {
+                return;
+            }
+            var treeview = sender as TreeView;
+            var brush = Brushes.Black; //黑色
+            if (e.Node.ToolTipText.EndsWith("部分勾选") && e.Node.Checked == false)
+            {  //判断为半勾选状态
+                var location = e.Node.Bounds.Location;
+                location.Offset(-10, 7);
+                var size = new Size(7, 7);
+                e.Graphics.FillRectangle(brush, new Rectangle(location, size)); //这里绘制的是正方形
+            }
+            //绘制文本
+            e.Graphics.DrawString(e.Node.Text, treeview.Font, brush, e.Bounds.Left, e.Bounds.Top);
+        }
+        #endregion
+
+        #region
+        #endregion
+    }
 }
 
