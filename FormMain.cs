@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Http.Json;
@@ -314,6 +315,7 @@ namespace WinFormsWebDav
         string filesPath = $"C:\\bugtest\\files.json";
         string projectsPath = $"C:\\bugtest\\projects.json";
         string filesCheckResultPath = $"C:\\bugtest\\checkResult.json";
+        string rootPath = "root";
 
         private async void btnInitTree_Click(object sender, EventArgs e)
         {
@@ -393,6 +395,113 @@ namespace WinFormsWebDav
 
             });
             this.btnInitTree.Enabled = true;
+        }
+
+
+        private void SetNodeCount(TreeNode node, List<Modes.Temp.File> files)
+        {
+            foreach (TreeNode item in node.Nodes)
+            {
+                var tag = node.Tag.ToString();
+                if (!tag.Equals("file"))
+                {
+                    var count = files.Count(p => $"{p.projectId}/{p.fullPath}".Contains(tag));
+                    var split = node.Text.Split("@");
+                    node.Text = $"{split[0]}@{count}";
+                    SetNodeCount(item, files);
+                }
+
+            }
+        }
+
+
+        private async void btnInitTree_ClickNew(object sender, EventArgs e)
+        {
+            tvFiles.Nodes.Clear();
+            this.btnInitTree.Enabled = false;
+
+            var projects = await GetAllProject();
+            var files = await GetAllFile(projects);
+
+
+            TreeNode rootNode = new TreeNode() { Text = "根节点", Name = rootPath, Tag = rootPath };
+            tvFiles.Nodes.Add(rootNode);
+
+            ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
+
+            for (int i = 0; i < files.Count; i++)
+            {
+                var pathItems = $"{projects.Where(p => p.Id.ToString().Equals(files[i].projectId)).FirstOrDefault().Name}/{files[i].fullPath}".Split("/");
+                var nodePath = rootPath;
+
+                for (int j = 0; j < pathItems.Length - 1; j++)
+                {
+                    nodePath += $"/{pathItems[j]}";
+
+                    var node = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
+                    if (node == null)
+                    {
+                        var partent = tvFiles.Nodes.Find(nodePath.Substring(0, nodePath.Length - pathItems[j].Length - 1), true).FirstOrDefault();
+                        if (partent != null)
+                        {
+                            partent.Nodes.Add(new TreeNode { Text = $"{pathItems[j]}", Tag = nodePath, Name = nodePath });
+                        }
+                        else
+                        {
+                            MessageBox.Show($"aaa{nodePath}");
+                        }
+                    }
+                }
+
+                var nextLastPartent = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
+                if (nextLastPartent != null)
+                {
+                    nextLastPartent.Text = $"{nextLastPartent.Text}@1";
+                    //nextLastPartent.Nodes.Add(new TreeNode { Text = $"{pathItems[pathItems.Length - 1]}", Tag = nodePath += $"/{pathItems[pathItems.Length - 1]}", Name = nodePath += $"/{pathItems[pathItems.Length - 1]}" });
+                    nextLastPartent.Nodes.Add(new TreeNode { Text = $"{pathItems[pathItems.Length - 1]}", Tag = $"file", Name = nodePath += $"/{pathItems[pathItems.Length - 1]}" });
+                }
+                else
+                {
+                    MessageBox.Show($"bbb{nodePath}");
+                }
+
+
+            }
+
+            //CheckNodes2(rootNode);
+            SetNodeCount(rootNode, files);
+            this.btnInitTree.Enabled = true;
+        }
+
+        private int CheckNodes(TreeNodeCollection nodes, int sum = 0)
+        {
+            foreach (TreeNode node in nodes)
+            {
+                if (!node.Tag.ToString().Equals("file"))
+                {
+                    sum += CheckNodes(node.Nodes, sum);
+                    var split = node.Text.Split("@");
+                    sum += split.Length - 1;
+                    node.Text = $"{split[0]}@{sum}";
+                }
+            }
+            return sum;
+        }
+
+        private int CheckNodes2(TreeNode node, int sum = 0)
+        {
+            foreach (TreeNode item in node.Nodes)
+            {
+                if (!item.Tag.ToString().Equals("file"))
+                {
+
+                    var split = item.Text.Split("@");
+                    sum += split.Length - 1;
+                    item.Text = $"{split[0]}({sum})";
+                }
+                CheckNodes2(item, sum);
+            }
+            return sum;
         }
 
         private TreeNode FindNode(TreeNodeCollection nodes, string searchText)

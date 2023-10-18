@@ -209,7 +209,7 @@
             btnInitTree.TabIndex = 3;
             btnInitTree.Text = "初始化树形结构";
             btnInitTree.UseVisualStyleBackColor = true;
-            btnInitTree.Click += btnInitTree_Click;
+            btnInitTree.Click += btnInitTree_ClickNew;
             // 
             // tvFiles
             // 
