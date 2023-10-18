@@ -416,13 +416,13 @@ namespace WinFormsWebDav
                 var count = GetFileCount(projects, files, item);
                 sum += count;
 
-                item.Text = $"{item.Text}@{count}";
+                item.Text = $"{item.Text}({count})";
                 SetNodeCount(item, projects, files);
             }
 
             if (IsSet)
             {
-                node.Text = $"{node.Text}@{sum}";
+                node.Text = $"{node.Text}({sum})";
             }
         }
 
@@ -470,7 +470,14 @@ namespace WinFormsWebDav
             var projects = await GetAllProject();
             var files = await GetAllFile(projects);
 
+            InitTree(projects, files);
 
+            SetNodeCount(tvFiles.Nodes[0], projects, files, true);
+            this.btnInitTree.Enabled = true;
+        }
+
+        private void InitTree(List<GetProjectResponse> projects, List<Modes.Temp.File> files)
+        {
             TreeNode rootNode = new TreeNode() { Text = "根节点", Name = rootPath, Tag = rootPath };
             tvFiles.Nodes.Add(rootNode);
 
@@ -503,54 +510,15 @@ namespace WinFormsWebDav
                 var nextLastPartent = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
                 if (nextLastPartent != null)
                 {
-                    //nextLastPartent.Text = $"{nextLastPartent.Text}@1";
-                    //nextLastPartent.Nodes.Add(new TreeNode { Text = $"{pathItems[pathItems.Length - 1]}", Tag = nodePath += $"/{pathItems[pathItems.Length - 1]}", Name = nodePath += $"/{pathItems[pathItems.Length - 1]}" });
                     nextLastPartent.Nodes.Add(new TreeNode { Text = $"{pathItems[pathItems.Length - 1]}", Tag = $"file", Name = nodePath += $"/{pathItems[pathItems.Length - 1]}" });
                 }
                 else
                 {
                     MessageBox.Show($"bbb{nodePath}");
                 }
-
-
             }
 
-
-            SetNodeCount(rootNode, projects, files, true);
-            this.btnInitTree.Enabled = true;
         }
-
-        private int CheckNodes(TreeNodeCollection nodes, int sum = 0)
-        {
-            foreach (TreeNode node in nodes)
-            {
-                if (!node.Tag.ToString().Equals("file"))
-                {
-                    sum += CheckNodes(node.Nodes, sum);
-                    var split = node.Text.Split("@");
-                    sum += split.Length - 1;
-                    node.Text = $"{split[0]}@{sum}";
-                }
-            }
-            return sum;
-        }
-
-        private int CheckNodes2(TreeNode node, int sum = 0)
-        {
-            foreach (TreeNode item in node.Nodes)
-            {
-                if (!item.Tag.ToString().Equals("file"))
-                {
-
-                    var split = item.Text.Split("@");
-                    sum += split.Length - 1;
-                    item.Text = $"{split[0]}({sum})";
-                }
-                CheckNodes2(item, sum);
-            }
-            return sum;
-        }
-
         private TreeNode FindNode(TreeNodeCollection nodes, string searchText)
         {
             foreach (TreeNode node in nodes)
@@ -577,7 +545,6 @@ namespace WinFormsWebDav
                 File.WriteAllText(filePath, json);
             }
         }
-
 
         string canDownloadFilePath = $"C:\\bugtest\\canDownloadFilePath.txt";
         string canNotDownloadFilePath = $"C:\\bugtest\\canNotDownloadFilePath.txt";
