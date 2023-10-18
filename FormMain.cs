@@ -118,13 +118,14 @@ namespace WinFormsWebDav
 
             tbAllFileCount.Text = files.Count.ToString();
 
-            tvFiles.Nodes.Clear();
-            InitTree(files);
-            SetNodeCount(tvFiles.Nodes[0], files, true);
+            CreateTree(files);
 
             var resp = await CheckFiles(files);
 
+            SetNodeChecked(tvFiles.Nodes[0], resp, projects);
+
             SaveToFile(resp, _fileCheckOptions.FilesCheckResultPath);
+
 
             //ShowMessage(null, new MessageEventArgs { Msg = $"检测文件结果:{JsonConvert.SerializeObject(resp, Formatting.Indented)}\n" });
 
@@ -180,19 +181,22 @@ namespace WinFormsWebDav
         {
             SetBtnEnabled(false);
 
-            tvFiles.Nodes.Clear();
-            this.btnInitTree.Enabled = false;
-
             var projects = await GetAllProject();
             var files = await GetAllFile(projects);
 
             ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
 
-            InitTree(files);
-
-            SetNodeCount(tvFiles.Nodes[0], files, true);
+            CreateTree(files);
 
             SetBtnEnabled(true);
+        }
+
+        private void CreateTree(List<Modes.Temp.File> files)
+        {
+            tvFiles.Nodes.Clear();
+            this.btnInitTree.Enabled = false;
+            InitTree(files);
+            SetNodeCount(tvFiles.Nodes[0], files, true);
         }
 
         /// <summary>
@@ -421,6 +425,25 @@ namespace WinFormsWebDav
 
         }
 
+        private void SetNodeChecked(TreeNode node, CheckAllFileResponse checkAllFile, List<GetProjectResponse> projects)
+        {
+            foreach (TreeNode item in node.Nodes)
+            {
+                var tag = item.Tag.ToString();
+                if (!tag.Equals(NodeTypeEnums.File.ToString()))
+                {
+                    SetNodeChecked(item, checkAllFile, projects);
+                }
+
+                var split = item.Name.Split("/").Skip(1).ToArray();
+                split[0] = projects.Where(p => p.Name == split.FirstOrDefault()).FirstOrDefault().Id.ToString();
+                if (checkAllFile.FailFilePath.Any(p => p.Equals(string.Join("/", split))))
+                {
+                    item.Checked= true; 
+                }
+            }
+        }
+
         /// <summary>
         /// 设置节点文件数量
         /// </summary>
@@ -512,7 +535,7 @@ namespace WinFormsWebDav
 
                 var filePartent = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
                 var nodeTxt = $"{pathItems[pathItems.Length - 1]}";
-                filePartent?.Nodes.Add(new TreeNode { Text = nodeTxt, Tag = NodeTypeEnums.File.ToString(), Name = $"{nodePath}{nodeTxt}" });
+                filePartent?.Nodes.Add(new TreeNode { Text = nodeTxt, Tag = NodeTypeEnums.File.ToString(), Name = $"{nodePath}/{nodeTxt}" });
             }
 
         }
@@ -548,8 +571,14 @@ namespace WinFormsWebDav
         {
             CheckAllFileResponse resp = new CheckAllFileResponse();
 
-            resp.Total = files.Count;
+            if (File.Exists(_fileCheckOptions.FilesCheckResultPath))
+            {
+                string jsonString = await File.ReadAllTextAsync(_fileCheckOptions.FilesCheckResultPath);
+                resp = JsonConvert.DeserializeObject<CheckAllFileResponse>(jsonString);
+                return resp;
+            }
 
+            resp.Total = files.Count;
             for (int i = 0; i < files.Count; i++)
             {
                 var result = await DownloadFileAsRefit(files[i].projectName, files[i].fullPath);
