@@ -6,6 +6,6 @@ namespace WinFormsWebDav.Modes
     {
         public string Msg { get; set; }
 
-        public ShowMessageTypeEnums MessageType { get; set; } = ShowMessageTypeEnums.Log;
+        public ShowMessageTypeEnums MessageType { get; set; } = ShowMessageTypeEnums.LogTxt;
     }
 }

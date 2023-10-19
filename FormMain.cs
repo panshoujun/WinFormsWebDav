@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System.Drawing;
+using System.Linq;
 using System.Net;
 using WinFormsWebDav.Constants;
 using WinFormsWebDav.Enums;
@@ -88,14 +89,13 @@ namespace WinFormsWebDav
             var type = ((MessageEventArgs)e).MessageType;
 
             // 修改其他控件的值
-            if (type == ShowMessageTypeEnums.All || type == ShowMessageTypeEnums.Log)
+            if (type == ShowMessageTypeEnums.All || type == ShowMessageTypeEnums.LogTxt)
             {
                 rtbLog.Text += ((MessageEventArgs)e).Msg;
             }
 
             if (type == ShowMessageTypeEnums.All || type == ShowMessageTypeEnums.MessageBox)
             {
-                rtbLog.Text += ((MessageEventArgs)e).Msg;
                 MessageBox.Show(((MessageEventArgs)e).Msg);
             }
         }
@@ -210,7 +210,6 @@ namespace WinFormsWebDav
         private void CreateTree(List<Modes.Temp.File> files)
         {
             tvFiles.Nodes.Clear();
-            this.btnInitTree.Enabled = false;
             InitTree(files);
             SetNodeCount(tvFiles.Nodes[0], files, true);
         }
@@ -427,7 +426,6 @@ namespace WinFormsWebDav
         private async Task<HttpResponseMessage> DeleteFileAsRefit(string project, string path)
         {
             //var result = await _documentGateway.DownloadFile("bugtest", "1112.txt");
-            string msg = string.Empty;
             try
             {
                 var result = await _documentGateway.DeleteFile(Guid.Parse(project), path);
@@ -435,7 +433,6 @@ namespace WinFormsWebDav
             }
             catch (Exception ex)
             {
-                msg = ex.Message;
                 return null;
             }
 
@@ -483,6 +480,7 @@ namespace WinFormsWebDav
                     continue;
 
                 var count = GetFileCount(files, item);
+
                 sum += count;
 
                 item.Text = $"{item.Text}({count})";
@@ -490,9 +488,8 @@ namespace WinFormsWebDav
             }
 
             if (IsSet)
-            {
                 node.Text = $"{node.Text}({sum})";
-            }
+
         }
 
         /// <summary>
@@ -509,22 +506,15 @@ namespace WinFormsWebDav
             foreach (var file in files)
             {
                 if (file.projectName != item.Text)
-                {
                     continue;
-                }
 
                 var split = file.fullPath.Split('/').SkipLast(1);
                 var path = $"{_fileCheckOptions.RootNodePath}/{file.projectName}";
                 if (split.Any())
-                {
-                    path += "/";
-                    path += string.Join($"/", split);
-                }
+                    path += $"/{string.Join($"/", split)}";
 
                 if (path.Contains(item.Name))
-                {
                     count++;
-                }
             }
             return count;
         }
