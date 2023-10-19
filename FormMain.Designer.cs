@@ -53,6 +53,7 @@
             tbFileWatch = new TabPage();
             btnClear = new Button();
             rtbLog = new RichTextBox();
+            btnDeleteSelectedFile = new Button();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -130,6 +131,7 @@
             // 
             // splitContainer2.Panel1
             // 
+            splitContainer2.Panel1.Controls.Add(btnDeleteSelectedFile);
             splitContainer2.Panel1.Controls.Add(btnDeleteFile);
             splitContainer2.Panel1.Controls.Add(tbResidue);
             splitContainer2.Panel1.Controls.Add(label4);
@@ -158,7 +160,7 @@
             btnDeleteFile.Name = "btnDeleteFile";
             btnDeleteFile.Size = new Size(133, 51);
             btnDeleteFile.TabIndex = 12;
-            btnDeleteFile.Text = "删除文件";
+            btnDeleteFile.Text = "删除错误文件";
             btnDeleteFile.UseVisualStyleBackColor = true;
             btnDeleteFile.Click += btnDeleteFile_Click;
             // 
@@ -334,6 +336,16 @@
             rtbLog.TabIndex = 0;
             rtbLog.Text = "";
             // 
+            // btnDeleteSelectedFile
+            // 
+            btnDeleteSelectedFile.Location = new Point(547, 3);
+            btnDeleteSelectedFile.Name = "btnDeleteSelectedFile";
+            btnDeleteSelectedFile.Size = new Size(133, 51);
+            btnDeleteSelectedFile.TabIndex = 13;
+            btnDeleteSelectedFile.Text = "删除选中文件";
+            btnDeleteSelectedFile.UseVisualStyleBackColor = true;
+            btnDeleteSelectedFile.Click += btnDeleteSelectedFile_Click;
+            // 
             // FormMain
             // 
             AutoScaleDimensions = new SizeF(11F, 24F);
@@ -385,5 +397,6 @@
         private FileSetInfoUcNew fileSetInfo;
         private TabPage tbAppWathcer;
         private TabPage tbFileWatch;
+        private Button btnDeleteSelectedFile;
     }
 }

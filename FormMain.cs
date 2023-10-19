@@ -497,8 +497,8 @@ namespace WinFormsWebDav
         {
             foreach (TreeNode item in node.Nodes)
             {
-                var tag = item.Tag.ToString();
-                if (!tag.Equals(NodeTypeEnums.File.ToString()))
+                var tag = item.Tag as NodeTagInfo;
+                if (tag.NodeType != NodeTypeEnums.File)
                 {
                     SetNodeChecked(item, checkAllFile, projects);
                 }
@@ -524,8 +524,8 @@ namespace WinFormsWebDav
             int sum = 0;
             foreach (TreeNode item in node.Nodes)
             {
-                var tag = item.Tag.ToString();
-                if (tag.Equals(NodeTypeEnums.File.ToString()))
+                var tag = item.Tag as NodeTagInfo;
+                if (tag.NodeType == NodeTypeEnums.File)
                     continue;
 
                 var count = GetFileCount(files, item);
@@ -572,7 +572,7 @@ namespace WinFormsWebDav
         /// <param name="files"></param>
         private void InitTree(List<Modes.Temp.File> files)
         {
-            tvFiles.Nodes.Add(new TreeNode() { Text = _fileCheckOptions.RootNodeText, Name = _fileCheckOptions.RootNodePath, Tag = _fileCheckOptions.RootNodePath });
+            tvFiles.Nodes.Add(new TreeNode() { Text = _fileCheckOptions.RootNodeText, Name = _fileCheckOptions.RootNodePath, Tag = new NodeTagInfo { NodeType = NodeTypeEnums.None } });
 
             for (int i = 0; i < files.Count; i++)
             {
@@ -587,13 +587,24 @@ namespace WinFormsWebDav
                     if (node == null)
                     {
                         var partent = tvFiles.Nodes.Find(nodePath.Substring(0, nodePath.Length - pathItems[j].Length - 1), true).FirstOrDefault();
-                        partent?.Nodes.Add(new TreeNode { Text = $"{pathItems[j]}", Tag = nodePath, Name = nodePath, ToolTipText = files[i].projectId });
+                        partent?.Nodes.Add(new TreeNode { Text = $"{pathItems[j]}", Tag = new NodeTagInfo { NodeType = NodeTypeEnums.Folder }, Name = nodePath, ToolTipText = files[i].projectId });
                     }
                 }
 
                 var filePartent = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
                 var nodeTxt = $"{pathItems[pathItems.Length - 1]}";
-                filePartent?.Nodes.Add(new TreeNode { Text = nodeTxt, Tag = NodeTypeEnums.File.ToString(), Name = $"{nodePath}/{nodeTxt}" });
+                filePartent?.Nodes.Add(new TreeNode
+                {
+                    Text = nodeTxt,
+                    Tag = new NodeTagInfo
+                    {
+                        NodeType = NodeTypeEnums.File,
+                        ProjectId = files[i].projectId,
+                        ProjectName = files[i].projectName,
+                        FullPath = files[i].fullPath
+                    },
+                    Name = $"{nodePath}/{nodeTxt}"
+                });
             }
 
         }
@@ -825,6 +836,32 @@ namespace WinFormsWebDav
         }
         #endregion
         #endregion
+
+        private void btnDeleteSelectedFile_Click(object sender, EventArgs e)
+        {
+            List<NodeTagInfo> nodeTagInfos = new List<NodeTagInfo>();
+
+            GetAllSelectedFile(tvFiles.Nodes[0], nodeTagInfos);
+
+            for (int i = 0; i < nodeTagInfos.Count; i++)
+            {
+                DeleteFileAsRefit(nodeTagInfos[i].ProjectId, nodeTagInfos[i].FullPath);
+            }
+        }
+
+        private void GetAllSelectedFile(TreeNode node, List<NodeTagInfo> paths)
+        {
+            var tag = node.Tag as NodeTagInfo;
+            if (node.Checked && tag?.NodeType == NodeTypeEnums.File)
+            {
+                paths.Add(tag);
+            }
+
+            foreach (TreeNode child in node.Nodes)
+            {
+                GetAllSelectedFile(child, paths);
+            }
+        }
     }
 }
 
