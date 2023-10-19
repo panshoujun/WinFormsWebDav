@@ -554,9 +554,6 @@ namespace WinFormsWebDav
 
             foreach (var file in files)
             {
-                if (file.projectName != item.Text)
-                    continue;
-
                 var split = file.fullPath.Split('/').SkipLast(1);
                 var path = $"{_fileCheckOptions.RootNodePath}/{file.projectName}";
                 if (split.Any())
