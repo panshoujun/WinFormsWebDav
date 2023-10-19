@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System.Drawing;
 using System.Net;
+using WinFormsWebDav.Constants;
 using WinFormsWebDav.Enums;
 using WinFormsWebDav.Modes;
 using WinFormsWebDav.Modes.Dto.Response;
@@ -22,7 +23,6 @@ namespace WinFormsWebDav
         private readonly WebDavUc _webdav;
 
         //参数
-        private readonly test _test;
         private readonly SystemOptions _systemOptions;
         private readonly FileCheckOptions _fileCheckOptions;
 
@@ -33,12 +33,11 @@ namespace WinFormsWebDav
 
         public FormMain(FileLockAndUnLockUc fileLockAndUnLock, AppWatcherUc appWatcherUc1, MicroSoftMessageQueuingUc microSoftMessageQueuingUc1, WebDavUc webdav,
             IProjectGW projectGW, IDocumentGateway documentGateway,
-            IOptions<test> test, IOptions<SystemOptions> systemOptions, IOptions<FileCheckOptions> fileCheckOptions)
+            IOptions<SystemOptions> systemOptions, IOptions<FileCheckOptions> fileCheckOptions)
         {
             _projectGW = projectGW;
             _documentGateway = documentGateway;
 
-            _test = test.Value;
             _systemOptions = systemOptions.Value;
             _fileCheckOptions = fileCheckOptions.Value;
 
@@ -86,8 +85,19 @@ namespace WinFormsWebDav
         /// <param name="e"></param>
         private void ShowMessage(object sender, EventArgs e)
         {
+            var type = ((MessageEventArgs)e).MessageType;
+
             // 修改其他控件的值
-            rtbLog.Text += ((MessageEventArgs)e).Msg;
+            if (type == ShowMessageTypeEnums.All || type == ShowMessageTypeEnums.Log)
+            {
+                rtbLog.Text += ((MessageEventArgs)e).Msg;
+            }
+
+            if (type == ShowMessageTypeEnums.All || type == ShowMessageTypeEnums.MessageBox)
+            {
+                rtbLog.Text += ((MessageEventArgs)e).Msg;
+                MessageBox.Show(((MessageEventArgs)e).Msg);
+            }
         }
 
         /// <summary>
@@ -133,11 +143,9 @@ namespace WinFormsWebDav
 
             SaveToFile(resp, _fileCheckOptions.FilesCheckResultPath);
 
-
-            //ShowMessage(null, new MessageEventArgs { Msg = $"检测文件结果:{JsonConvert.SerializeObject(resp, Formatting.Indented)}\n" });
-
             SetBtnEnabled(true);
-            MessageBox.Show("所有文件检测完成");
+
+            ShowMessage(null, new MessageEventArgs { Msg = MessageConstants.FILE_CHECKED });
         }
 
         /// <summary>
@@ -148,6 +156,7 @@ namespace WinFormsWebDav
         private async void btnDeleteFile_Click(object sender, EventArgs e)
         {
             SetBtnEnabled(false);
+
             CheckAllFileResponse checkAllFile = new CheckAllFileResponse();
             DeleteAllFileResponse deleteAllFile = new DeleteAllFileResponse();
             if (File.Exists(_fileCheckOptions.FilesCheckResultPath))
@@ -157,7 +166,7 @@ namespace WinFormsWebDav
             }
             else
             {
-                MessageBox.Show("请先检测文件");
+                ShowMessage(null, new MessageEventArgs { Msg = MessageConstants.CHECK_FILE_FIRST, MessageType = ShowMessageTypeEnums.MessageBox });
                 SetBtnEnabled(true);
                 return;
             }
@@ -373,7 +382,7 @@ namespace WinFormsWebDav
                             fs.Write(bytes, 0, writeLength);//追加写入文件
                             contentLength -= writeLength;
                             if (contentLength == 0)//如果写入完成 给出提示
-                                MessageBox.Show("下载完成");
+                                ShowMessage(null, new MessageEventArgs { Msg = MessageConstants.DOWNLOAD_COMPLETED, MessageType = ShowMessageTypeEnums.MessageBox });
                         }
                     }
                 }
@@ -615,93 +624,6 @@ namespace WinFormsWebDav
             }
             return resp;
         }
-
-        #region  弃用
-        /// <summary>
-        /// 初始化tree
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private async void btnInitTree_Click(object sender, EventArgs e)
-        {
-            tvFiles.Nodes.Clear();
-            this.btnInitTree.Enabled = false;
-
-            var projects = await GetAllProject();
-            var files = await GetAllFile(projects);
-
-
-            TreeNode rootNode = new TreeNode("根节点");
-            tvFiles.Nodes.Add(rootNode);
-            for (int i = 0; i < projects.Count; i++)
-            {
-                TreeNode treeNode = new TreeNode(projects[i].Name);
-                treeNode.Tag = projects[i].Id.ToString();
-                treeNode.Name = projects[i].Id.ToString();
-                rootNode.Nodes.Add(treeNode);
-            }
-
-            ShowMessage(null, new MessageEventArgs { Msg = $"共获取文件:{files.Count.ToString()}\n" });
-            files.ForEach(async i =>
-            {
-                //ShowMessage(null, new MessageEventArgs { Msg = $"{i.fullPath}\n" });
-
-                var pathItems = i.fullPath.Split("/");
-                if (pathItems.Length == 1)
-                {
-                    var node = tvFiles.Nodes.Find(i.projectId, true).FirstOrDefault();
-                    if (node != null)
-                    {
-                        var result = await DownloadFileAsRefit(projects.Where(p => p.Id.ToString().Equals(i.projectId)).FirstOrDefault().Name, i.fullPath);
-                        node.Nodes.Add(new TreeNode { Text = $"{i.name}", Checked = result.Item1 });
-                        if (result.Item1)
-                        {
-                            ShowMessage(null, new MessageEventArgs { Msg = $"{i.fullPath}文件无法下载:{result.Item2}\n" });
-                        }
-                    }
-                }
-                else
-                {
-                    var nodePath = $"{i.projectId}";
-                    for (int j = 0; j < pathItems.Length - 1; j++)
-                    {
-                        nodePath += $"/{pathItems[j]}";
-                        var next = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
-                        if (next == null)
-                        {
-                            var partent = tvFiles.Nodes.Find(nodePath.Substring(0, nodePath.Length - pathItems[j].Length - 1), true).FirstOrDefault();
-                            if (partent != null)
-                            {
-                                partent.Nodes.Add(new TreeNode { Text = $"{pathItems[j]}", Tag = nodePath, Name = nodePath });
-                            }
-                            else
-                            {
-                                MessageBox.Show($"aaa{nodePath}");
-                            }
-                        }
-                    }
-
-                    var nextLastPartent = tvFiles.Nodes.Find(nodePath, true).FirstOrDefault();
-                    if (nextLastPartent != null)
-                    {
-                        var result = await DownloadFileAsRefit(projects.Where(p => p.Id.ToString().Equals(i.projectId)).FirstOrDefault().Name, i.fullPath);
-                        nextLastPartent.Nodes.Add(new TreeNode { Text = $"{pathItems[pathItems.Length - 1]}", Tag = nodePath += $"/{pathItems[pathItems.Length - 1]}", Name = nodePath += $"/{pathItems[pathItems.Length - 1]}", Checked = result.Item1 });
-                        if (result.Item1)
-                        {
-                            ShowMessage(null, new MessageEventArgs { Msg = $"{i.fullPath}文件无法下载:{result.Item2}\n" });
-                        }
-                    }
-                    else
-                    {
-                        MessageBox.Show($"bbb{nodePath}");
-                    }
-
-                }
-
-            });
-            this.btnInitTree.Enabled = true;
-        }
-        #endregion
 
         #region 选中联动有问题
         #region
