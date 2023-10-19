@@ -77,7 +77,19 @@ namespace WinFormsWebDav
             //InitData();
 
             _webdav.SomeEvent += ShowMessage;
+
+
+
+            tbMSMQ.Controls.Add(_microSoftMessageQueuingUc1);
+            tbMSMQ.Location = new Point(4, 33);
+            tbMSMQ.Name = "tabPage4";
+            tbMSMQ.Padding = new Padding(3);
+            tabPage4.Size = new Size(1382, 653);
+            tbMSMQ.TabIndex = 4;
+            tabPage4.Text = "MSMQ";
+            tbMSMQ.UseVisualStyleBackColor = true;
         }
+
 
         /// <summary>
         /// 展示消息

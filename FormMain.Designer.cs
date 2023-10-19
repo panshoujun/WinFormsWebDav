@@ -33,6 +33,7 @@
             tbWebdav = new TabPage();
             tabPage2 = new TabPage();
             splitContainer2 = new SplitContainer();
+            btnDeleteFile = new Button();
             tbResidue = new TextBox();
             label4 = new Label();
             tbCanNotDown = new TextBox();
@@ -44,9 +45,11 @@
             btnCheckFile = new Button();
             btnInitTree = new Button();
             tvFiles = new TreeView();
+            tbMSMQ = new TabPage();
+            tabPage3 = new TabPage();
+            tabPage4 = new TabPage();
             btnClear = new Button();
             rtbLog = new RichTextBox();
-            btnDeleteFile = new Button();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -81,6 +84,9 @@
             // 
             tabControl1.Controls.Add(tbWebdav);
             tabControl1.Controls.Add(tabPage2);
+            tabControl1.Controls.Add(tbMSMQ);
+            tabControl1.Controls.Add(tabPage3);
+            tabControl1.Controls.Add(tabPage4);
             tabControl1.Dock = DockStyle.Fill;
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
@@ -139,6 +145,16 @@
             splitContainer2.Size = new Size(836, 901);
             splitContainer2.SplitterDistance = 120;
             splitContainer2.TabIndex = 1;
+            // 
+            // btnDeleteFile
+            // 
+            btnDeleteFile.Location = new Point(368, 3);
+            btnDeleteFile.Name = "btnDeleteFile";
+            btnDeleteFile.Size = new Size(133, 51);
+            btnDeleteFile.TabIndex = 12;
+            btnDeleteFile.Text = "删除文件";
+            btnDeleteFile.UseVisualStyleBackColor = true;
+            btnDeleteFile.Click += btnDeleteFile_Click;
             // 
             // tbResidue
             // 
@@ -236,6 +252,36 @@
             tvFiles.Size = new Size(836, 777);
             tvFiles.TabIndex = 0;
             // 
+            // tbMSMQ
+            // 
+            tbMSMQ.Location = new Point(4, 33);
+            tbMSMQ.Name = "tbMSMQ";
+            tbMSMQ.Padding = new Padding(3);
+            tbMSMQ.Size = new Size(842, 907);
+            tbMSMQ.TabIndex = 2;
+            tbMSMQ.Text = "MSMQ";
+            tbMSMQ.UseVisualStyleBackColor = true;
+            // 
+            // tabPage3
+            // 
+            tabPage3.Location = new Point(4, 33);
+            tabPage3.Name = "tabPage3";
+            tabPage3.Padding = new Padding(3);
+            tabPage3.Size = new Size(842, 907);
+            tabPage3.TabIndex = 3;
+            tabPage3.Text = "tabPage3";
+            tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // tabPage4
+            // 
+            tabPage4.Location = new Point(4, 33);
+            tabPage4.Name = "tabPage4";
+            tabPage4.Padding = new Padding(3);
+            tabPage4.Size = new Size(842, 907);
+            tabPage4.TabIndex = 4;
+            tabPage4.Text = "tabPage4";
+            tabPage4.UseVisualStyleBackColor = true;
+            // 
             // btnClear
             // 
             btnClear.Location = new Point(457, 657);
@@ -253,16 +299,6 @@
             rtbLog.Size = new Size(1049, 566);
             rtbLog.TabIndex = 0;
             rtbLog.Text = "";
-            // 
-            // btnDeleteFile
-            // 
-            btnDeleteFile.Location = new Point(368, 3);
-            btnDeleteFile.Name = "btnDeleteFile";
-            btnDeleteFile.Size = new Size(133, 51);
-            btnDeleteFile.TabIndex = 12;
-            btnDeleteFile.Text = "删除文件";
-            btnDeleteFile.UseVisualStyleBackColor = true;
-            btnDeleteFile.Click += btnDeleteFile_Click;
             // 
             // FormMain
             // 
@@ -308,5 +344,8 @@
         private Label label4;
         private TextBox tbResidue;
         private Button btnDeleteFile;
+        private TabPage tbMSMQ;
+        private TabPage tabPage3;
+        private TabPage tabPage4;
     }
 }

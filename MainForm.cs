@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Options;
-using System.Windows.Forms;
 using WinFormsWebDav.Modes.Options;
 
 namespace WinFormsWebDav
@@ -34,8 +33,6 @@ namespace WinFormsWebDav
         {
             cbIsShowMessageBox.Checked = _systemOptions.IsShowMessageBox;
             cbIsWriteLog.Checked = _systemOptions.IsWriteLog;
-
-
         }
 
         private void webDavToolStripMenuItem_Click(object sender, EventArgs e)
