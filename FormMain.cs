@@ -10,6 +10,7 @@ using WinFormsWebDav.Modes.Dto.Response;
 using WinFormsWebDav.Modes.Options;
 using WinFormsWebDav.Services.Gateway.DocumentGateway;
 using WinFormsWebDav.Services.Gateway.ProjectGW;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace WinFormsWebDav
 {
@@ -19,7 +20,7 @@ namespace WinFormsWebDav
 
         //组件
         private readonly FileLockAndUnLockUcNew _fileLockAndUnLock;
-        private readonly AppWatcherUc _appWatcherUc1;
+        private readonly AppWatcherUcNew _appWatcherUc1;
         private readonly MicroSoftMessageQueuingUcNew _microSoftMessageQueuingUc1;
         private readonly WebDavUc _webdav;
 
@@ -32,7 +33,7 @@ namespace WinFormsWebDav
         private readonly IDocumentGateway _documentGateway;
 
 
-        public FormMain(FileLockAndUnLockUcNew fileLockAndUnLock, AppWatcherUc appWatcherUc1, MicroSoftMessageQueuingUcNew microSoftMessageQueuingUc1, WebDavUc webdav,
+        public FormMain(FileLockAndUnLockUcNew fileLockAndUnLock, AppWatcherUcNew appWatcherUc1, MicroSoftMessageQueuingUcNew microSoftMessageQueuingUc1, WebDavUc webdav,
             IProjectGW projectGW, IDocumentGateway documentGateway,
             IOptions<SystemOptions> systemOptions, IOptions<FileCheckOptions> fileCheckOptions)
         {
@@ -92,6 +93,16 @@ namespace WinFormsWebDav
             tbFileLockAndUnLock.Text = "FileLockAndUnLock";
             tbFileLockAndUnLock.UseVisualStyleBackColor = true;
             _fileLockAndUnLock.ShowMessage += ShowMessage;
+
+            //AppWathcer
+            tbAppWathcer.Controls.Add(_appWatcherUc1);
+            tbAppWathcer.Location = new Point(4, 33);
+            tbAppWathcer.Name = "AppWathcer";
+            tbAppWathcer.Padding = new Padding(3);
+            tbAppWathcer.Size = new Size(1382, 653);
+            tbAppWathcer.Text = "AppWathcer";
+            tbAppWathcer.UseVisualStyleBackColor = true;
+            _appWatcherUc1.ShowMessage += ShowMessage;
         }
 
 
@@ -104,15 +115,22 @@ namespace WinFormsWebDav
         {
             var type = ((MessageEventArgs)e).MessageType;
 
-            // 修改其他控件的值
-            if (type == ShowMessageTypeEnums.All || type == ShowMessageTypeEnums.LogTxt)
+            if (this.rtbLog.InvokeRequired)
             {
-                rtbLog.Text += ((MessageEventArgs)e).Msg;
+                this.Invoke(ShowMessage, sender, e);
             }
-
-            if (type == ShowMessageTypeEnums.All || type == ShowMessageTypeEnums.MessageBox)
+            else
             {
-                MessageBox.Show(((MessageEventArgs)e).Msg);
+                // 修改其他控件的值
+                if (type == ShowMessageTypeEnums.All || type == ShowMessageTypeEnums.LogTxt)
+                {
+                    rtbLog.Text += ((MessageEventArgs)e).Msg;
+                }
+
+                if (type == ShowMessageTypeEnums.All || type == ShowMessageTypeEnums.MessageBox)
+                {
+                    MessageBox.Show(((MessageEventArgs)e).Msg);
+                }
             }
         }
 

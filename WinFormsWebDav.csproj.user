@@ -10,6 +10,9 @@
     <Compile Update="Base\BaseUserControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="Base\BaseUserControlNew.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="FileLockAndUnLockUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
