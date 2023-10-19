@@ -2,6 +2,7 @@
 using MSMQ.Messaging;
 using WinFormsWebDav.Base;
 using WinFormsWebDav.Constants;
+using WinFormsWebDav.Modes;
 using WinFormsWebDav.Modes.Options;
 
 namespace WinFormsWebDav
@@ -13,6 +14,8 @@ namespace WinFormsWebDav
     {
         //FormatName:DIRECT=OS:panshoujun\private$\fff
         //string publicMQPath = "FormatName:Direct=TCP:192.168.0.110\\private$\\DESKTOP-2AEJ0GU";
+
+        public event EventHandler ShowMessage;
 
         private readonly DefaultQueueOptions _defaultQueueOptions;
 
@@ -36,19 +39,19 @@ namespace WinFormsWebDav
             rtbMessage.Text = _defaultQueueOptions.MsgBody;
         }
 
-        /// <summary>
-        /// 显示消息
-        /// </summary>
-        /// <param name="msg"></param>
-        protected override void ShowMessage(string msg)
-        {
-            if (MainForm.staticSystemOptions.IsShowMessageBox)
-                MessageBox.Show(msg);
+        ///// <summary>
+        ///// 显示消息
+        ///// </summary>
+        ///// <param name="msg"></param>
+        //protected override void ShowMessage(string msg)
+        //{
+        //    if (MainForm.staticSystemOptions.IsShowMessageBox)
+        //        MessageBox.Show(msg);
 
-            //if (MainForm.staticSystemOptions.IsWriteLog)
+        //    //if (MainForm.staticSystemOptions.IsWriteLog)
 
-            //rtbLog.Text += $"{msg}\n";
-        }
+        //    //rtbLog.Text += $"{msg}\n";
+        //}
 
         /// <summary>
         /// 获取列队连接字符串
@@ -102,7 +105,7 @@ namespace WinFormsWebDav
             {
                 if (!MessageQueue.Exists(queue))
                 {
-                    ShowMessage(string.Format($"{MessageConstants.QUEUE_NOT_EXIST}", rtbMessage.Text));
+                    ShowMessage?.Invoke(this, new MessageEventArgs { Msg = string.Format($"{MessageConstants.QUEUE_NOT_EXIST} \n", rtbMessage.Text) });
                     return;
                 }
 
@@ -123,12 +126,11 @@ namespace WinFormsWebDav
                 {
                     mqSend.Send(msg);
                 }
-                ShowMessage(string.Format($"{MessageConstants.SUCCESSFULLY_SENT}", rtbMessage.Text));
+                ShowMessage?.Invoke(this, new MessageEventArgs { Msg = string.Format($"{MessageConstants.SUCCESSFULLY_SENT} \n", rtbMessage.Text) });
             }
             catch (Exception ex)
             {
-
-                ShowMessage(ex.Message);
+                ShowMessage?.Invoke(this, new MessageEventArgs { Msg = ex.Message });
             }
         }
 
@@ -150,11 +152,11 @@ namespace WinFormsWebDav
             {
                 var msg = mqReceive.Receive();
                 var bodyReceive = msg.Body as string;
-                ShowMessage(string.Format($"{MessageConstants.RECEIVED_MESSAGE}", bodyReceive));
+                ShowMessage?.Invoke(this, new MessageEventArgs { Msg = string.Format($"{MessageConstants.RECEIVED_MESSAGE} \n", bodyReceive) });
             }
             else
             {
-                ShowMessage(string.Format($"{MessageConstants.NO_MESSAGE}", GetQueueName()));
+                ShowMessage?.Invoke(this, new MessageEventArgs { Msg = string.Format($"{MessageConstants.NO_MESSAGE} \n", GetQueueName()) });
             }
         }
 
@@ -185,18 +187,18 @@ namespace WinFormsWebDav
                 list = list?.Where(p => p.MachineName.Equals(machineName, StringComparison.OrdinalIgnoreCase)).ToList();
             }
 
-            ShowMessage($"{MessageConstants.GET_QUEUE_LIST}");
+            ShowMessage?.Invoke(this, new MessageEventArgs { Msg = $"{MessageConstants.GET_QUEUE_LIST}\n" });
             if (IsLocalhost())
             {
                 var listPrivate = MessageQueue.GetPrivateQueuesByMachine(machineName)?.ToList();
                 listPrivate?.ForEach(x =>
                 {
-                    ShowMessage(string.Format($"{MessageConstants.QUEUE_INFO}", x.QueueName, x.Path));
+                    ShowMessage?.Invoke(this, new MessageEventArgs { Msg = string.Format($"{MessageConstants.QUEUE_INFO}\n", x.QueueName, x.Path) });
                 });
             }
             list?.ForEach(x =>
             {
-                ShowMessage(string.Format($"{MessageConstants.QUEUE_INFO}", x.QueueName, x.Path));
+                ShowMessage?.Invoke(this, new MessageEventArgs { Msg = string.Format($"{MessageConstants.QUEUE_INFO}\n", x.QueueName, x.Path) });
             });
         }
 
@@ -211,11 +213,11 @@ namespace WinFormsWebDav
             if (!MessageQueue.Exists(queue))
             {
                 using var msmq = MessageQueue.Create(queue, true);
-                ShowMessage(string.Format($"{MessageConstants.QUEUE_CREATED_SUCCESSFULLY}", GetQueueName()));
+                ShowMessage?.Invoke(this, new MessageEventArgs { Msg = string.Format($"{MessageConstants.QUEUE_CREATED_SUCCESSFULLY}\n", GetQueueName()) });
             }
             else
             {
-                ShowMessage(string.Format($"{MessageConstants.QUEUE_ALREADY_EXISTS}", GetQueueName()));
+                ShowMessage?.Invoke(this, new MessageEventArgs { Msg = string.Format($"{MessageConstants.QUEUE_ALREADY_EXISTS}\n", GetQueueName()) });
             }
         }
 
@@ -230,11 +232,11 @@ namespace WinFormsWebDav
             if (MessageQueue.Exists(queue))
             {
                 MessageQueue.Delete(queue);
-                ShowMessage(string.Format($"{MessageConstants.QUEUE_DELETED_SUCCESSFULLY}", GetQueueName()));
+                ShowMessage?.Invoke(this, new MessageEventArgs { Msg = string.Format($"{MessageConstants.QUEUE_DELETED_SUCCESSFULLY} \n", GetQueueName()) });
             }
             else
             {
-                ShowMessage(string.Format($"{MessageConstants.QUEUE_NOT_EXIST}", GetQueueName()));
+                ShowMessage?.Invoke(this, new MessageEventArgs { Msg = string.Format($"{MessageConstants.QUEUE_NOT_EXIST} \n", GetQueueName()) });
             }
         }
 
@@ -247,7 +249,7 @@ namespace WinFormsWebDav
         {
             string serviceAddress = GetQueueServiceAddress();
 
-            ShowMessage($"{MessageConstants.DELETE_FOLLOWING_QUEUE}");
+            ShowMessage?.Invoke(this, new MessageEventArgs { Msg = $"{MessageConstants.DELETE_FOLLOWING_QUEUE} \n" });
 
             //删除共有队列
             var list = MessageQueue.GetPublicQueues()?.ToList();
@@ -259,7 +261,7 @@ namespace WinFormsWebDav
             {
                 MessageQueue.Delete($"{serviceAddress}\\{x.QueueName}");
                 //ShowMessage($"已删除队列:{x.QueueName}");
-                ShowMessage(string.Format($"{MessageConstants.QUEUE_DELETED_SUCCESSFULLY}", x.QueueName));
+                ShowMessage?.Invoke(this, new MessageEventArgs { Msg = string.Format($"{MessageConstants.QUEUE_DELETED_SUCCESSFULLY} \n", x.QueueName) });
             });
 
             //如果是本地 私有也删除
@@ -270,7 +272,7 @@ namespace WinFormsWebDav
                 {
                     MessageQueue.Delete($"{serviceAddress}\\{x.QueueName}");
                     //ShowMessage($"已删除队列:{x.QueueName}");
-                    ShowMessage(string.Format($"{MessageConstants.QUEUE_DELETED_SUCCESSFULLY}", x.QueueName));
+                    ShowMessage?.Invoke(this, new MessageEventArgs { Msg = string.Format($"{MessageConstants.QUEUE_DELETED_SUCCESSFULLY} \n", x.QueueName) });
                 });
             }
         }

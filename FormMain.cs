@@ -65,10 +65,11 @@ namespace WinFormsWebDav
             tbMSMQ.Location = new Point(4, 33);
             tbMSMQ.Name = "tabPage4";
             tbMSMQ.Padding = new Padding(3);
-            tabPage4.Size = new Size(1382, 653);
+            tbMSMQ.Size = new Size(1382, 653);
             tbMSMQ.TabIndex = 4;
-            tabPage4.Text = "MSMQ";
+            tbMSMQ.Text = "MSMQ";
             tbMSMQ.UseVisualStyleBackColor = true;
+            _microSoftMessageQueuingUc1.ShowMessage += ShowMessage;
 
             //webdav
             tbWebdav.Controls.Add(_webdav);
@@ -79,12 +80,6 @@ namespace WinFormsWebDav
             tbWebdav.TabIndex = 0;
             tbWebdav.Text = "WebDav";
             tbWebdav.UseVisualStyleBackColor = true;
-
-            //_webdav.Location = new Point(42, 15);
-            //_webdav.Name = "webDav";
-            //_webdav.Size = new Size(650, 550);
-            //_webdav.TabIndex = 0;
-
             _webdav.ShowMessage += ShowMessage;
         }
 

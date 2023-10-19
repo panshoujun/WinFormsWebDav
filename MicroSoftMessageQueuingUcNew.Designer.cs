@@ -189,7 +189,7 @@
             Controls.Add(tbServiceAddress);
             Controls.Add(label9);
             Name = "MicroSoftMessageQueuingUcNew";
-            Size = new Size(800, 500);
+            Size = new Size(830, 500);
             ResumeLayout(false);
             PerformLayout();
         }
