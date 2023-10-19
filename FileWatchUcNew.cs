@@ -46,9 +46,27 @@ namespace WinFormsWebDav
 
         private void btnFileWatch_Click(object sender, EventArgs e)
         {
-            ShowMessage?.Invoke(this, new MessageEventArgs { Msg = $"开始监控:{tbReadOnlyFile.Text}\n" });
+            ShowMessage?.Invoke(this, new MessageEventArgs { Msg = $"开始监控:{tbFilePath.Text}\n" });
 
-            StartWatch(tbReadOnlyFile.Text, null);
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    if (!FileUtilsNew.IsFileOpen())
+                    {
+                        break;
+                    }
+                    Task.Delay(1000).Wait();
+                }
+                ShowMessage?.Invoke(this, new MessageEventArgs { Msg = $"文件已关闭\n" });
+            });
+        }
+
+        private void btnFolderWatch_Click(object sender, EventArgs e)
+        {
+            ShowMessage?.Invoke(this, new MessageEventArgs { Msg = $"开始监控:{tbFolderPath.Text}\n" });
+
+            StartWatch(tbFolderPath.Text, null);
         }
 
         private void btnFileWatch_ClickOld(object sender, EventArgs e)

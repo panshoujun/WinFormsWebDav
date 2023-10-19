@@ -81,7 +81,7 @@
             splitContainer1.Panel2.Controls.Add(btnClear);
             splitContainer1.Panel2.Controls.Add(rtbLog);
             splitContainer1.Size = new Size(1978, 944);
-            splitContainer1.SplitterDistance = 850;
+            splitContainer1.SplitterDistance = 900;
             splitContainer1.TabIndex = 0;
             // 
             // tabControl1
@@ -97,7 +97,7 @@
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
             tabControl1.SelectedIndex = 0;
-            tabControl1.Size = new Size(850, 944);
+            tabControl1.Size = new Size(900, 944);
             tabControl1.TabIndex = 0;
             // 
             // tbWebdav
@@ -116,7 +116,7 @@
             tabPage2.Location = new Point(4, 33);
             tabPage2.Name = "tabPage2";
             tabPage2.Padding = new Padding(3);
-            tabPage2.Size = new Size(842, 907);
+            tabPage2.Size = new Size(892, 907);
             tabPage2.TabIndex = 1;
             tabPage2.Text = "WebDavFiles";
             tabPage2.UseVisualStyleBackColor = true;
@@ -148,7 +148,7 @@
             splitContainer2.Panel2.Controls.Add(tvFiles);
             splitContainer2.Panel2.RightToLeft = RightToLeft.Yes;
             splitContainer2.RightToLeft = RightToLeft.Yes;
-            splitContainer2.Size = new Size(836, 901);
+            splitContainer2.Size = new Size(886, 901);
             splitContainer2.SplitterDistance = 120;
             splitContainer2.TabIndex = 1;
             // 
@@ -255,7 +255,7 @@
             tvFiles.Dock = DockStyle.Fill;
             tvFiles.Location = new Point(0, 0);
             tvFiles.Name = "tvFiles";
-            tvFiles.Size = new Size(836, 777);
+            tvFiles.Size = new Size(886, 777);
             tvFiles.TabIndex = 0;
             // 
             // tbMSMQ
@@ -328,7 +328,7 @@
             // 
             // rtbLog
             // 
-            rtbLog.Location = new Point(38, 33);
+            rtbLog.Location = new Point(13, 33);
             rtbLog.Name = "rtbLog";
             rtbLog.Size = new Size(1049, 566);
             rtbLog.TabIndex = 0;
