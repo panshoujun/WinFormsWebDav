@@ -105,7 +105,7 @@
             tbWebdav.Location = new Point(4, 33);
             tbWebdav.Name = "tbWebdav";
             tbWebdav.Padding = new Padding(3);
-            tbWebdav.Size = new Size(842, 907);
+            tbWebdav.Size = new Size(892, 907);
             tbWebdav.TabIndex = 0;
             tbWebdav.Text = "WebDav";
             tbWebdav.UseVisualStyleBackColor = true;
@@ -263,7 +263,7 @@
             tbMSMQ.Location = new Point(4, 33);
             tbMSMQ.Name = "tbMSMQ";
             tbMSMQ.Padding = new Padding(3);
-            tbMSMQ.Size = new Size(842, 907);
+            tbMSMQ.Size = new Size(892, 907);
             tbMSMQ.TabIndex = 2;
             tbMSMQ.Text = "MSMQ";
             tbMSMQ.UseVisualStyleBackColor = true;
@@ -274,7 +274,7 @@
             tbFileSetInfo.Location = new Point(4, 33);
             tbFileSetInfo.Name = "tbFileSetInfo";
             tbFileSetInfo.Padding = new Padding(3);
-            tbFileSetInfo.Size = new Size(842, 907);
+            tbFileSetInfo.Size = new Size(892, 907);
             tbFileSetInfo.TabIndex = 3;
             tbFileSetInfo.Text = "FileSetInfo";
             tbFileSetInfo.UseVisualStyleBackColor = true;
@@ -291,7 +291,7 @@
             tbFileLockAndUnLock.Location = new Point(4, 33);
             tbFileLockAndUnLock.Name = "tbFileLockAndUnLock";
             tbFileLockAndUnLock.Padding = new Padding(3);
-            tbFileLockAndUnLock.Size = new Size(842, 907);
+            tbFileLockAndUnLock.Size = new Size(892, 907);
             tbFileLockAndUnLock.TabIndex = 4;
             tbFileLockAndUnLock.Text = "FileLockAndUnLockUc";
             tbFileLockAndUnLock.UseVisualStyleBackColor = true;
@@ -301,7 +301,7 @@
             tbAppWathcer.Location = new Point(4, 33);
             tbAppWathcer.Name = "tbAppWathcer";
             tbAppWathcer.Padding = new Padding(3);
-            tbAppWathcer.Size = new Size(842, 907);
+            tbAppWathcer.Size = new Size(892, 907);
             tbAppWathcer.TabIndex = 5;
             tbAppWathcer.Text = "AppWathcer";
             tbAppWathcer.UseVisualStyleBackColor = true;
@@ -311,14 +311,14 @@
             tbFileWatch.Location = new Point(4, 33);
             tbFileWatch.Name = "tbFileWatch";
             tbFileWatch.Padding = new Padding(3);
-            tbFileWatch.Size = new Size(842, 907);
+            tbFileWatch.Size = new Size(892, 907);
             tbFileWatch.TabIndex = 6;
             tbFileWatch.Text = "FileWatch";
             tbFileWatch.UseVisualStyleBackColor = true;
             // 
             // btnClear
             // 
-            btnClear.Location = new Point(457, 657);
+            btnClear.Location = new Point(929, 881);
             btnClear.Name = "btnClear";
             btnClear.Size = new Size(133, 51);
             btnClear.TabIndex = 1;
@@ -330,7 +330,7 @@
             // 
             rtbLog.Location = new Point(13, 33);
             rtbLog.Name = "rtbLog";
-            rtbLog.Size = new Size(1049, 566);
+            rtbLog.Size = new Size(1049, 817);
             rtbLog.TabIndex = 0;
             rtbLog.Text = "";
             // 
