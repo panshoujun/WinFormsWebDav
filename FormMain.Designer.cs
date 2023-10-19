@@ -49,10 +49,10 @@
             tbFileSetInfo = new TabPage();
             fileSetInfo = new FileSetInfoUcNew();
             tbFileLockAndUnLock = new TabPage();
+            tbAppWathcer = new TabPage();
+            tbFileWatch = new TabPage();
             btnClear = new Button();
             rtbLog = new RichTextBox();
-            tbAppWathcer = new TabPage();
-            tabPage3 = new TabPage();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
             splitContainer1.Panel1.SuspendLayout();
             splitContainer1.Panel2.SuspendLayout();
@@ -92,7 +92,7 @@
             tabControl1.Controls.Add(tbFileSetInfo);
             tabControl1.Controls.Add(tbFileLockAndUnLock);
             tabControl1.Controls.Add(tbAppWathcer);
-            tabControl1.Controls.Add(tabPage3);
+            tabControl1.Controls.Add(tbFileWatch);
             tabControl1.Dock = DockStyle.Fill;
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
@@ -296,6 +296,26 @@
             tbFileLockAndUnLock.Text = "FileLockAndUnLockUc";
             tbFileLockAndUnLock.UseVisualStyleBackColor = true;
             // 
+            // tbAppWathcer
+            // 
+            tbAppWathcer.Location = new Point(4, 33);
+            tbAppWathcer.Name = "tbAppWathcer";
+            tbAppWathcer.Padding = new Padding(3);
+            tbAppWathcer.Size = new Size(842, 907);
+            tbAppWathcer.TabIndex = 5;
+            tbAppWathcer.Text = "AppWathcer";
+            tbAppWathcer.UseVisualStyleBackColor = true;
+            // 
+            // tbFileWatch
+            // 
+            tbFileWatch.Location = new Point(4, 33);
+            tbFileWatch.Name = "tbFileWatch";
+            tbFileWatch.Padding = new Padding(3);
+            tbFileWatch.Size = new Size(842, 907);
+            tbFileWatch.TabIndex = 6;
+            tbFileWatch.Text = "FileWatch";
+            tbFileWatch.UseVisualStyleBackColor = true;
+            // 
             // btnClear
             // 
             btnClear.Location = new Point(457, 657);
@@ -313,26 +333,6 @@
             rtbLog.Size = new Size(1049, 566);
             rtbLog.TabIndex = 0;
             rtbLog.Text = "";
-            // 
-            // tbAppWathcer
-            // 
-            tbAppWathcer.Location = new Point(4, 33);
-            tbAppWathcer.Name = "tbAppWathcer";
-            tbAppWathcer.Padding = new Padding(3);
-            tbAppWathcer.Size = new Size(842, 907);
-            tbAppWathcer.TabIndex = 5;
-            tbAppWathcer.Text = "AppWathcer";
-            tbAppWathcer.UseVisualStyleBackColor = true;
-            // 
-            // tabPage3
-            // 
-            tabPage3.Location = new Point(4, 33);
-            tabPage3.Name = "tabPage3";
-            tabPage3.Padding = new Padding(3);
-            tabPage3.Size = new Size(842, 907);
-            tabPage3.TabIndex = 6;
-            tabPage3.Text = "tabPage3";
-            tabPage3.UseVisualStyleBackColor = true;
             // 
             // FormMain
             // 
@@ -384,6 +384,6 @@
         private TabPage tbFileLockAndUnLock;
         private FileSetInfoUcNew fileSetInfo;
         private TabPage tbAppWathcer;
-        private TabPage tabPage3;
+        private TabPage tbFileWatch;
     }
 }

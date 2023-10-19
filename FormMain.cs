@@ -23,6 +23,7 @@ namespace WinFormsWebDav
         private readonly AppWatcherUcNew _appWatcherUc1;
         private readonly MicroSoftMessageQueuingUcNew _microSoftMessageQueuingUc1;
         private readonly WebDavUc _webdav;
+        private readonly FileWatchUcNew _fileWatchUc;
 
         //参数
         private readonly SystemOptions _systemOptions;
@@ -33,7 +34,8 @@ namespace WinFormsWebDav
         private readonly IDocumentGateway _documentGateway;
 
 
-        public FormMain(FileLockAndUnLockUcNew fileLockAndUnLock, AppWatcherUcNew appWatcherUc1, MicroSoftMessageQueuingUcNew microSoftMessageQueuingUc1, WebDavUc webdav,
+        public FormMain(FileLockAndUnLockUcNew fileLockAndUnLock, AppWatcherUcNew appWatcherUc1, MicroSoftMessageQueuingUcNew microSoftMessageQueuingUc1,
+            WebDavUc webdav, FileWatchUcNew fileWatchUc,
             IProjectGW projectGW, IDocumentGateway documentGateway,
             IOptions<SystemOptions> systemOptions, IOptions<FileCheckOptions> fileCheckOptions)
         {
@@ -43,6 +45,7 @@ namespace WinFormsWebDav
             _systemOptions = systemOptions.Value;
             _fileCheckOptions = fileCheckOptions.Value;
 
+            _fileWatchUc = fileWatchUc;
             _fileLockAndUnLock = fileLockAndUnLock;
             _appWatcherUc1 = appWatcherUc1;
             _microSoftMessageQueuingUc1 = microSoftMessageQueuingUc1;
@@ -103,6 +106,17 @@ namespace WinFormsWebDav
             tbAppWathcer.Text = "AppWathcer";
             tbAppWathcer.UseVisualStyleBackColor = true;
             _appWatcherUc1.ShowMessage += ShowMessage;
+
+            //FileWatchUc
+            tbFileWatch.Controls.Add(_fileWatchUc);
+            tbFileWatch.Location = new Point(4, 33);
+            tbFileWatch.Name = "FileWatch";
+            tbFileWatch.Padding = new Padding(3);
+            tbFileWatch.Size = new Size(1382, 653);
+            tbFileWatch.Text = "FileWatch";
+            tbFileWatch.UseVisualStyleBackColor = true;
+            _fileWatchUc.ShowMessage += ShowMessage;
+
         }
 
 

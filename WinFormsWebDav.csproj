@@ -30,6 +30,9 @@
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="FileSetInfoUcNew.cs" />
+    <Compile Update="FileWatchUcNew.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="MicroSoftMessageQueuingUcNew.cs">
       <SubType>UserControl</SubType>
     </Compile>
