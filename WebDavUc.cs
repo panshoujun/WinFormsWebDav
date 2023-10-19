@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using System.Collections.Generic;
 using System.Data;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
@@ -12,7 +13,7 @@ namespace WinFormsWebDav
     public partial class WebDavUc : BaseUserControl
     {
 
-        public event EventHandler ShowMessage;
+        public event EventHandler ShowMessageHandler;
 
         private readonly DefaultWebdavOptions _defaultWebdavOptions;
 
@@ -154,12 +155,12 @@ namespace WinFormsWebDav
             result = DoProcess(doscommand);
             if (result.Item1)
             {
-                base.ShowMessage(result.Item2);
-                base.ShowMessage($"{MessageConstants.SUCCESSFULLY_MOUNTED}\n{driveLetter ?? GetDiskDriveList(result.Item2, RegexPatternConstants.GET_MOUNT_DISK_DRIVE, "DiskDrive").FirstOrDefault()}\n");
+                ShowMessage(result.Item2);
+                ShowMessage($"{MessageConstants.SUCCESSFULLY_MOUNTED}\n{driveLetter ?? GetDiskDriveList(result.Item2, RegexPatternConstants.GET_MOUNT_DISK_DRIVE, "DiskDrive").FirstOrDefault()}\n");
             }
             else
             {
-                base.ShowMessage(result.Item2);
+                ShowMessage(result.Item2);
             }
 
             return result.Item1;
@@ -196,14 +197,13 @@ namespace WinFormsWebDav
 
             if (!result.Item1)
             {
-                base.ShowMessage(result.Item2);
+                ShowMessage(result.Item2);
                 return;
             }
 
             var list = GetDiskDriveList(result.Item2, RegexPatternConstants.GET_USED_DRIVE_LETTER, "DiskDrive");
-            base.ShowMessage(string.Format($"{MessageConstants.MOUNT_LIST}:\n{string.Join('\n', list)}\n"));
 
-            ShowMessage?.Invoke(this, new MessageEventArgs { Msg = string.Format($"{MessageConstants.MOUNT_LIST}:\n{string.Join('\n', list)}\n") });
+            ShowMessage(string.Format($"{MessageConstants.MOUNT_LIST}:\n{string.Join('\n', list)}\n"));
         }
 
         /// <summary>
@@ -231,17 +231,12 @@ namespace WinFormsWebDav
 
             var result = DoProcess(doscommand);
 
-            base.ShowMessage(result.Item2);
+            ShowMessage(result.Item2);
         }
 
-        ///// <summary>
-        ///// 清除日志
-        ///// </summary>
-        ///// <param name="sender"></param>
-        ///// <param name="e"></param>
-        //private void btClear_Click(object sender, EventArgs e)
-        //{
-        //    rtbLog.Text = string.Empty;
-        //}
+        protected override void ShowMessage(string msg)
+        {
+            ShowMessageHandler?.Invoke(this, new MessageEventArgs { Msg = msg });
+        }
     }
 }
