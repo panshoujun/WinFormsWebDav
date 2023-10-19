@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="FileSetInfoUcNew.cs" />
     <Compile Update="MicroSoftMessageQueuingUcNew.cs">
       <SubType>UserControl</SubType>
     </Compile>

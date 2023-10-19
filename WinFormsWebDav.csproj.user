@@ -19,6 +19,9 @@
     <Compile Update="FileSetInfoUc.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="FileSetInfoUcNew.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="FileWatchUc.cs">
       <SubType>UserControl</SubType>
     </Compile>

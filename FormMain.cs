@@ -81,6 +81,9 @@ namespace WinFormsWebDav
             tbWebdav.Text = "WebDav";
             tbWebdav.UseVisualStyleBackColor = true;
             _webdav.ShowMessage += ShowMessage;
+
+            fileSetInfo.ShowMessage += ShowMessage;
+
         }
 
 

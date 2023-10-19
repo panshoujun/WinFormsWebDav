@@ -46,7 +46,8 @@
             btnInitTree = new Button();
             tvFiles = new TreeView();
             tbMSMQ = new TabPage();
-            tabPage3 = new TabPage();
+            tbFileSetInfo = new TabPage();
+            fileSetInfo = new FileSetInfoUcNew();
             tabPage4 = new TabPage();
             btnClear = new Button();
             rtbLog = new RichTextBox();
@@ -60,6 +61,7 @@
             splitContainer2.Panel1.SuspendLayout();
             splitContainer2.Panel2.SuspendLayout();
             splitContainer2.SuspendLayout();
+            tbFileSetInfo.SuspendLayout();
             SuspendLayout();
             // 
             // splitContainer1
@@ -85,7 +87,7 @@
             tabControl1.Controls.Add(tbWebdav);
             tabControl1.Controls.Add(tabPage2);
             tabControl1.Controls.Add(tbMSMQ);
-            tabControl1.Controls.Add(tabPage3);
+            tabControl1.Controls.Add(tbFileSetInfo);
             tabControl1.Controls.Add(tabPage4);
             tabControl1.Dock = DockStyle.Fill;
             tabControl1.Location = new Point(0, 0);
@@ -262,15 +264,23 @@
             tbMSMQ.Text = "MSMQ";
             tbMSMQ.UseVisualStyleBackColor = true;
             // 
-            // tabPage3
+            // tbFileSetInfo
             // 
-            tabPage3.Location = new Point(4, 33);
-            tabPage3.Name = "tabPage3";
-            tabPage3.Padding = new Padding(3);
-            tabPage3.Size = new Size(842, 907);
-            tabPage3.TabIndex = 3;
-            tabPage3.Text = "tabPage3";
-            tabPage3.UseVisualStyleBackColor = true;
+            tbFileSetInfo.Controls.Add(fileSetInfo);
+            tbFileSetInfo.Location = new Point(4, 33);
+            tbFileSetInfo.Name = "tbFileSetInfo";
+            tbFileSetInfo.Padding = new Padding(3);
+            tbFileSetInfo.Size = new Size(842, 907);
+            tbFileSetInfo.TabIndex = 3;
+            tbFileSetInfo.Text = "FileSetInfo";
+            tbFileSetInfo.UseVisualStyleBackColor = true;
+            // 
+            // fileSetInfo
+            // 
+            fileSetInfo.Location = new Point(42, 64);
+            fileSetInfo.Name = "fileSetInfo";
+            fileSetInfo.Size = new Size(749, 600);
+            fileSetInfo.TabIndex = 0;
             // 
             // tabPage4
             // 
@@ -319,6 +329,7 @@
             splitContainer2.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)splitContainer2).EndInit();
             splitContainer2.ResumeLayout(false);
+            tbFileSetInfo.ResumeLayout(false);
             ResumeLayout(false);
         }
 
@@ -345,7 +356,8 @@
         private TextBox tbResidue;
         private Button btnDeleteFile;
         private TabPage tbMSMQ;
-        private TabPage tabPage3;
+        private TabPage tbFileSetInfo;
         private TabPage tabPage4;
+        private FileSetInfoUcNew fileSetInfo;
     }
 }
