@@ -7,9 +7,9 @@
     {
         public int Total { get; set; }
 
-        public int SuccessCount { get; set; }
+        public int SuccessCount { get { return SuccessFilePath.Count; } }
 
-        public int FailCount { get; set; }
+        public int FailCount { get { return FailFilePath.Count; } }
 
         public List<string> SuccessFilePath { get; set; } = new List<string>();
 

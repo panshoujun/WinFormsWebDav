@@ -34,7 +34,7 @@
         #endregion
 
         #region file
-        public const string FILE_CHECKED = "所有文件检测完成:";
+        public const string FILE_CHECKED = "所有文件检测完成:正常文件有{0},错误文件有:{1}";
         public const string CHECK_FILE_FIRST = "请先检测文件";
         public const string DOWNLOAD_COMPLETED = "下载完成";
         #endregion

@@ -193,7 +193,7 @@ namespace WinFormsWebDav
 
             SetBtnEnabled(true);
 
-            ShowMessage(null, new MessageEventArgs { Msg = MessageConstants.FILE_CHECKED });
+            ShowMessage(null, new MessageEventArgs { Msg = string.Format(MessageConstants.FILE_CHECKED, resp.SuccessCount, resp.FailCount) });
         }
 
         /// <summary>
@@ -219,7 +219,7 @@ namespace WinFormsWebDav
                 return;
             }
 
-            for (int i = 0; i < 5; i++)//checkAllFile.FailFilePath.Count
+            for (int i = 0; i < checkAllFile.FailFilePath.Count; i++)//checkAllFile.FailFilePath.Count
             {
                 var split = checkAllFile.FailFilePath[i].Split("/");
                 var path = string.Join("/", split.Skip(1));
@@ -252,6 +252,7 @@ namespace WinFormsWebDav
 
             CreateTree(files);
 
+            tbAllFileCount.Text = files.Count.ToString();
             SetBtnEnabled(true);
         }
 
@@ -647,7 +648,6 @@ namespace WinFormsWebDav
                     resp.SuccessFilePath.Add($"{files[i].projectId}/{files[i].fullPath}");
                     ShowMessage(null, new MessageEventArgs { Msg = $"{files[i].projectId}/{files[i].fullPath}可以下载\n" });
                     File.AppendAllText(_fileCheckOptions.CanDownloadFilePath, $"{files[i].projectId}/{files[i].fullPath}\n");
-                    resp.SuccessCount++;
                     tbCanDown.Text = resp.SuccessCount.ToString();
                 }
                 else
@@ -655,7 +655,6 @@ namespace WinFormsWebDav
                     resp.FailFilePath.Add($"{files[i].projectId}/{files[i].fullPath}");
                     ShowMessage(null, new MessageEventArgs { Msg = $"{files[i].projectId}/{files[i].fullPath}文件无法下载\n" });
                     File.AppendAllText(_fileCheckOptions.CanNotDownloadFilePath, $"{files[i].projectId}/{files[i].fullPath}\n");
-                    resp.FailCount++;
                     tbCanNotDown.Text = resp.FailCount.ToString();
                 }
                 tbResidue.Text = (resp.Total - resp.FailCount - resp.SuccessCount).ToString();
