@@ -95,6 +95,7 @@ namespace WinFormsWebDav
             services.AddScoped(typeof(FileLockOrUnLock));
             services.AddScoped(typeof(AppWatcherUc));
             services.AddScoped(typeof(MicroSoftMessageQueuingUc));
+            services.AddScoped(typeof(MicroSoftMessageQueuingUcNew));
             services.AddScoped(typeof(WebDavUc));
 
             //

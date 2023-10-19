@@ -20,7 +20,7 @@ namespace WinFormsWebDav
         //组件
         private readonly FileLockAndUnLockUc _fileLockAndUnLock;
         private readonly AppWatcherUc _appWatcherUc1;
-        private readonly MicroSoftMessageQueuingUc _microSoftMessageQueuingUc1;
+        private readonly MicroSoftMessageQueuingUcNew _microSoftMessageQueuingUc1;
         private readonly WebDavUc _webdav;
 
         //参数
@@ -32,7 +32,7 @@ namespace WinFormsWebDav
         private readonly IDocumentGateway _documentGateway;
 
 
-        public FormMain(FileLockAndUnLockUc fileLockAndUnLock, AppWatcherUc appWatcherUc1, MicroSoftMessageQueuingUc microSoftMessageQueuingUc1, WebDavUc webdav,
+        public FormMain(FileLockAndUnLockUc fileLockAndUnLock, AppWatcherUc appWatcherUc1, MicroSoftMessageQueuingUcNew microSoftMessageQueuingUc1, WebDavUc webdav,
             IProjectGW projectGW, IDocumentGateway documentGateway,
             IOptions<SystemOptions> systemOptions, IOptions<FileCheckOptions> fileCheckOptions)
         {
@@ -47,7 +47,7 @@ namespace WinFormsWebDav
             _microSoftMessageQueuingUc1 = microSoftMessageQueuingUc1;
             _webdav = webdav;
             InitializeComponent();
-
+            InitComponent();
             #region 选中联动 有问题
             tvFiles.MouseClick += treeView1_MouseClick;
             //tvFiles.AfterCheck += skinTreeView1_AfterCheck;
@@ -56,7 +56,21 @@ namespace WinFormsWebDav
             #endregion
 
             tvFiles.CheckBoxes = true;
+        }
 
+        private void InitComponent()
+        {
+            //msmq
+            tbMSMQ.Controls.Add(_microSoftMessageQueuingUc1);
+            tbMSMQ.Location = new Point(4, 33);
+            tbMSMQ.Name = "tabPage4";
+            tbMSMQ.Padding = new Padding(3);
+            tabPage4.Size = new Size(1382, 653);
+            tbMSMQ.TabIndex = 4;
+            tabPage4.Text = "MSMQ";
+            tbMSMQ.UseVisualStyleBackColor = true;
+
+            //webdav
             tbWebdav.Controls.Add(_webdav);
             tbWebdav.Location = new Point(4, 33);
             tbWebdav.Name = "Webdav";
@@ -66,28 +80,12 @@ namespace WinFormsWebDav
             tbWebdav.Text = "WebDav";
             tbWebdav.UseVisualStyleBackColor = true;
 
-            // 
-            // webDav1
-            // 
-            _webdav.Location = new Point(42, 15);
-            _webdav.Name = "webDav";
-            _webdav.Size = new Size(650, 550);
-            _webdav.TabIndex = 0;
+            //_webdav.Location = new Point(42, 15);
+            //_webdav.Name = "webDav";
+            //_webdav.Size = new Size(650, 550);
+            //_webdav.TabIndex = 0;
 
-            //InitData();
-
-            _webdav.SomeEvent += ShowMessage;
-
-
-
-            tbMSMQ.Controls.Add(_microSoftMessageQueuingUc1);
-            tbMSMQ.Location = new Point(4, 33);
-            tbMSMQ.Name = "tabPage4";
-            tbMSMQ.Padding = new Padding(3);
-            tabPage4.Size = new Size(1382, 653);
-            tbMSMQ.TabIndex = 4;
-            tabPage4.Text = "MSMQ";
-            tbMSMQ.UseVisualStyleBackColor = true;
+            _webdav.ShowMessage += ShowMessage;
         }
 
 

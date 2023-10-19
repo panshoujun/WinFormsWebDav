@@ -12,7 +12,7 @@ namespace WinFormsWebDav
     public partial class WebDavUc : BaseUserControl
     {
 
-        public event EventHandler SomeEvent;
+        public event EventHandler ShowMessage;
 
         private readonly DefaultWebdavOptions _defaultWebdavOptions;
 
@@ -154,12 +154,12 @@ namespace WinFormsWebDav
             result = DoProcess(doscommand);
             if (result.Item1)
             {
-                ShowMessage(result.Item2);
-                ShowMessage($"{MessageConstants.SUCCESSFULLY_MOUNTED}\n{driveLetter ?? GetDiskDriveList(result.Item2, RegexPatternConstants.GET_MOUNT_DISK_DRIVE, "DiskDrive").FirstOrDefault()}\n");
+                base.ShowMessage(result.Item2);
+                base.ShowMessage($"{MessageConstants.SUCCESSFULLY_MOUNTED}\n{driveLetter ?? GetDiskDriveList(result.Item2, RegexPatternConstants.GET_MOUNT_DISK_DRIVE, "DiskDrive").FirstOrDefault()}\n");
             }
             else
             {
-                ShowMessage(result.Item2);
+                base.ShowMessage(result.Item2);
             }
 
             return result.Item1;
@@ -196,14 +196,14 @@ namespace WinFormsWebDav
 
             if (!result.Item1)
             {
-                ShowMessage(result.Item2);
+                base.ShowMessage(result.Item2);
                 return;
             }
 
             var list = GetDiskDriveList(result.Item2, RegexPatternConstants.GET_USED_DRIVE_LETTER, "DiskDrive");
-            ShowMessage(string.Format($"{MessageConstants.MOUNT_LIST}:\n{string.Join('\n', list)}\n"));
+            base.ShowMessage(string.Format($"{MessageConstants.MOUNT_LIST}:\n{string.Join('\n', list)}\n"));
 
-            SomeEvent?.Invoke(this, new MessageEventArgs { Msg = string.Format($"{MessageConstants.MOUNT_LIST}:\n{string.Join('\n', list)}\n") });
+            ShowMessage?.Invoke(this, new MessageEventArgs { Msg = string.Format($"{MessageConstants.MOUNT_LIST}:\n{string.Join('\n', list)}\n") });
         }
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace WinFormsWebDav
 
             var result = DoProcess(doscommand);
 
-            ShowMessage(result.Item2);
+            base.ShowMessage(result.Item2);
         }
 
         ///// <summary>
