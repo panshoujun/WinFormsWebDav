@@ -50,7 +50,7 @@
             // 
             tbFolderPath.Location = new Point(139, 36);
             tbFolderPath.Name = "tbFolderPath";
-            tbFolderPath.Size = new Size(514, 30);
+            tbFolderPath.Size = new Size(591, 30);
             tbFolderPath.TabIndex = 30;
             tbFolderPath.Text = "C:\\bugtest";
             // 
@@ -87,7 +87,7 @@
             // 
             tbFilePath.Location = new Point(139, 173);
             tbFilePath.Name = "tbFilePath";
-            tbFilePath.Size = new Size(514, 30);
+            tbFilePath.Size = new Size(591, 30);
             tbFilePath.TabIndex = 35;
             tbFilePath.Text = "C:\\bugtest\\123.txt";
             // 

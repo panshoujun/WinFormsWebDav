@@ -36,7 +36,7 @@
             // 
             // btnCancelReadOnly
             // 
-            btnCancelReadOnly.Location = new Point(421, 291);
+            btnCancelReadOnly.Location = new Point(470, 270);
             btnCancelReadOnly.Name = "btnCancelReadOnly";
             btnCancelReadOnly.Size = new Size(104, 32);
             btnCancelReadOnly.TabIndex = 31;
@@ -46,7 +46,7 @@
             // 
             // btnSetReadOnly
             // 
-            btnSetReadOnly.Location = new Point(281, 291);
+            btnSetReadOnly.Location = new Point(330, 270);
             btnSetReadOnly.Name = "btnSetReadOnly";
             btnSetReadOnly.Size = new Size(104, 32);
             btnSetReadOnly.TabIndex = 29;
@@ -57,7 +57,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(175, 83);
+            label1.Location = new Point(88, 65);
             label1.Name = "label1";
             label1.Size = new Size(82, 24);
             label1.TabIndex = 32;
@@ -65,10 +65,10 @@
             // 
             // btReadOnlyFile
             // 
-            btReadOnlyFile.Location = new Point(281, 77);
+            btReadOnlyFile.Location = new Point(194, 59);
             btReadOnlyFile.Multiline = true;
             btReadOnlyFile.Name = "btReadOnlyFile";
-            btReadOnlyFile.Size = new Size(244, 30);
+            btReadOnlyFile.Size = new Size(380, 30);
             btReadOnlyFile.TabIndex = 30;
             btReadOnlyFile.Text = "Z:\\teslock\\11.dwg";
             // 
