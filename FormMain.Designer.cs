@@ -48,7 +48,7 @@
             tbMSMQ = new TabPage();
             tbFileSetInfo = new TabPage();
             fileSetInfo = new FileSetInfoUcNew();
-            tabPage4 = new TabPage();
+            tbFileLockAndUnLock = new TabPage();
             btnClear = new Button();
             rtbLog = new RichTextBox();
             ((System.ComponentModel.ISupportInitialize)splitContainer1).BeginInit();
@@ -88,7 +88,7 @@
             tabControl1.Controls.Add(tabPage2);
             tabControl1.Controls.Add(tbMSMQ);
             tabControl1.Controls.Add(tbFileSetInfo);
-            tabControl1.Controls.Add(tabPage4);
+            tabControl1.Controls.Add(tbFileLockAndUnLock);
             tabControl1.Dock = DockStyle.Fill;
             tabControl1.Location = new Point(0, 0);
             tabControl1.Name = "tabControl1";
@@ -282,15 +282,15 @@
             fileSetInfo.Size = new Size(749, 600);
             fileSetInfo.TabIndex = 0;
             // 
-            // tabPage4
+            // tbFileLockAndUnLock
             // 
-            tabPage4.Location = new Point(4, 33);
-            tabPage4.Name = "tabPage4";
-            tabPage4.Padding = new Padding(3);
-            tabPage4.Size = new Size(842, 907);
-            tabPage4.TabIndex = 4;
-            tabPage4.Text = "tabPage4";
-            tabPage4.UseVisualStyleBackColor = true;
+            tbFileLockAndUnLock.Location = new Point(4, 33);
+            tbFileLockAndUnLock.Name = "tbFileLockAndUnLock";
+            tbFileLockAndUnLock.Padding = new Padding(3);
+            tbFileLockAndUnLock.Size = new Size(842, 907);
+            tbFileLockAndUnLock.TabIndex = 4;
+            tbFileLockAndUnLock.Text = "FileLockAndUnLockUc";
+            tbFileLockAndUnLock.UseVisualStyleBackColor = true;
             // 
             // btnClear
             // 
@@ -357,7 +357,7 @@
         private Button btnDeleteFile;
         private TabPage tbMSMQ;
         private TabPage tbFileSetInfo;
-        private TabPage tabPage4;
+        private TabPage tbFileLockAndUnLock;
         private FileSetInfoUcNew fileSetInfo;
     }
 }

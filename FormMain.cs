@@ -18,7 +18,7 @@ namespace WinFormsWebDav
         public delegate void setStatusDelegate(string requestInfo);
 
         //组件
-        private readonly FileLockAndUnLockUc _fileLockAndUnLock;
+        private readonly FileLockAndUnLockUcNew _fileLockAndUnLock;
         private readonly AppWatcherUc _appWatcherUc1;
         private readonly MicroSoftMessageQueuingUcNew _microSoftMessageQueuingUc1;
         private readonly WebDavUc _webdav;
@@ -32,7 +32,7 @@ namespace WinFormsWebDav
         private readonly IDocumentGateway _documentGateway;
 
 
-        public FormMain(FileLockAndUnLockUc fileLockAndUnLock, AppWatcherUc appWatcherUc1, MicroSoftMessageQueuingUcNew microSoftMessageQueuingUc1, WebDavUc webdav,
+        public FormMain(FileLockAndUnLockUcNew fileLockAndUnLock, AppWatcherUc appWatcherUc1, MicroSoftMessageQueuingUcNew microSoftMessageQueuingUc1, WebDavUc webdav,
             IProjectGW projectGW, IDocumentGateway documentGateway,
             IOptions<SystemOptions> systemOptions, IOptions<FileCheckOptions> fileCheckOptions)
         {
@@ -66,7 +66,6 @@ namespace WinFormsWebDav
             tbMSMQ.Name = "tabPage4";
             tbMSMQ.Padding = new Padding(3);
             tbMSMQ.Size = new Size(1382, 653);
-            tbMSMQ.TabIndex = 4;
             tbMSMQ.Text = "MSMQ";
             tbMSMQ.UseVisualStyleBackColor = true;
             _microSoftMessageQueuingUc1.ShowMessage += ShowMessage;
@@ -77,13 +76,22 @@ namespace WinFormsWebDav
             tbWebdav.Name = "Webdav";
             tbWebdav.Padding = new Padding(3);
             tbWebdav.Size = new Size(1382, 653);
-            tbWebdav.TabIndex = 0;
             tbWebdav.Text = "WebDav";
             tbWebdav.UseVisualStyleBackColor = true;
             _webdav.ShowMessage += ShowMessage;
 
+            //fileSetInfo
             fileSetInfo.ShowMessage += ShowMessage;
 
+            //FileLockAndUnLock
+            tbFileLockAndUnLock.Controls.Add(_fileLockAndUnLock);
+            tbFileLockAndUnLock.Location = new Point(4, 33);
+            tbFileLockAndUnLock.Name = "FileLockAndUnLock";
+            tbFileLockAndUnLock.Padding = new Padding(3);
+            tbFileLockAndUnLock.Size = new Size(1382, 653);
+            tbFileLockAndUnLock.Text = "FileLockAndUnLock";
+            tbFileLockAndUnLock.UseVisualStyleBackColor = true;
+            _fileLockAndUnLock.ShowMessage += ShowMessage;
         }
 
 

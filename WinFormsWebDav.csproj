@@ -23,6 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="FileLockAndUnLockUcNew.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="FileSetInfoUcNew.cs" />
     <Compile Update="MicroSoftMessageQueuingUcNew.cs">
       <SubType>UserControl</SubType>
